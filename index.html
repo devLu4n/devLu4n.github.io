@@ -1,69 +1,132 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Primeiro HTML - Oxetech</title>
 </head>
 
 <body>
 
+    <header>
+        <nav aria-label="Navegação principal">
+            <ul>
+                <li><a href="#home" aria-current="page">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+            </ul>
+            <button type="button" aria-label="Entrar em contato">Let's Talk</button>
+        </nav>
+    </header>
 
-    <div>Isso é uma DIV (elemento de bloco)</div>
-    <span>Isso é um SPAN (elemento de linha)</span>
+    <main id="home">
 
-    <hr>
+        <hr>
 
+        <section aria-labelledby="intro-title">
+            <p>I am Caio!</p>
+            <h1 id="intro-title">Front-End Developer & Designer</h1>
+            <p>Blending thoughtful UI design with clean, responsive development to create websites that look great and perform flawlessly.</p>
+            <button type="button">Download CV</button>
+            <ul aria-label="Redes sociais">
+                <li><a href="https://www.linkedin.com/in/luanviilela/" aria-label="LinkedIn">LinkedIn</a></li>
+                <li><a href="https://github.com/devLu4n" aria-label="GitHub">GitHub</a></li>
+            </ul>
+        </section>
 
-    <h1>Título Principal (h1)</h1>
-    <h2>Subtítulo (h2)</h2>
-    <h3>Subtítulo (h3)</h3>
+        <hr>
 
-   
-    <p>Este é um parágrafo com <b>negrito</b>.</p>
-    <p>Este é um parágrafo com <i>itálico</i>.</p>
-    <p>Este é um parágrafo com <u>sublinhado</u>.</p>
-    <p>Este é um parágrafo com <s>riscado</s>.</p>
+        <div>Isso é uma DIV (elemento de bloco)</div>
+        <span>Isso é um SPAN (elemento de linha)</span>
 
-    <hr>
+        <hr>
 
-    <p>Lista não ordenada:</p>
-    <ul>
-        <li>Item A</li>
-        <li>Item B</li>
-    </ul>
+        <h1>Título Principal (h1)</h1>
+        <h2>Subtítulo (h2)</h2>
+        <h3>Subtítulo (h3)</h3>
 
-    <p>Lista ordenada:</p>
-    <ol>
-        <li>Primeiro Passo</li>
-        <li>Segundo Passo</li>
-    </ol>
+        <p>Este é um parágrafo com <b>negrito</b>.</p>
+        <p>Este é um parágrafo com <i>itálico</i>.</p>
+        <p>Este é um parágrafo com <u>sublinhado</u>.</p>
+        <p>Este é um parágrafo com <s>riscado</s>.</p>
 
-    <hr>
+        <hr>
 
+        <p>Lista não ordenada:</p>
+        <ul>
+            <li>Item A</li>
+            <li>Item B</li>
+        </ul>
 
-    <h3>Minha Tabela</h3>
-    <table border="1">
-        <tr>
-            <th>Nome</th>
-            <th>Idade</th>
-            <th>Cidade</th>
-        </tr>
-        <tr>
-            <td>João</td>
-            <td>25</td>
-            <td>São Paulo</td>
-        </tr>
-        <tr>
-            <td>Maria</td>
-            <td>30</td>
-            <td>Rio de Janeiro</td>
-        </tr>
-        <tr>
-            <td colspan="2">Total de Pessoas</td>
-            <td>2</td>
-        </tr>
-    </table>
+        <p>Lista ordenada:</p>
+        <ol>
+            <li>Primeiro Passo</li>
+            <li>Segundo Passo</li>
+        </ol>
+
+        <hr>
+
+        <section id="services" aria-labelledby="services-title">
+            <h2 id="services-title">Services</h2>
+            <p>tararata.</p>
+
+            <article>
+                <h3>UI/UX Website Design</h3>
+                <p>Lorem ipsum dolor</p>
+                <div class="tag">Modern layouts</div>
+                <div class="tag">Responsive design</div>
+            </article>
+
+            <article>
+                <h3>Frontend Development</h3>
+                <p>Lorem ipsum.</p>
+                <div class="tag">Clean HTML/CSS</div>
+                <div class="tag">Smooth interactions</div>
+            </article>
+
+            <article>
+                <h3>Performance and Responsiveness</h3>
+                <p>Lorem ipsum dolor .</p>
+                <div class="tag">Speed Optimization</div>
+                <div class="tag">Asset efficiency</div>
+            </article>
+        </section>
+
+        <hr>
+
+        <h3>Minha Tabela</h3>
+        <table border="1">
+            <tr>
+                <th>Nome</th>
+                <th>Idade</th>
+                <th>Cidade</th>
+            </tr>
+            <tr>
+                <td>João</td>
+                <td>25</td>
+                <td>São Paulo</td>
+            </tr>
+            <tr>
+                <td>Maria</td>
+                <td>30</td>
+                <td>Rio de Janeiro</td>
+            </tr>
+            <tr>
+                <td colspan="2">Total de Pessoas</td>
+                <td>2</td>
+            </tr>
+        </table>
+
+        <hr>
+
+        <footer>
+            <p>Aula do Morrissey.</p>
+        </footer>
+
+    </main>
 
 </body>
 
