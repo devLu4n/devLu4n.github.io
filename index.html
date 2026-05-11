@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Primeiro HTML - Oxetech</title>
+    <title>Formulário de Contato - Oxetech</title>
 </head>
 
 <body>
@@ -12,112 +12,115 @@
     <header>
         <nav aria-label="Navegação principal">
             <ul>
-                <li><a href="#home" aria-current="page">Home</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#projects">Projects</a></li>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#contato" aria-current="page">Contato</a></li>
             </ul>
             <button type="button" aria-label="Entrar em contato">Let's Talk</button>
         </nav>
     </header>
 
-    <main id="home">
+    <main id="contato">
 
         <hr>
 
-        <section aria-labelledby="intro-title">
-            <h1 id="intro-title">Front-End Developer & Designer</h1>
-            <p>Blending thoughtful UI design with clean, responsive development to create websites that look great and perform flawlessly.</p>
-            <button type="button">Download CV</button>
-            <ul aria-label="Redes sociais">
-                <li><a href="https://www.linkedin.com/in/luanviilela/" aria-label="LinkedIn">LinkedIn</a></li>
-                <li><a href="https://github.com/devLu4n" aria-label="GitHub">GitHub</a></li>
-            </ul>
+        <section aria-labelledby="contato-title">
+            <h1 id="contato-title">Formulário de Contato</h1>
+            <p>Preencha os campos abaixo para entrar em contato.</p>
         </section>
 
         <hr>
 
-        <div>Isso é uma DIV (elemento de bloco)</div>
-        <span>Isso é um SPAN (elemento de linha)</span>
+        <form method="post" action="#">
 
-        <hr>
+            <fieldset>
+                <legend>Dados Pessoais</legend>
 
-        <h1>Título Principal (h1)</h1>
-        <h2>Subtítulo (h2)</h2>
-        <h3>Subtítulo (h3)</h3>
+                <p>
+                    <label for="nome">Nome:</label><br>
+                    <input
+                        type="text"
+                        id="nome"
+                        name="nome"
+                        required
+                        minlength="3"
+                        maxlength="100"
+                        placeholder="Seu nome completo"
+                    >
+                </p>
 
-        <p>Este é um parágrafo com <b>negrito</b>.</p>
-        <p>Este é um parágrafo com <i>itálico</i>.</p>
-        <p>Este é um parágrafo com <u>sublinhado</u>.</p>
-        <p>Este é um parágrafo com <s>riscado</s>.</p>
+                <p>
+                    <label for="email">E-mail:</label><br>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        required
+                        placeholder="seu@email.com"
+                    >
+                </p>
 
-        <hr>
+                <p>
+                    <label for="senha">Senha:</label><br>
+                    <input
+                        type="password"
+                        id="senha"
+                        name="senha"
+                        required
+                        minlength="6"
+                        maxlength="20"
+                        placeholder="Mínimo 6 caracteres"
+                    >
+                </p>
 
-        <p>Lista não ordenada:</p>
-        <ul>
-            <li>Item A</li>
-            <li>Item B</li>
-        </ul>
+                <p>
+                    <label for="nascimento">Data de Nascimento:</label><br>
+                    <input
+                        type="date"
+                        id="nascimento"
+                        name="nascimento"
+                        required
+                    >
+                </p>
 
-        <p>Lista ordenada:</p>
-        <ol>
-            <li>Primeiro Passo</li>
-            <li>Segundo Passo</li>
-        </ol>
+            </fieldset>
 
-        <hr>
+            <br>
 
-        <section id="services" aria-labelledby="services-title">
-            <h2 id="services-title">Services</h2>
-            <p>tararata.</p>
+            <fieldset>
+                <legend>Assunto</legend>
 
-            <article>
-                <h3>UI/UX Website Design</h3>
-                <p>Lorem ipsum dolor</p>
-                <div class="tag">Modern layouts</div>
-                <div class="tag">Responsive design</div>
-            </article>
+                <p>
+                    <input type="radio" id="assunto-duvida" name="assunto" value="duvida" required>
+                    <label for="assunto-duvida">Dúvida</label>
+                </p>
+                <p>
+                    <input type="radio" id="assunto-sugestao" name="assunto" value="sugestao">
+                    <label for="assunto-sugestao">Sugestão</label>
+                </p>
+                <p>
+                    <input type="radio" id="assunto-outro" name="assunto" value="outro">
+                    <label for="assunto-outro">Outro</label>
+                </p>
 
-            <article>
-                <h3>Frontend Development</h3>
-                <p>Lorem ipsum.</p>
-                <div class="tag">Clean HTML/CSS</div>
-                <div class="tag">Smooth interactions</div>
-            </article>
+            </fieldset>
 
-            <article>
-                <h3>Performance and Responsiveness</h3>
-                <p>Lorem ipsum dolor .</p>
-                <div class="tag">Speed Optimization</div>
-                <div class="tag">Asset efficiency</div>
-            </article>
-        </section>
+            <br>
 
-        <hr>
+            <fieldset>
+                <legend>Termos</legend>
 
-        <h3>Minha Tabela</h3>
-        <table border="1">
-            <tr>
-                <th>Nome</th>
-                <th>Idade</th>
-                <th>Cidade</th>
-            </tr>
-            <tr>
-                <td>João</td>
-                <td>25</td>
-                <td>São Paulo</td>
-            </tr>
-            <tr>
-                <td>Maria</td>
-                <td>30</td>
-                <td>Rio de Janeiro</td>
-            </tr>
-            <tr>
-                <td colspan="2">Total de Pessoas</td>
-                <td>2</td>
-            </tr>
-        </table>
+                <p>
+                    <input type="checkbox" id="termos" name="termos" required>
+                    <label for="termos">Aceito os termos e condições</label>
+                </p>
+
+            </fieldset>
+
+            <br>
+
+            <button type="submit">Enviar</button>
+
+        </form>
 
         <hr>
 
