@@ -48,7 +48,7 @@ O projeto usa **Vite** como bundler e **Tailwind CSS** com configuração custom
  
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/aladin.git
+git clone https://github.com/devLu4n/devLu4n.github.io.git
 cd aladin
  
 # Instale as dependências
