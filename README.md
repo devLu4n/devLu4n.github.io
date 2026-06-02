@@ -1,7 +1,9 @@
 # 🌟 Aladin — Plataforma de Vagas de TI do Estado de Alagoas
 ## 📋 Sobre o projeto
  
-O **Aladin** é uma plataforma web voltada para a contratação de profissionais de TI no Estado de Alagoas. O objetivo é conectar talentos da área de tecnologia às oportunidades disponíveis em órgãos públicos estaduais e empresas do ecossistema tech alagoano, com transparência salarial e foco na simplicidade.
+O Aladin é uma plataforma web voltada para a contratação de profissionais de TI no Estado de Alagoas, desenvolvida como projeto prático durante a formação no OxeTech Academy — programa do Governo de Alagoas que forma e qualifica talentos da área de tecnologia no estado.
+O objetivo da plataforma é conectar profissionais de TI às oportunidades disponíveis em órgãos públicos estaduais e empresas do ecossistema tech alagoano, com transparência salarial e foco na simplicidade.
+O projeto está em constante evolução: novas funcionalidades serão adicionadas ao longo da formação, como sistema de autenticação, painel do candidato, anúncio de vagas por empresas, e muito mais. Acompanhe o repositório para ver as novidades! 🚀
  
 ---
  
