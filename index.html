@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aladin — Plataforma de Contratação de TI do Estado de Alagoas</title>
-  
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="icon" href="/public/assets/white-logo.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="icon" href="/assets/white-logo.svg">
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -16,22 +16,24 @@
       theme: {
         extend: {
           colors: {
-            navy: '#0D1322',
-            blueCustom: '#2563EB',
-            blueLt: '#E3F0FF',
-            orangeCustom: '#FF6A00',
+            navy: '#0B1120',
+            blueCustom: '#3355FF',
+            blueLt: '#EAEFFF',
+            orangeCustom: '#FF7A1F',
+            orangeLt: '#FFE9D6',
             whiteCustom: '#F2F4F8',
-            bgCustom: '#F7FAFF',
-            borderColor: '#E2EAF8',
-            textCustom: '#0D1322',
-            mutedCustom: '#6B7A99',
+            bgCustom: '#EFF3FB',
+            borderColor: '#E3E8F6',
+            textCustom: '#0B1120',
+            mutedCustom: '#6C7590',
           },
           borderWidth: {
             '1.5': '1.5px',
           },
           boxShadow: {
-            'search': '0 4px 32px rgba(37,99,235,0.10)',
-            'card': '0 6px 32px rgba(37,99,235,0.10)',
+            'search': '0 20px 50px rgba(51,85,255,0.12)',
+            'card': '0 20px 45px rgba(51,85,255,0.14)',
+            'soft': '0 10px 30px rgba(11,17,32,0.06)',
           },
           fontFamily: {
             sans: ['Poppins', 'sans-serif'],
@@ -41,33 +43,42 @@
     }
   </script>
 
+  <style>
+    .blob {
+      position: absolute;
+      border-radius: 9999px;
+      filter: blur(90px);
+      pointer-events: none;
+    }
+  </style>
+
 </head>
-<body class="bg-bgCustom text-textCustom font-sans antialiased min-h-screen flex flex-col">
+<body class="bg-bgCustom text-textCustom font-sans antialiased min-h-screen flex flex-col overflow-x-hidden">
 
   <a href="#main-content" class="absolute -top-full left-4 bg-blueCustom text-white px-4 py-2 rounded-b-lg text-sm z-[9999] no-underline focus:top-0 transition-all">Pular para o conteúdo principal</a>
 
   <!-- HEADER -->
-  <header class="sticky top-0 z-[100] bg-bgCustom/94 backdrop-blur-md border-b border-borderColor" role="banner">
-    <nav class="max-w-[1280px] mx-auto px-8 h-[72px] flex items-center justify-between gap-8" aria-label="Navegação principal">
+  <header class="sticky top-0 z-[100] bg-bgCustom/85 backdrop-blur-md" role="banner">
+    <nav class="max-w-[1280px] mx-auto px-8 h-[84px] flex items-center justify-between gap-8" aria-label="Navegação principal">
 
       <a href="/" class="flex items-center gap-2 no-underline shrink-0" aria-label="Aladin — página inicial">
-        <img src="/public/assets/aladin-logo.svg" alt="" class="w-11 h-11 object-contain" aria-hidden="true">
-        <span class="text-2xl font-extrabold text-navy tracking-tight">aladin</span> 
+        <img src="/assets/aladin-logo.svg" alt="" class="w-10 h-10 object-contain" aria-hidden="true">
+        <span class="text-[1.6rem] font-extrabold text-navy tracking-tight">aladin</span>
       </a>
 
       <ul class="hidden md:flex items-center gap-1 list-none" role="list">
-        <li><a href="#vagas" class="block px-3.5 py-2 text-[15px] font-medium text-mutedCustom no-underline rounded-lg transition-colors hover:text-blueCustom hover:bg-blueLt">Vagas</a></li>
-        <li><a href="#empresas" class="block px-3.5 py-2 text-[15px] font-medium text-mutedCustom no-underline rounded-lg transition-colors hover:text-blueCustom hover:bg-blueLt">Empresas</a></li>
-        <li><a href="#como-funciona" class="block px-3.5 py-2 text-[15px] font-medium text-mutedCustom no-underline rounded-lg transition-colors hover:text-blueCustom hover:bg-blueLt">Como funciona</a></li>
-        <li><a href="#sobre" class="block px-3.5 py-2 text-[15px] font-medium text-mutedCustom no-underline rounded-lg transition-colors hover:text-blueCustom hover:bg-blueLt">Sobre</a></li>
+        <li><a href="#vagas" class="block px-4 py-2 text-[15px] font-semibold text-navy/70 no-underline rounded-full transition-colors hover:text-navy hover:bg-white">Vagas</a></li>
+        <li><a href="#empresas" class="block px-4 py-2 text-[15px] font-semibold text-navy/70 no-underline rounded-full transition-colors hover:text-navy hover:bg-white">Empresas</a></li>
+        <li><a href="#como-funciona" class="block px-4 py-2 text-[15px] font-semibold text-navy/70 no-underline rounded-full transition-colors hover:text-navy hover:bg-white">Como funciona</a></li>
+        <li><a href="#sobre" class="block px-4 py-2 text-[15px] font-semibold text-navy/70 no-underline rounded-full transition-colors hover:text-navy hover:bg-white">Sobre</a></li>
       </ul>
 
       <div class="flex items-center gap-3 shrink-0">
-        <a href="notready.html" class="px-4 py-2 text-[15px] font-medium text-navy bg-transparent border-1.5 border-borderColor rounded-lg no-underline transition-colors hover:border-blueCustom hover:text-blueCustom">
-          <span class="hidden sm:block">Entrar</span>
+        <a href=".../pages/login.html" class="px-5 py-2.5 text-[15px] font-semibold text-navy bg-white border-1.5 border-navy/15 rounded-full no-underline transition-all hover:border-navy/40">
+          <span class="hidden sm:block">Log in</span>
         </a>
-        <a href="notready.html" class="px-5 py-2 text-[15px] font-semibold text-white bg-blueCustom rounded-lg no-underline transition-all hover:bg-[#1a4fd6] hover:-translate-y-px">
-          <span class="hidden sm:block">Anunciar vaga</span>
+        <a href="notready.html" class="px-5 py-2.5 text-[15px] font-bold text-white bg-orangeCustom rounded-full no-underline transition-all shadow-soft hover:-translate-y-0.5 hover:shadow-card">
+          <span class="hidden sm:block">Encontre vagas</span>
         </a>
       </div>
 
@@ -78,221 +89,219 @@
   <main id="main-content" class="flex-grow">
 
     <!-- HERO -->
-    <section class="py-20 px-8 text-center relative overflow-hidden bg-[radial-gradient(circle,_#2563EB18_1px,_transparent_1px)] bg-[size:28px_28px]" aria-labelledby="hero-title">
-      <div class="relative max-w-[760px] mx-auto">
+    <section class="relative min-h-[760px] px-6 py-16 md:py-20 overflow-hidden flex items-center" aria-labelledby="hero-title">
 
-        <p class="inline-flex items-center gap-2 px-4 py-1.5 bg-blueLt border border-[#c7dcfa] rounded-full text-[13px] font-semibold text-blueCustom tracking-wider uppercase mb-7 max-sm:text-[11px] max-sm:px-2.5 max-sm:py-1">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      <!-- Blobs suaves inspirados na referência -->
+      <div class="blob w-[440px] h-[440px] bg-orangeCustom/25 top-24 -left-56" aria-hidden="true"></div>
+      <div class="blob w-[420px] h-[420px] bg-orangeCustom/25 top-16 -right-48" aria-hidden="true"></div>
+      <div class="blob w-[420px] h-[420px] bg-blueCustom/28 -bottom-48 left-10" aria-hidden="true"></div>
+      <div class="blob w-[360px] h-[360px] bg-orangeCustom/20 -bottom-32 right-1/4" aria-hidden="true"></div>
+
+      <div class="relative w-full max-w-[1120px] mx-auto flex flex-col items-center text-center">
+
+        <p class="inline-flex items-center gap-2 px-5 py-2 bg-white/65 border border-white/80 rounded-full text-[12px] font-bold text-blueCustom tracking-wider uppercase mb-8 shadow-soft backdrop-blur-md">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
           <span>Plataforma oficial do Estado de <mark class="bg-transparent text-orangeCustom">Alagoas</mark></span>
         </p>
 
-        <h1 id="hero-title" class="text-[clamp(2.25rem,5vw,3.5rem)] font-extrabold leading-tight tracking-tight text-navy mb-5">
-          Encontre vagas de <em class="not-italic text-blueCustom">TI</em><br>no Estado de <strong class="font-extrabold text-orangeCustom">Alagoas</strong>
+        <h1 id="hero-title" class="max-w-[980px] text-[clamp(3rem,6vw,5.4rem)] font-extrabold leading-[1.03] tracking-[-0.045em] text-navy mb-7">
+          Encontre vagas de <span class="text-blueCustom">TI</span><br class="hidden sm:block">
+          no Estado de <span class="text-orangeCustom">Alagoas</span>
         </h1>
 
-        <p class="text-lg font-normal text-mutedCustom leading-relaxed max-w-[520px] mx-auto mb-10">
+        <p class="max-w-[720px] text-[clamp(1rem,1.5vw,1.22rem)] text-mutedCustom leading-relaxed mb-9">
           Conectamos talentos às oportunidades que impulsionam o serviço público e o ecossistema tech alagoano.
         </p>
 
-        <form class="flex flex-col md:flex-row items-center bg-white border-1.5 border-borderColor rounded-2xl p-2 shadow-search max-w-[680px] mx-auto mb-8 w-full max-md:rounded-xl" role="search" action="notready.html" method="GET">
-          <div class="w-full md:flex-1 flex items-center gap-2 px-4 py-2.5 md:py-0">
-            <svg class="shrink-0 text-mutedCustom" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            <label for="search-cargo" class="sr-only">Cargo ou palavra-chave</label>
-            <input id="search-cargo" class="w-full border-none outline-none text-[15px] text-navy bg-transparent py-2.5 placeholder-[#aab2c8]" type="search" name="cargo" placeholder="Cargo ou palavra-chave" autocomplete="off">
-          </div>
-          <div class="w-full md:flex-1 flex items-center gap-2 px-4 py-2.5 md:py-0 border-t-1.5 md:border-t-0 md:border-l-1.5 border-borderColor">
-            <svg class="shrink-0 text-mutedCustom" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <label for="search-cidade" class="sr-only">Cidade em Alagoas</label>
-            <input id="search-cidade" class="w-full border-none outline-none text-[15px] text-navy bg-transparent py-2.5 placeholder-[#aab2c8]" type="text" name="cidade" placeholder="Cidade em Alagoas" autocomplete="off">
-          </div>
-          <button type="submit" class="w-full md:w-auto shrink-0 px-6 py-3 text-[15px] font-semibold text-white bg-blueCustom rounded-lg transition-colors hover:bg-[#1a4fd6]">Buscar vagas</button>
-        </form>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+          <a href="#vagas" class="min-w-[190px] px-7 py-3.5 text-[15px] font-bold text-white bg-blueCustom rounded-xl no-underline shadow-card transition-all hover:-translate-y-0.5 hover:bg-[#2444e0]">
+            Encontre vagas
+          </a>
+          <a href="#como-funciona" class="min-w-[190px] px-7 py-3.5 text-[15px] font-bold text-navy bg-white/70 border-1.5 border-navy/20 rounded-xl no-underline backdrop-blur-md transition-all hover:-translate-y-0.5 hover:bg-white">
+            Como funciona
+          </a>
+        </div>
 
-        <nav class="flex flex-wrap justify-center gap-2" aria-label="Filtros rápidos por área">
-          <a href="/vagas?area=frontend" class="px-3.5 py-1.5 bg-white border-1.5 border-borderColor rounded-full text-[13px] font-medium text-mutedCustom no-underline transition-all hover:border-blueCustom hover:text-blueCustom hover:bg-blueLt">Front-end</a>
-          <a href="/vagas?area=backend" class="px-3.5 py-1.5 bg-white border-1.5 border-borderColor rounded-full text-[13px] font-medium text-mutedCustom no-underline transition-all hover:border-blueCustom hover:text-blueCustom hover:bg-blueLt">Back-end</a>
-          <a href="/vagas?area=devops" class="px-3.5 py-1.5 bg-white border-1.5 border-borderColor rounded-full text-[13px] font-medium text-mutedCustom no-underline transition-all hover:border-blueCustom hover:text-blueCustom hover:bg-blueLt">DevOps</a>
-          <a href="/vagas?area=dados" class="px-3.5 py-1.5 bg-white border-1.5 border-borderColor rounded-full text-[13px] font-medium text-mutedCustom no-underline transition-all hover:border-blueCustom hover:text-blueCustom hover:bg-blueLt">Dados</a>
-          <a href="/vagas?area=uxui" class="px-3.5 py-1.5 bg-white border-1.5 border-borderColor rounded-full text-[13px] font-medium text-mutedCustom no-underline transition-all hover:border-blueCustom hover:text-blueCustom hover:bg-blueLt">UX/UI</a>
-          <a href="/vagas?area=mobile" class="px-3.5 py-1.5 bg-white border-1.5 border-borderColor rounded-full text-[13px] font-medium text-mutedCustom no-underline transition-all hover:border-blueCustom hover:text-blueCustom hover:bg-blueLt">Mobile</a>
-          <a href="/vagas?area=ia" class="px-3.5 py-1.5 bg-white border-1.5 border-borderColor rounded-full text-[13px] font-medium text-mutedCustom no-underline transition-all hover:border-blueCustom hover:text-blueCustom hover:bg-blueLt">IA</a>
-        </nav>
+        <!-- Painel central em glassmorphism -->
+        <div class="w-full max-w-[820px] grid grid-cols-1 md:grid-cols-[1.35fr_.65fr] gap-5 items-stretch">
+          <article class="bg-white/70 border border-white/80 rounded-[24px] p-6 md:p-7 shadow-card backdrop-blur-xl text-left">
+            <div class="flex items-center justify-between gap-4 mb-5">
+              <span class="text-[13px] font-medium text-mutedCustom">Vaga em destaque</span>
+              <span class="px-3 py-1 bg-bgCustom/90 text-navy text-[11px] font-semibold rounded-full">Nova oportunidade</span>
+            </div>
+
+            <h2 class="text-[1.45rem] font-extrabold text-navy mb-1">Desenvolvedor(a) Full Stack</h2>
+            <p class="text-[15px] text-navy/80 mb-2">Secretaria de Estado da Fazenda de Alagoas</p>
+            <p class="text-[13px] text-mutedCustom mb-6">Maceió, AL • R$ 7 mil – R$ 10 mil • Remoto</p>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+              <a href="#vagas" class="flex-1 text-center px-5 py-3 text-[14px] font-bold text-white bg-blueCustom rounded-xl no-underline transition-colors hover:bg-[#2444e0]">Ver oportunidade</a>
+              <a href="cadastro-aladin.html?tipo=candidato" class="flex-1 text-center px-5 py-3 text-[14px] font-bold text-white bg-orangeCustom rounded-xl no-underline transition-colors hover:bg-[#e96812]">Candidatar-se</a>
+            </div>
+          </article>
+
+          <div class="grid grid-cols-2 md:grid-cols-1 gap-5">
+            <div class="bg-white/70 border border-white/80 rounded-[22px] p-5 shadow-soft backdrop-blur-xl text-left flex flex-col justify-center">
+              <span class="text-[13px] text-mutedCustom mb-1">Vagas ativas</span>
+              <strong class="text-[2rem] leading-none font-extrabold text-navy">340+</strong>
+            </div>
+            <div class="bg-white/70 border border-white/80 rounded-[22px] p-5 shadow-soft backdrop-blur-xl text-left flex flex-col justify-center">
+              <span class="text-[13px] text-mutedCustom mb-1">Contratações</span>
+              <strong class="text-[2rem] leading-none font-extrabold text-navy">1.800+</strong>
+            </div>
+          </div>
+        </div>
 
       </div>
-    </section>
-
-    <!-- STATS -->
-    <section class="bg-navy border-y border-borderColor" aria-label="Números da plataforma">
-      <dl class="max-w-[1280px] mx-auto p-8 flex items-center justify-center gap-8 md:gap-16 flex-wrap max-sm:border-x-2 max-sm:border-white/15 max-sm:px-4">
-        <div class="text-center">
-          <dt class="order-2 text-[13px] font-medium text-whiteCustom mt-1">Vagas ativas</dt>
-          <dd class="order-1 text-[1.75rem] font-extrabold text-orangeCustom tracking-tight leading-none">340+</dd>
-        </div>
-        <div class="hidden md:block w-px h-10 bg-borderColor" role="separator"></div>
-        <div class="text-center">
-          <dt class="order-2 text-[13px] font-medium text-whiteCustom mt-1">Órgãos parceiros</dt>
-          <dd class="order-1 text-[1.75rem] font-extrabold text-orangeCustom tracking-tight leading-none">28</dd>
-        </div>
-        <div class="hidden md:block w-px h-10 bg-borderColor" role="separator"></div>
-        <div class="text-center">
-          <dt class="order-2 text-[13px] font-medium text-whiteCustom mt-1">Profissionais cadastrados</dt>
-          <dd class="order-1 text-[1.75rem] font-extrabold text-orangeCustom tracking-tight leading-none">4.200+</dd>
-        </div>
-        <div class="hidden md:block w-px h-10 bg-borderColor" role="separator"></div>
-        <div class="text-center">
-          <dt class="order-2 text-[13px] font-medium text-whiteCustom mt-1">Contratações realizadas</dt>
-          <dd class="order-1 text-[1.75rem] font-extrabold text-orangeCustom tracking-tight leading-none">1.800+</dd>
-        </div>
-      </dl>
     </section>
 
     <!-- VAGAS -->
     <section class="py-20 px-8" id="vagas" aria-labelledby="jobs-title">
       <div class="max-w-[1280px] mx-auto mb-10 flex items-end justify-between gap-4">
         <div>
-          <p class="text-[12px] font-semibold tracking-widest uppercase text-orangeCustom mb-2">Oportunidades</p>
-          <h2 class="text-[1.75rem] font-bold text-navy tracking-tight" id="jobs-title">Vagas em destaque</h2>
+          <p class="text-[12px] font-bold tracking-widest uppercase text-orangeCustom mb-2">Oportunidades</p>
+          <h2 class="text-[1.9rem] font-extrabold text-navy tracking-tight" id="jobs-title">Vagas em destaque</h2>
         </div>
-        <a href="/vagas" class="text-[15px] font-semibold text-blueCustom no-underline whitespace-nowrap hover:underline">Ver todas →</a>
+        <a href="/vagas" class="text-[15px] font-bold text-blueCustom no-underline whitespace-nowrap hover:underline">Ver todas →</a>
       </div>
 
-      <div class="max-w-[1280px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" role="list">
+      <div class="max-w-[1280px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" role="list">
 
         <!-- Job Card 1 -->
-        <article class="bg-white border-1.5 border-borderColor rounded-2xl p-6 flex flex-col gap-4 transition-all cursor-pointer hover:border-blueCustom hover:shadow-card hover:-translate-y-0.5" role="listitem">
+        <article class="bg-white border border-borderColor rounded-2xl p-6 flex flex-col gap-4 transition-all cursor-pointer hover:border-blueCustom hover:shadow-card hover:-translate-y-1" role="listitem">
           <header class="flex items-center gap-3.5">
-            <div class="w-11 h-11 rounded-lg bg-blueLt border border-[#c7dcfa] flex items-center justify-center shrink-0 text-xl" aria-hidden="true">🏦</div>
+            <div class="w-11 h-11 rounded-xl bg-blueLt flex items-center justify-center shrink-0 text-xl" aria-hidden="true">🏦</div>
             <div>
               <p class="text-[13px] font-semibold text-mutedCustom">SEFAZ — AL</p>
               <h3 class="text-base font-bold text-navy mt-0.5">Desenvolvedor Full Stack</h3>
             </div>
           </header>
           <div class="flex flex-wrap gap-1.5" aria-label="Tecnologias">
-            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-medium rounded-md">React</span>
-            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-medium rounded-md">Node.js</span>
-            <span class="px-2.5 py-1 bg-[#fff3eb] text-orangeCustom text-[12px] font-medium rounded-md">Remoto</span>
+            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-semibold rounded-full">React</span>
+            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-semibold rounded-full">Node.js</span>
+            <span class="px-2.5 py-1 bg-orangeLt text-orangeCustom text-[12px] font-semibold rounded-full">Remoto</span>
           </div>
           <footer class="flex items-center justify-between pt-3.5 border-t border-borderColor">
             <span class="flex items-center gap-1.5 text-[13px] text-mutedCustom">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
               Maceió, AL
             </span>
-            <span class="text-[15px] font-bold text-orangeCustom">R$ 7k – 10k</span>
+            <span class="text-[15px] font-extrabold text-orangeCustom">R$ 7k – 10k</span>
           </footer>
         </article>
 
         <!-- Job Card 2 -->
-        <article class="bg-white border-1.5 border-borderColor rounded-2xl p-6 flex flex-col gap-4 transition-all cursor-pointer hover:border-blueCustom hover:shadow-card hover:-translate-y-0.5" role="listitem">
+        <article class="bg-white border border-borderColor rounded-2xl p-6 flex flex-col gap-4 transition-all cursor-pointer hover:border-blueCustom hover:shadow-card hover:-translate-y-1" role="listitem">
           <header class="flex items-center gap-3.5">
-            <div class="w-11 h-11 rounded-lg bg-blueLt border border-[#c7dcfa] flex items-center justify-center shrink-0 text-xl" aria-hidden="true">🎓</div>
+            <div class="w-11 h-11 rounded-xl bg-blueLt flex items-center justify-center shrink-0 text-xl" aria-hidden="true">🎓</div>
             <div>
               <p class="text-[13px] font-semibold text-mutedCustom">SEDUC — AL</p>
               <h3 class="text-base font-bold text-navy mt-0.5">Analista de Sistemas</h3>
             </div>
           </header>
           <div class="flex flex-wrap gap-1.5" aria-label="Tecnologias">
-            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-medium rounded-md">Java</span>
-            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-medium rounded-md">PostgreSQL</span>
-            <span class="px-2.5 py-1 bg-[#fff3eb] text-orangeCustom text-[12px] font-medium rounded-md">Híbrido</span>
+            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-semibold rounded-full">Java</span>
+            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-semibold rounded-full">PostgreSQL</span>
+            <span class="px-2.5 py-1 bg-orangeLt text-orangeCustom text-[12px] font-semibold rounded-full">Híbrido</span>
           </div>
           <footer class="flex items-center justify-between pt-3.5 border-t border-borderColor">
             <span class="flex items-center gap-1.5 text-[13px] text-mutedCustom">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
               Maceió, AL
             </span>
-            <span class="text-[15px] font-bold text-orangeCustom">R$ 6k – 9k</span>
+            <span class="text-[15px] font-extrabold text-orangeCustom">R$ 6k – 9k</span>
           </footer>
         </article>
 
         <!-- Job Card 3 -->
-        <article class="bg-white border-1.5 border-borderColor rounded-2xl p-6 flex flex-col gap-4 transition-all cursor-pointer hover:border-blueCustom hover:shadow-card hover:-translate-y-0.5" role="listitem">
+        <article class="bg-white border border-borderColor rounded-2xl p-6 flex flex-col gap-4 transition-all cursor-pointer hover:border-blueCustom hover:shadow-card hover:-translate-y-1" role="listitem">
           <header class="flex items-center gap-3.5">
-            <div class="w-11 h-11 rounded-lg bg-blueLt border border-[#c7dcfa] flex items-center justify-center shrink-0 text-xl" aria-hidden="true">⚙️</div>
+            <div class="w-11 h-11 rounded-xl bg-blueLt flex items-center justify-center shrink-0 text-xl" aria-hidden="true">⚙️</div>
             <div>
               <p class="text-[13px] font-semibold text-mutedCustom">SEPLAG — AL</p>
               <h3 class="text-base font-bold text-navy mt-0.5">DevOps Engineer</h3>
             </div>
           </header>
           <div class="flex flex-wrap gap-1.5" aria-label="Tecnologias">
-            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-medium rounded-md">AWS</span>
-            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-medium rounded-md">Docker</span>
-            <span class="px-2.5 py-1 bg-[#fff3eb] text-orangeCustom text-[12px] font-medium rounded-md">Presencial</span>
+            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-semibold rounded-full">AWS</span>
+            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-semibold rounded-full">Docker</span>
+            <span class="px-2.5 py-1 bg-orangeLt text-orangeCustom text-[12px] font-semibold rounded-full">Presencial</span>
           </div>
           <footer class="flex items-center justify-between pt-3.5 border-t border-borderColor">
             <span class="flex items-center gap-1.5 text-[13px] text-mutedCustom">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
               Arapiraca, AL
             </span>
-            <span class="text-[15px] font-bold text-orangeCustom">R$ 9k – 12k</span>
+            <span class="text-[15px] font-extrabold text-orangeCustom">R$ 9k – 12k</span>
           </footer>
         </article>
-        
+
         <!-- Job Card 4 -->
-        <article class="bg-white border-1.5 border-borderColor rounded-2xl p-6 flex flex-col gap-4 transition-all cursor-pointer hover:border-blueCustom hover:shadow-card hover:-translate-y-0.5" role="listitem">
+        <article class="bg-white border border-borderColor rounded-2xl p-6 flex flex-col gap-4 transition-all cursor-pointer hover:border-blueCustom hover:shadow-card hover:-translate-y-1" role="listitem">
           <header class="flex items-center gap-3.5">
-            <div class="w-11 h-11 rounded-lg bg-blueLt border border-[#c7dcfa] flex items-center justify-center shrink-0 text-xl" aria-hidden="true">🏥</div>
+            <div class="w-11 h-11 rounded-xl bg-blueLt flex items-center justify-center shrink-0 text-xl" aria-hidden="true">🏥</div>
             <div>
               <p class="text-[13px] font-semibold text-mutedCustom">SESAU — AL</p>
               <h3 class="text-base font-bold text-navy mt-0.5">Analista de Dados</h3>
             </div>
           </header>
           <div class="flex flex-wrap gap-1.5" aria-label="Tecnologias">
-            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-medium rounded-md">Python</span>
-            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-medium rounded-md">Power BI</span>
-            <span class="px-2.5 py-1 bg-[#fff3eb] text-orangeCustom text-[12px] font-medium rounded-md">Remoto</span>
+            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-semibold rounded-full">Python</span>
+            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-semibold rounded-full">Power BI</span>
+            <span class="px-2.5 py-1 bg-orangeLt text-orangeCustom text-[12px] font-semibold rounded-full">Remoto</span>
           </div>
           <footer class="flex items-center justify-between pt-3.5 border-t border-borderColor">
             <span class="flex items-center gap-1.5 text-[13px] text-mutedCustom">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
               Maceió, AL
             </span>
-            <span class="text-[15px] font-bold text-orangeCustom">R$ 7k – 9k</span>
+            <span class="text-[15px] font-extrabold text-orangeCustom">R$ 7k – 9k</span>
           </footer>
         </article>
 
         <!-- Job Card 5 -->
-        <article class="bg-white border-1.5 border-borderColor rounded-2xl p-6 flex flex-col gap-4 transition-all cursor-pointer hover:border-blueCustom hover:shadow-card hover:-translate-y-0.5" role="listitem">
+        <article class="bg-white border border-borderColor rounded-2xl p-6 flex flex-col gap-4 transition-all cursor-pointer hover:border-blueCustom hover:shadow-card hover:-translate-y-1" role="listitem">
           <header class="flex items-center gap-3.5">
-            <div class="w-11 h-11 rounded-lg bg-blueLt border border-[#c7dcfa] flex items-center justify-center shrink-0 text-xl" aria-hidden="true">🔐</div>
+            <div class="w-11 h-11 rounded-xl bg-blueLt flex items-center justify-center shrink-0 text-xl" aria-hidden="true">🔐</div>
             <div>
               <p class="text-[13px] font-semibold text-mutedCustom">GABTEC — AL</p>
               <h3 class="text-base font-bold text-navy mt-0.5">Especialista em Segurança</h3>
             </div>
           </header>
           <div class="flex flex-wrap gap-1.5" aria-label="Tecnologias">
-            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-medium rounded-md">CyberSec</span>
-            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-medium rounded-md">Linux</span>
-            <span class="px-2.5 py-1 bg-[#fff3eb] text-orangeCustom text-[12px] font-medium rounded-md">Híbrido</span>
+            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-semibold rounded-full">CyberSec</span>
+            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-semibold rounded-full">Linux</span>
+            <span class="px-2.5 py-1 bg-orangeLt text-orangeCustom text-[12px] font-semibold rounded-full">Híbrido</span>
           </div>
           <footer class="flex items-center justify-between pt-3.5 border-t border-borderColor">
             <span class="flex items-center gap-1.5 text-[13px] text-mutedCustom">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
               Maceió, AL
             </span>
-            <span class="text-[15px] font-bold text-orangeCustom">R$ 10k – 14k</span>
+            <span class="text-[15px] font-extrabold text-orangeCustom">R$ 10k – 14k</span>
           </footer>
         </article>
 
         <!-- Job Card 6 -->
-        <article class="bg-white border-1.5 border-borderColor rounded-2xl p-6 flex flex-col gap-4 transition-all cursor-pointer hover:border-blueCustom hover:shadow-card hover:-translate-y-0.5" role="listitem">
+        <article class="bg-white border border-borderColor rounded-2xl p-6 flex flex-col gap-4 transition-all cursor-pointer hover:border-blueCustom hover:shadow-card hover:-translate-y-1" role="listitem">
           <header class="flex items-center gap-3.5">
-            <div class="w-11 h-11 rounded-lg bg-blueLt border border-[#c7dcfa] flex items-center justify-center shrink-0 text-xl" aria-hidden="true">📱</div>
+            <div class="w-11 h-11 rounded-xl bg-blueLt flex items-center justify-center shrink-0 text-xl" aria-hidden="true">📱</div>
             <div>
               <p class="text-[13px] font-semibold text-mutedCustom">DETRAN — AL</p>
               <h3 class="text-base font-bold text-navy mt-0.5">Desenvolvedor Mobile</h3>
             </div>
           </header>
           <div class="flex flex-wrap gap-1.5" aria-label="Tecnologias">
-            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-medium rounded-md">Flutter</span>
-            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-medium rounded-md">Dart</span>
-            <span class="px-2.5 py-1 bg-[#fff3eb] text-orangeCustom text-[12px] font-medium rounded-md">Remoto</span>
+            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-semibold rounded-full">Flutter</span>
+            <span class="px-2.5 py-1 bg-blueLt text-blueCustom text-[12px] font-semibold rounded-full">Dart</span>
+            <span class="px-2.5 py-1 bg-orangeLt text-orangeCustom text-[12px] font-semibold rounded-full">Remoto</span>
           </div>
           <footer class="flex items-center justify-between pt-3.5 border-t border-borderColor">
             <span class="flex items-center gap-1.5 text-[13px] text-mutedCustom">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
               Maceió, AL
             </span>
-            <span class="text-[15px] font-bold text-orangeCustom">R$ 6k – 8k</span>
+            <span class="text-[15px] font-extrabold text-orangeCustom">R$ 6k – 8k</span>
           </footer>
         </article>
 
@@ -300,149 +309,54 @@
     </section>
 
     <!-- FEATURES -->
-    <section class="bg-navy py-20 px-8" id="como-funciona" aria-labelledby="features-title">
-      <div class="max-w-[1280px] mx-auto mb-10">
-        <p class="text-[12px] font-semibold tracking-widest uppercase text-[#60A5FA] mb-2">Por que o Aladin</p>
-        <h2 class="text-[1.75rem] font-bold text-whiteCustom tracking-tight" id="features-title">Tudo que você precisa para crescer na área tech</h2>
+    <section class="relative py-20 px-8 overflow-hidden" id="como-funciona" aria-labelledby="features-title">
+      <div class="blob w-[360px] h-[360px] bg-blueCustom/15 top-0 right-0" aria-hidden="true"></div>
+
+      <div class="relative max-w-[1280px] mx-auto mb-10">
+        <p class="text-[12px] font-bold tracking-widest uppercase text-orangeCustom mb-2">Por que o Aladin</p>
+        <h2 class="text-[1.9rem] font-extrabold text-navy tracking-tight" id="features-title">Tudo que você precisa para crescer na área tech</h2>
       </div>
-      <div class="max-w-[1280px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-7 transition-colors hover:bg-white/10 max-sm:border-x-2 max-sm:border-white/25">
-          <div class="w-11 h-11 bg-blueCustom/20 rounded-lg flex items-center justify-center mb-4 text-xl" aria-hidden="true">🔎</div>
-          <h3 class="text-base font-bold text-whiteCustom mb-2">Vagas atualizadas diariamente</h3>
-          <p class="text-[14px] text-whiteCustom/55 leading-relaxed">Novas oportunidades todos os dias, direto dos principais órgãos e empresas tech de Alagoas.</p>
+      <div class="relative max-w-[1280px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
+        <div class="bg-white border border-borderColor rounded-2xl p-7 shadow-soft transition-all hover:-translate-y-1 hover:shadow-card">
+          <div class="w-11 h-11 bg-blueLt rounded-xl flex items-center justify-center mb-4 text-xl" aria-hidden="true">🔎</div>
+          <h3 class="text-base font-bold text-navy mb-2">Vagas atualizadas diariamente</h3>
+          <p class="text-[14px] text-mutedCustom leading-relaxed">Novas oportunidades todos os dias, direto dos principais órgãos e empresas tech de Alagoas.</p>
         </div>
 
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-7 transition-colors hover:bg-white/10 max-sm:border-x-2 max-sm:border-white/25">
-          <div class="w-11 h-11 bg-blueCustom/20 rounded-lg flex items-center justify-center mb-4 text-xl" aria-hidden="true">🏛️</div>
-          <h3 class="text-base font-bold text-whiteCustom mb-2">Foco no serviço público</h3>
-          <p class="text-[14px] text-whiteCustom/55 leading-relaxed">A única plataforma que conecta profissionais de TI aos órgãos do Estado de Alagoas.</p>
+        <div class="bg-white border border-borderColor rounded-2xl p-7 shadow-soft transition-all hover:-translate-y-1 hover:shadow-card">
+          <div class="w-11 h-11 bg-orangeLt rounded-xl flex items-center justify-center mb-4 text-xl" aria-hidden="true">🏛️</div>
+          <h3 class="text-base font-bold text-navy mb-2">Foco no serviço público</h3>
+          <p class="text-[14px] text-mutedCustom leading-relaxed">A única plataforma que conecta profissionais de TI aos órgãos do Estado de Alagoas.</p>
         </div>
 
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-7 transition-colors hover:bg-white/10 max-sm:border-x-2 max-sm:border-white/25">
-          <div class="w-11 h-11 bg-blueCustom/20 rounded-lg flex items-center justify-center mb-4 text-xl" aria-hidden="true">💰</div>
-          <h3 class="text-base font-bold text-whiteCustom mb-2">Salários 100% transparentes</h3>
-          <p class="text-[14px] text-whiteCustom/55 leading-relaxed">Todas as vagas mostram a faixa salarial. Sem surpresas no processo seletivo.</p>
+        <div class="bg-white border border-borderColor rounded-2xl p-7 shadow-soft transition-all hover:-translate-y-1 hover:shadow-card">
+          <div class="w-11 h-11 bg-blueLt rounded-xl flex items-center justify-center mb-4 text-xl" aria-hidden="true">💰</div>
+          <h3 class="text-base font-bold text-navy mb-2">Salários 100% transparentes</h3>
+          <p class="text-[14px] text-mutedCustom leading-relaxed">Todas as vagas mostram a faixa salarial. Sem surpresas no processo seletivo.</p>
         </div>
 
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-7 transition-colors hover:bg-white/10 max-sm:border-x-2 max-sm:border-white/25">
-          <div class="w-11 h-11 bg-blueCustom/20 rounded-lg flex items-center justify-center mb-4 text-xl" aria-hidden="true">⚡</div>
-          <h3 class="text-base font-bold text-whiteCustom mb-2">Candidatura em um clique</h3>
-          <p class="text-[14px] text-whiteCustom/55 leading-relaxed">Perfil já preenchido. Candidate-se a qualquer vaga com um único clique, sem burocracia.</p>
+        <div class="bg-white border border-borderColor rounded-2xl p-7 shadow-soft transition-all hover:-translate-y-1 hover:shadow-card">
+          <div class="w-11 h-11 bg-orangeLt rounded-xl flex items-center justify-center mb-4 text-xl" aria-hidden="true">⚡</div>
+          <h3 class="text-base font-bold text-navy mb-2">Candidatura em um clique</h3>
+          <p class="text-[14px] text-mutedCustom leading-relaxed">Perfil já preenchido. Candidate-se a qualquer vaga com um único clique, sem burocracia.</p>
         </div>
 
       </div>
     </section>
 
     <!-- CTA -->
-    <section class="py-20 px-8 bg-bgCustom" aria-labelledby="cta-title">
-      <div class="max-w-[1280px] mx-auto bg-[linear-gradient(135deg,#2563EB_0%,#1E3A8A_100%)] rounded-[24px] p-10 md:p-16 flex items-center justify-between gap-8 flex-wrap">
-        <div>
+    <section class="py-20 px-8" aria-labelledby="cta-title">
+      <div class="max-w-[1280px] mx-auto bg-[linear-gradient(135deg,#3355FF_0%,#1E2E9E_100%)] rounded-[28px] p-10 md:p-16 flex items-center justify-between gap-8 flex-wrap relative overflow-hidden">
+        <div class="blob w-[280px] h-[280px] bg-orangeCustom/30 -top-20 -right-10" aria-hidden="true"></div>
+        <div class="relative">
           <h2 class="text-[2rem] font-extrabold text-white tracking-tight mb-3" id="cta-title">Pronto para a sua próxima<br>oportunidade em TI?</h2>
-          <p class="text-base text-white/[72%] max-w-[480px]">Junte-se a mais de 4.200 profissionais que já usam o Aladin para impulsionar suas carreiras no setor público alagoano.</p>
+          <p class="text-base text-white/70 max-w-[480px]">Junte-se a mais de 4.200 profissionais que já usam o Aladin para impulsionar suas carreiras no setor público alagoano.</p>
         </div>
-        <a href="notready.html" class="shrink-0 px-8 py-3.5 font-bold text-blueCustom bg-white rounded-xl no-underline transition-all hover:-translate-y-0.5 hover:shadow-lg">Criar conta grátis</a>
+        <a href="src/pages/signup.html" class="relative shrink-0 px-8 py-3.5 font-bold text-blueCustom bg-white rounded-full no-underline transition-all hover:-translate-y-0.5 hover:shadow-lg">Criar conta grátis</a>
       </div>
     </section>
 
-    <!-- FORMULARIO DE PARTICIPACAO -->
-    <section class="py-20 px-8 bg-whiteCustom" id="participe" aria-labelledby="participate-title">
-
-      <header class="text-center flex flex-col items-center mb-10">
-        <p class="text-[12px] font-semibold tracking-widest uppercase text-orangeCustom mb-2">Faça parte da equipe</p>
-        <h2 class="text-[1.75rem] font-bold text-navy tracking-tight" id="participate-title">Gostaria de participar do projeto?</h2>
-      </header>
-
-      <div class="max-w-[500px] mx-auto bg-white p-8 rounded-2xl border-1.5 border-borderColor shadow-search">
-
-        <form id="form-participacao" class="flex flex-col gap-5" novalidate aria-describedby="mensagem-sucesso">
-
-          <fieldset class="contents" aria-label="Dados pessoais">
-
-            <div class="flex flex-col gap-2">
-              <label for="nome" class="text-[15px] font-semibold text-navy">
-                Nome completo
-                <abbr title="campo obrigatório" aria-hidden="true" class="text-orangeCustom ml-0.5 no-underline">*</abbr>
-              </label>
-              <input
-                type="text" id="nome" name="nome"
-                required aria-required="true"
-                autocomplete="name"
-                placeholder="Digite seu nome"
-                class="p-3 border-1.5 border-borderColor rounded-xl text-[15px] outline-none font-inherit focus:border-blueCustom">
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label for="email" class="text-[15px] font-semibold text-navy">
-                E-mail
-                <abbr title="campo obrigatório" aria-hidden="true" class="text-orangeCustom ml-0.5 no-underline">*</abbr>
-              </label>
-              <input
-                type="email" id="email" name="email"
-                required aria-required="true"
-                autocomplete="email"
-                placeholder="seu@email.com"
-                class="p-3 border-1.5 border-borderColor rounded-xl text-[15px] outline-none font-inherit focus:border-blueCustom">
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label for="curriculo" class="text-[15px] font-semibold text-navy">
-                Currículo
-                <abbr title="campo obrigatório" aria-hidden="true" class="text-orangeCustom ml-0.5 no-underline">*</abbr>
-                <span class="text-mutedCustom font-normal text-[13px]">(PDF, DOC)</span>
-              </label>
-              <input
-                type="file" id="curriculo" name="curriculo"
-                accept=".pdf,.doc,.docx"
-                required aria-required="true"
-                class="p-2 border-1.5 border-borderColor rounded-xl text-xs text-mutedCustom bg-bgCustom
-                       file:mr-4 file:py-1.5 file:px-3 file:rounded-md file:border-0
-                       file:text-xs file:font-semibold file:bg-blueLt file:text-blueCustom
-                       hover:file:bg-blueCustom/20">
-            </div>
-
-          </fieldset>
-
-          <button
-            type="submit"
-            class="mt-2 w-full p-4 text-center text-base font-semibold text-white bg-blueCustom rounded-xl transition-all hover:bg-[#1a4fd6] hover:-translate-y-px">
-            Enviar Inscrição
-          </button>
-
-        </form>
-
-        <output
-          id="mensagem-sucesso"
-          role="status"
-          aria-live="polite"
-          aria-atomic="true"
-          class="hidden mt-6 p-4 bg-[#D1FAE5] text-[#065F46] border border-[#34D399] rounded-xl text-center font-medium text-[15px]">
-          ✅ Inscrição enviada com sucesso! Entraremos em contato em breve.
-        </output>
-
-      </div>
-    </section>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const formParticipacao = document.getElementById("form-participacao");
-        const mensagemSucesso = document.getElementById("mensagem-sucesso");
-
-        if (formParticipacao) {
-          formParticipacao.addEventListener("submit", function (event) {
-            event.preventDefault();
-
-            mensagemSucesso.style.display = "block";
-            formParticipacao.reset();
-
-            setTimeout(function () {
-              mensagemSucesso.style.display = "none";
-            }, 5000);
-          });
-        }
-      });
-    </script>
-    
   </main>
 
   <!-- FOOTER -->
@@ -451,7 +365,7 @@
 
       <div class="col-span-2">
         <a href="/" class="flex items-center gap-2 no-underline" aria-label="Aladin">
-          <img src="/public/assets/white-logo.svg" alt="" class="w-11 h-11 object-contain brightness-100" aria-hidden="true">
+          <img src="/assets/white-logo.svg" alt="" class="w-11 h-11 object-contain brightness-100" aria-hidden="true">
           <span class="text-[1.5rem] font-extrabold text-whiteCustom tracking-tight">aladin</span>
         </a>
         <p class="text-[14px] text-whiteCustom/45 leading-relaxed mt-4 max-w-[300px]">Plataforma de Contratação de TI feita para o Estado de Alagoas. Conectando talentos às oportunidades que transformam.</p>
