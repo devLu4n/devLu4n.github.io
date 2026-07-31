@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Desenvolvedor Full Stack — Aladin</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  >
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: "#10152F",
+            orangeCustom: "#FF650A",
+            orangeDark: "#E65300",
+            blueCustom: "#3975F6",
+            bgCustom: "#F8FAFF",
+            mutedCustom: "#6D7485",
+            borderCustom: "#D9E0EC"
+          },
+          fontFamily: {
+            sans: ["Poppins", "sans-serif"]
+          },
+          boxShadow: {
+            glass: "0 30px 90px rgba(24,35,68,.15)",
+            card: "0 14px 34px rgba(24,35,68,.09)",
+            button: "0 9px 22px rgba(255,101,10,.28)"
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+    }
+
+    .background-blob {
+      position: fixed;
+      z-index: -2;
+      border-radius: 9999px;
+      filter: blur(90px);
+      pointer-events: none;
+    }
+
+    .background-dots {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: .18;
+      background-image:
+        radial-gradient(circle, rgba(57, 117, 246, .45) 1px, transparent 1.5px);
+      background-size: 31px 31px;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .75), transparent 90%);
+    }
+
+    .glass-shell {
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, .63), rgba(255, 255, 255, .39));
+      border: 1px solid rgba(255, 255, 255, .94);
+      box-shadow:
+        0 30px 90px rgba(24, 35, 68, .15),
+        inset 0 1px 0 rgba(255, 255, 255, .98);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+    }
+
+    .glass-card {
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, .78), rgba(255, 255, 255, .51));
+      border: 1px solid rgba(255, 255, 255, .98);
+      box-shadow:
+        0 14px 34px rgba(24, 35, 68, .09),
+        inset 0 1px 0 rgba(255, 255, 255, .98);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .orange-button {
+      color: white;
+      background: linear-gradient(180deg, #FF7715 0%, #FF5F04 100%);
+      box-shadow: 0 9px 22px rgba(255, 101, 10, .28);
+      transition:
+        transform .2s ease,
+        filter .2s ease,
+        box-shadow .2s ease;
+    }
+
+    .orange-button:hover {
+      filter: brightness(.98);
+      transform: translateY(-1px);
+      box-shadow: 0 13px 28px rgba(255, 101, 10, .32);
+    }
+
+    .nav-link {
+      position: relative;
+      color: rgba(16, 21, 47, .65);
+      transition: color .2s ease;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: #10152F;
+    }
+
+    .nav-link.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -12px;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #3975F6, #FF650A);
+    }
+
+    .technology {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      border: 1px solid rgba(57, 117, 246, .38);
+      background: rgba(255, 255, 255, .58);
+      color: #10152F;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    dialog::backdrop {
+      background: rgba(11, 18, 35, .38);
+      backdrop-filter: blur(6px);
+    }
+
+    dialog[open] {
+      animation: dialog-in .18s ease-out;
+    }
+
+    @keyframes dialog-in {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(.985);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .toast {
+      transition:
+        opacity .2s ease,
+        transform .2s ease;
+    }
+
+    .toast.toast-hidden {
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-[linear-gradient(180deg,#FBFCFF_0%,#F4F8FF_100%)] font-sans text-navy antialiased">
+  <div class="relative flex min-h-screen flex-col overflow-hidden">
+
+    <!-- Fundo -->
+    <div class="background-blob -left-24 -top-20 h-[430px] w-[430px] bg-orangeCustom/28" aria-hidden="true"></div>
+    <div class="background-blob -right-20 -top-20 h-[450px] w-[450px] bg-blueCustom/28" aria-hidden="true"></div>
+    <div class="background-blob -bottom-24 left-[7%] h-[360px] w-[360px] bg-blueCustom/24" aria-hidden="true"></div>
+    <div class="background-blob -bottom-28 right-[5%] h-[390px] w-[390px] bg-orangeCustom/25" aria-hidden="true"></div>
+    <div class="background-dots" aria-hidden="true"></div>
+
+    <!-- Cabeçalho -->
+    <header class="relative z-30 px-5 pt-5">
+      <nav
+        class="glass-card mx-auto flex min-h-[70px] max-w-[1260px] items-center justify-between gap-6 rounded-2xl px-5 md:px-10"
+        aria-label="Navegação principal"
+      >
+        <a href="index-hero-glass-centralizado.html" class="flex items-center gap-2.5" aria-label="Página inicial do Aladin">
+          <svg class="h-9 w-9 shrink-0" viewBox="0 0 48 48" aria-hidden="true">
+            <circle cx="24" cy="15" r="7" fill="#FF650A"></circle>
+            <path d="M7 27c5-3 10-3 17 0 7 3 12 3 17 0" fill="none" stroke="#3975F6" stroke-width="4" stroke-linecap="round"></path>
+            <path d="M9 34c5-3 10-3 15 0 6 3 11 3 15 0" fill="none" stroke="#2459D4" stroke-width="4" stroke-linecap="round"></path>
+            <path d="M24 2v5M10 9l4 4M38 9l-4 4M4 19h6M38 19h6" stroke="#FF650A" stroke-width="3" stroke-linecap="round"></path>
+          </svg>
+
+          <span class="text-[1.65rem] font-extrabold tracking-tight">Aladin</span>
+        </a>
+
+        <ul class="hidden items-center gap-12 text-[15px] font-medium md:flex">
+          <li><a href="vagas.html" class="nav-link active">Vagas</a></li>
+          <li><a href="empresas.html" class="nav-link">Empresas</a></li>
+          <li><a href="perfil.html" class="nav-link">Perfil</a></li>
+        </ul>
+
+        <div class="relative">
+          <button
+            id="profile-menu-button"
+            type="button"
+            class="flex items-center gap-2 rounded-full p-1.5 transition hover:bg-white/55"
+            aria-expanded="false"
+            aria-controls="profile-menu"
+          >
+            <span class="relative grid h-10 w-10 place-items-center rounded-full border border-white/90 bg-[linear-gradient(135deg,#D8E5FF,#FFE4D0)] text-sm font-bold shadow-sm">
+              JS
+            </span>
+
+            <svg class="hidden h-4 w-4 text-navy/65 sm:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m6 9 6 6 6-6"></path>
+            </svg>
+
+            <span class="absolute right-1 top-1 h-2.5 w-2.5 rounded-full border-2 border-bgCustom bg-orangeCustom"></span>
+          </button>
+
+          <div
+            id="profile-menu"
+            class="glass-card absolute right-0 top-14 hidden w-52 rounded-2xl p-2 text-sm shadow-card"
+          >
+            <a href="perfil.html" class="block rounded-xl px-3 py-2.5 hover:bg-white/70">Meu perfil</a>
+            <a href="painel-empresa.html" class="block rounded-xl px-3 py-2.5 hover:bg-white/70">Painel empresarial</a>
+            <button type="button" class="w-full rounded-xl px-3 py-2.5 text-left text-red-600 hover:bg-red-50">Sair</button>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main class="relative z-10 flex-grow px-5 pb-10 pt-12">
+      <section
+        class="glass-shell mx-auto max-w-[1080px] overflow-hidden rounded-[30px]"
+        aria-labelledby="job-title"
+      >
+        <!-- Cabeçalho da vaga -->
+        <div class="border-b border-white/75 px-6 py-8 md:px-10">
+          <a
+            href="vagas.html"
+            class="inline-flex items-center gap-2 text-sm font-semibold text-blueCustom transition hover:text-orangeDark"
+          >
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m15 18-6-6 6-6"></path>
+            </svg>
+            Voltar para vagas
+          </a>
+
+          <div class="mt-5">
+            <p class="text-xs font-bold uppercase tracking-[.2em] text-orangeDark">
+              Oportunidade em destaque
+            </p>
+
+            <h1
+              id="job-title"
+              class="mt-2 text-[clamp(2rem,5vw,3rem)] font-extrabold tracking-[-.04em]"
+            >
+              Desenvolvedor Full Stack
+            </h1>
+
+            <div class="mt-4 flex flex-wrap gap-x-6 gap-y-3 text-sm text-navy/78">
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M3 21h18M5 21V7l7-4 7 4v14M9 10h1M14 10h1M9 14h1M14 14h1"></path>
+                </svg>
+                Maceió Tech Solutions
+              </span>
+
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path>
+                  <circle cx="12" cy="10" r="2.5"></circle>
+                </svg>
+                Maceió, AL
+              </span>
+
+              <span>Modalidade: Remoto</span>
+
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M16 8.5c-.7-.8-1.8-1.3-3-1.3-1.7 0-3 1-3 2.3 0 1.4 1.1 2 3 2.5 2 .5 3 1.1 3 2.5 0 1.3-1.3 2.3-3 2.3-1.3 0-2.5-.5-3.3-1.4M13 5.5v13"></path>
+                </svg>
+                R$ 8 mil – 12 mil
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid gap-5 p-5 md:p-7 lg:grid-cols-[1fr_290px]">
+          <!-- Descrição -->
+          <article class="glass-card rounded-[24px] p-6 md:p-8">
+            <h2 class="text-2xl font-extrabold tracking-[-.025em]">
+              Sobre a vaga
+            </h2>
+
+            <div class="mt-5 space-y-5 text-[15px] leading-[1.8] text-navy/82">
+              <p>
+                A Maceió Tech Solutions procura uma pessoa desenvolvedora Full Stack para atuar na evolução
+                de produtos digitais utilizados por empresas e instituições de Alagoas.
+              </p>
+
+              <p>
+                Você fará parte de uma equipe colaborativa, trabalhando na construção de interfaces modernas,
+                integrações com APIs e serviços escaláveis. A empresa valoriza autonomia, comunicação clara,
+                qualidade de código e aprendizado contínuo.
+              </p>
+
+              <p>
+                A contratação é remota, com encontros presenciais opcionais em Maceió. A oportunidade oferece
+                espaço para participação nas decisões técnicas e crescimento dentro do time de produto.
+              </p>
+            </div>
+
+            <!-- Tecnologias movidas para baixo -->
+            <section class="mt-8 border-t border-white/90 pt-7" aria-labelledby="technologies-title">
+              <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+                <div>
+                  <p class="text-xs font-bold uppercase tracking-[.18em] text-orangeDark">
+                    Stack da oportunidade
+                  </p>
+
+                  <h3 id="technologies-title" class="mt-1 text-lg font-bold">
+                    Tecnologias destacadas
+                  </h3>
+                </div>
+
+                <p class="text-xs text-mutedCustom">
+                  Conhecimentos valorizados pelo time
+                </p>
+              </div>
+
+              <div class="mt-4 flex flex-wrap gap-3">
+                <span class="technology">React</span>
+                <span class="technology">Node.js</span>
+                <span class="technology">TypeScript</span>
+                <span class="technology">PostgreSQL</span>
+                <span class="technology">AWS</span>
+              </div>
+            </section>
+
+            <!-- Apenas candidatura; botão de salvar removido -->
+            <div class="mt-8 border-t border-white/90 pt-7">
+              <button
+                id="apply-button"
+                type="button"
+                class="orange-button w-full rounded-xl px-7 py-3.5 text-sm font-semibold sm:w-auto"
+              >
+                Candidatar-se
+              </button>
+            </div>
+          </article>
+
+          <!-- Coluna lateral -->
+          <aside class="flex flex-col gap-5">
+            <section class="glass-card rounded-[24px] p-5" aria-labelledby="company-title">
+              <p class="text-xs font-bold uppercase tracking-[.18em] text-orangeDark">
+                Empresa
+              </p>
+
+              <div class="mt-4 flex items-center gap-3">
+                <div class="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[linear-gradient(135deg,#16385F,#3975F6)] text-sm font-extrabold text-white">
+                  MTS
+                </div>
+
+                <div>
+                  <h2 id="company-title" class="font-bold">Maceió Tech Solutions</h2>
+                  <p class="mt-0.5 text-xs text-mutedCustom">Tecnologia e produtos digitais</p>
+                </div>
+              </div>
+
+              <p class="mt-4 text-sm leading-relaxed text-navy/78">
+                Empresa alagoana especializada em desenvolvimento de software, plataformas digitais e
+                transformação tecnológica.
+              </p>
+
+              <a
+                href="empresas.html"
+                class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-blueCustom hover:text-orangeDark"
+              >
+                Ver perfil da empresa
+                <span aria-hidden="true">→</span>
+              </a>
+            </section>
+
+            <section class="glass-card rounded-[24px] p-5" aria-labelledby="similar-title">
+              <h2 id="similar-title" class="text-lg font-bold">
+                Vagas semelhantes
+              </h2>
+
+              <div class="mt-4 space-y-3">
+                <a
+                  href="vagas.html"
+                  class="block rounded-2xl border border-white/90 bg-white/52 p-4 transition hover:-translate-y-0.5 hover:border-blueCustom/40"
+                >
+                  <h3 class="text-sm font-bold">Frontend Developer</h3>
+                  <p class="mt-1 text-xs text-mutedCustom">React · Remoto</p>
+                </a>
+
+                <a
+                  href="vagas.html"
+                  class="block rounded-2xl border border-white/90 bg-white/52 p-4 transition hover:-translate-y-0.5 hover:border-blueCustom/40"
+                >
+                  <h3 class="text-sm font-bold">Backend Engineer</h3>
+                  <p class="mt-1 text-xs text-mutedCustom">Node.js · Maceió</p>
+                </a>
+
+                <a
+                  href="vagas.html"
+                  class="block rounded-2xl border border-white/90 bg-white/52 p-4 transition hover:-translate-y-0.5 hover:border-blueCustom/40"
+                >
+                  <h3 class="text-sm font-bold">DevOps Engineer</h3>
+                  <p class="mt-1 text-xs text-mutedCustom">AWS · Híbrido</p>
+                </a>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <!-- Sessão para voltar à página de vagas -->
+      <section
+        class="glass-card mx-auto mt-6 flex max-w-[1080px] flex-col items-center justify-between gap-5 rounded-[24px] px-6 py-6 text-center sm:flex-row sm:text-left"
+        aria-labelledby="back-to-jobs-title"
+      >
+        <div>
+          <h2 id="back-to-jobs-title" class="text-lg font-bold">
+            Continue explorando oportunidades
+          </h2>
+
+          <p class="mt-1 text-sm text-mutedCustom">
+            Volte para a listagem e encontre outras vagas compatíveis com o seu perfil.
+          </p>
+        </div>
+
+        <a
+          href="vagas.html"
+          class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-blueCustom bg-white/58 px-6 py-3 text-sm font-semibold text-blueCustom transition hover:bg-blueCustom hover:text-white"
+        >
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m15 18-6-6 6-6"></path>
+          </svg>
+
+          Voltar para vagas
+        </a>
+      </section>
+
+      <!-- Modal de candidatura -->
+      <dialog
+        id="apply-dialog"
+        class="glass-shell w-[min(92vw,520px)] rounded-[26px] p-0 text-navy"
+      >
+        <form id="apply-form" class="p-6 md:p-8">
+          <div class="flex items-start justify-between gap-5">
+            <div>
+              <p class="text-xs font-bold uppercase tracking-[.18em] text-orangeDark">
+                Candidatura
+              </p>
+
+              <h2 class="mt-1 text-2xl font-extrabold">
+                Desenvolvedor Full Stack
+              </h2>
+            </div>
+
+            <button
+              id="close-apply-dialog"
+              type="button"
+              class="grid h-10 w-10 place-items-center rounded-full bg-white/60 text-xl hover:bg-white"
+              aria-label="Fechar"
+            >
+              ×
+            </button>
+          </div>
+
+          <p class="mt-5 text-sm leading-relaxed text-mutedCustom">
+            Confirme o envio do seu perfil para a Maceió Tech Solutions.
+          </p>
+
+          <label class="mt-5 flex items-start gap-3 rounded-2xl border border-white/90 bg-white/55 p-4 text-sm">
+            <input
+              id="application-confirmation"
+              type="checkbox"
+              class="mt-1 h-4 w-4 shrink-0 accent-orangeCustom"
+              required
+            >
+
+            <span>
+              Autorizo o compartilhamento dos dados do meu perfil com a empresa responsável pela vaga.
+            </span>
+          </label>
+
+          <p id="application-error" class="mt-2 hidden text-xs font-medium text-red-600">
+            Confirme a autorização para continuar.
+          </p>
+
+          <div class="mt-6 flex justify-end gap-3">
+            <button
+              id="cancel-application"
+              type="button"
+              class="rounded-xl border border-navy/15 bg-white/55 px-5 py-3 text-sm font-semibold"
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="submit"
+              class="orange-button rounded-xl px-5 py-3 text-sm font-semibold"
+            >
+              Confirmar candidatura
+            </button>
+          </div>
+        </form>
+      </dialog>
+
+      <div
+        id="toast"
+        class="toast toast-hidden fixed bottom-6 right-6 z-50 rounded-2xl bg-navy px-5 py-4 text-sm font-semibold text-white shadow-card"
+      >
+        Candidatura enviada.
+      </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="relative z-10 mt-auto px-6 py-7">
+      <div
+        class="mx-auto flex max-w-[1080px] flex-col items-center justify-between gap-3 border-t border-white/80 pt-5 text-center text-[12px] text-mutedCustom sm:flex-row sm:text-left"
+      >
+        <p>© 2026 Aladin. Todos os direitos reservados.</p>
+
+        <nav class="flex items-center gap-5" aria-label="Links do rodapé">
+          <a href="#" class="transition hover:text-navy">Privacidade</a>
+          <a href="#" class="transition hover:text-navy">Termos</a>
+          <a href="#" class="transition hover:text-navy">Contato</a>
+        </nav>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const profileMenuButton = document.getElementById("profile-menu-button");
+    const profileMenu = document.getElementById("profile-menu");
+
+    profileMenuButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+
+      const willOpen = profileMenu.classList.contains("hidden");
+
+      profileMenu.classList.toggle("hidden");
+      profileMenuButton.setAttribute("aria-expanded", String(willOpen));
+    });
+
+    document.addEventListener("click", (event) => {
+      if (
+        !profileMenu.contains(event.target) &&
+        !profileMenuButton.contains(event.target)
+      ) {
+        profileMenu.classList.add("hidden");
+        profileMenuButton.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    const applyButton = document.getElementById("apply-button");
+    const applyDialog = document.getElementById("apply-dialog");
+    const applyForm = document.getElementById("apply-form");
+    const closeApplyDialog = document.getElementById("close-apply-dialog");
+    const cancelApplication = document.getElementById("cancel-application");
+    const applicationConfirmation = document.getElementById("application-confirmation");
+    const applicationError = document.getElementById("application-error");
+    const toast = document.getElementById("toast");
+
+    applyButton.addEventListener("click", () => {
+      applicationConfirmation.checked = false;
+      applicationError.classList.add("hidden");
+      applyDialog.showModal();
+    });
+
+    function closeApplicationDialog() {
+      applyDialog.close();
+      applicationConfirmation.checked = false;
+      applicationError.classList.add("hidden");
+    }
+
+    closeApplyDialog.addEventListener("click", closeApplicationDialog);
+    cancelApplication.addEventListener("click", closeApplicationDialog);
+
+    applyForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      if (!applicationConfirmation.checked) {
+        applicationError.classList.remove("hidden");
+        applicationConfirmation.focus();
+        return;
+      }
+
+      closeApplicationDialog();
+      showToast("Candidatura enviada com sucesso.");
+
+      applyButton.textContent = "Candidatura enviada";
+      applyButton.disabled = true;
+      applyButton.classList.add("cursor-not-allowed", "opacity-65");
+    });
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.remove("toast-hidden");
+
+      window.clearTimeout(showToast.timeout);
+
+      showToast.timeout = window.setTimeout(() => {
+        toast.classList.add("toast-hidden");
+      }, 2500);
+    }
+  </script>
+</body>
+</html>
