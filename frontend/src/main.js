@@ -453,6 +453,7 @@ if (profileForm) {
         nome: profileForm.elements.cargo.value.trim(),
         descricao: profileForm.elements.bio.value.trim(),
         cidade: profileForm.elements.cidade.value.trim(),
+        foto: getStoredUserPhoto(),
       }
       createEndpoint = '/empresas'
       updateEndpoint = '/empresas/me'
@@ -540,7 +541,7 @@ async function loadPublicVacancies() {
     const result = await apiRequest('/vagas?limit=50')
     grid.innerHTML = result.dados.map((vaga) => `
       <article class="job-card glass-card rounded-[22px] p-4" data-area="${escapeHtml(normalizeArea(vaga.area))}" data-date="${new Date(vaga.createdAt).getTime()}" data-search="${escapeHtml(`${vaga.titulo} ${vaga.empresa?.nome || ''} ${vaga.tecnologias}`.toLowerCase())}">
-        <div class="grid h-12 w-12 place-items-center rounded-xl bg-white/80 text-sm font-extrabold text-blueCustom">TI</div>
+        <img src="${escapeHtml(vaga.empresa?.foto || '/assets/empresa.png')}" alt="Foto de ${escapeHtml(vaga.empresa?.nome || 'empresa')}" class="h-12 w-12 rounded-xl border border-white/90 object-cover shadow-sm">
         <h2 class="mt-3 text-base font-bold text-navy">${escapeHtml(vaga.titulo)}</h2>
         <p class="mt-1 text-xs font-semibold text-orangeCustom">${escapeHtml(vaga.empresa?.nome || 'Empresa')}</p>
         <p class="mt-1 flex items-center gap-1.5 text-sm text-navy/75"><span aria-hidden="true">⌖</span> ${escapeHtml(vaga.modalidade === 'REMOTO' ? 'Remoto' : vaga.cidade)}</p>
@@ -600,7 +601,7 @@ async function loadCompanies() {
       const openJobs = company._count?.vagas || 0
       const biography = company.descricao?.trim() || 'Esta empresa ainda não adicionou uma apresentação ao perfil.'
       return `<article class="company-card glass-card flex min-h-[285px] flex-col items-center rounded-[22px] p-5 text-center" data-id="${company.id}" data-search="${escapeHtml(`${company.nome} ${company.cidade || ''} ${biography}`.toLowerCase())}">
-        <img src="/assets/empresa.png" alt="Foto de perfil de ${escapeHtml(company.nome)}" class="h-16 w-16 rounded-2xl border border-white/90 object-cover shadow-sm">
+        <img src="${escapeHtml(company.foto || '/assets/empresa.png')}" alt="Foto de perfil de ${escapeHtml(company.nome)}" class="h-16 w-16 rounded-2xl border border-white/90 object-cover shadow-sm">
         <h2 class="mt-3 text-lg font-bold text-navy">${escapeHtml(company.nome)}</h2>
         <p class="mt-1 text-sm text-navy/70">⌖ ${escapeHtml(company.cidade || 'Localização não informada')}</p>
         <p class="mt-3 line-clamp-2 text-sm leading-relaxed text-mutedCustom">${escapeHtml(biography)}</p>

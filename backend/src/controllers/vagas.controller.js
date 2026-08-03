@@ -69,7 +69,7 @@ async function listar(req, res, next) {
     const [vagas, total] = await Promise.all([
       prisma.vaga.findMany({
         where,
-        include: { empresa: { select: { id: true, nome: true, cidade: true } } },
+        include: { empresa: { select: { id: true, nome: true, cidade: true, foto: true } } },
         orderBy: { createdAt: "desc" },
         skip: (pageNum - 1) * limitNum,
         take: limitNum,

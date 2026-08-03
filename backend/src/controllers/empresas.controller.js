@@ -34,10 +34,10 @@ async function atualizarMeuPerfil(req, res, next) {
       return res.status(404).json({ erro: "Perfil de empresa nao encontrado." });
     }
 
-    const { nome, cnpj, descricao, cidade } = req.body;
+    const { nome, cnpj, descricao, cidade, foto } = req.body;
     const empresaAtualizada = await prisma.empresa.update({
       where: { id: empresa.id },
-      data: { nome, cnpj, descricao, cidade },
+      data: { nome, cnpj, descricao, cidade, foto },
     });
 
     res.json(empresaAtualizada);
@@ -84,7 +84,7 @@ async function buscarPorId(req, res, next) {
 
 async function criar(req, res, next) {
   try {
-    const { nome, cnpj, descricao, cidade } = req.body;
+    const { nome, cnpj, descricao, cidade, foto } = req.body;
 
     if (!nome) {
       return res.status(400).json({ erro: "nome e obrigatorio." });
@@ -98,7 +98,7 @@ async function criar(req, res, next) {
     }
 
     const empresa = await prisma.empresa.create({
-      data: { nome, cnpj, descricao, cidade, usuarioId: req.session.usuarioId },
+      data: { nome, cnpj, descricao, cidade, foto, usuarioId: req.session.usuarioId },
     });
 
     res.status(201).json(empresa);
@@ -123,10 +123,10 @@ async function atualizar(req, res, next) {
       return res.status(403).json({ erro: "Voce nao tem permissao para editar esta empresa." });
     }
 
-    const { nome, cnpj, descricao, cidade } = req.body;
+    const { nome, cnpj, descricao, cidade, foto } = req.body;
     const empresaAtualizada = await prisma.empresa.update({
       where: { id },
-      data: { nome, cnpj, descricao, cidade },
+      data: { nome, cnpj, descricao, cidade, foto },
     });
 
     res.json(empresaAtualizada);

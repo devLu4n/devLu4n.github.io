@@ -53,6 +53,7 @@ model Empresa {
   cnpj        String?  @unique
   descricao   String?
   cidade      String?
+  foto        String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
