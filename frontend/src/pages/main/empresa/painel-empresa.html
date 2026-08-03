@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <title>Painel empresarial — Aladin</title>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Acesse as principais ações da sua empresa na plataforma Aladin.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    .blob {
+      position: fixed;
+      border-radius: 9999px;
+      filter: blur(85px);
+      pointer-events: none;
+      transform: translateZ(0);
+      z-index: -2;
+    }
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: .28;
+      background-image:
+        radial-gradient(circle at center, rgba(57,117,246,.18) 0 1px, transparent 1.4px);
+      background-size: 30px 30px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.7), rgba(0,0,0,.2));
+    }
+    .glass-shell {
+      background: linear-gradient(145deg, rgba(255,255,255,.58), rgba(255,255,255,.35));
+      border: 1px solid rgba(255,255,255,.9);
+      box-shadow: 0 30px 80px rgba(22,31,58,.14), inset 0 1px 0 rgba(255,255,255,.92);
+      backdrop-filter: blur(26px);
+      -webkit-backdrop-filter: blur(26px);
+    }
+    .glass-card {
+      background: linear-gradient(145deg, rgba(255,255,255,.72), rgba(255,255,255,.48));
+      border: 1px solid rgba(255,255,255,.94);
+      box-shadow: 0 18px 45px rgba(22,31,58,.09), inset 0 1px 0 rgba(255,255,255,.92);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    .soft-field {
+      background: rgba(255,255,255,.78);
+      border: 1px solid rgba(161,172,197,.34);
+      box-shadow: inset 0 1px 2px rgba(17,20,38,.025);
+    }
+    .soft-field:focus {
+      outline: none;
+      border-color: rgba(57,117,246,.75);
+      box-shadow: 0 0 0 4px rgba(57,117,246,.10);
+    }
+    .orange-button {
+      background: linear-gradient(180deg,#FF7A16 0%,#FF6208 100%);
+      box-shadow: 0 10px 24px rgba(255,107,11,.24);
+    }
+    .nav-link {
+      position: relative;
+      color: rgba(17,20,38,.62);
+      transition: color .2s ease;
+    }
+    .nav-link:hover, .nav-link.active { color: #111426; }
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      height: 2px;
+      left: 0;
+      right: 0;
+      bottom: -9px;
+      border-radius: 999px;
+      background: #FF6B0B;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: .28rem .62rem;
+      font-size: .75rem;
+      line-height: 1;
+      background: rgba(225,230,239,.84);
+      color: #111426;
+    }
+    dialog::backdrop {
+      background: rgba(12,17,31,.36);
+      backdrop-filter: blur(5px);
+    }
+    dialog[open] { animation: appear .18s ease-out; }
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(8px) scale(.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+  </style>
+
+  <script type="module" src="/src/main.js"></script>
+</head>
+<body class="min-h-screen bg-[linear-gradient(180deg,#F9FBFF_0%,#F4F8FF_100%)] font-sans text-textCustom antialiased">
+  <div class="relative flex min-h-screen flex-col overflow-hidden">
+    
+<div class="blob -left-20 -top-14 h-[380px] w-[380px] bg-orangeCustom/25" aria-hidden="true"></div>
+<div class="blob -right-16 -top-10 h-[410px] w-[410px] bg-blueCustom/28" aria-hidden="true"></div>
+<div class="blob -bottom-24 left-[8%] h-[340px] w-[340px] bg-blueCustom/26" aria-hidden="true"></div>
+<div class="blob -bottom-20 right-[4%] h-[360px] w-[360px] bg-orangeCustom/25" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+    
+<header class="relative z-30">
+  <nav class="relative mx-auto flex min-h-[90px] max-w-[1080px] items-center justify-between gap-6 px-6" aria-label="Navegação principal">
+    
+<a href="/" class="flex items-center gap-2.5 no-underline" aria-label="Aladin — página inicial">
+  <svg class="h-8 w-8 shrink-0" viewBox="0 0 48 48" aria-hidden="true">
+    <circle cx="24" cy="15" r="7" fill="#FF6B0B"/>
+    <path d="M7 27c5-3 10-3 17 0 7 3 12 3 17 0" fill="none" stroke="#3975F6" stroke-width="4" stroke-linecap="round"/>
+    <path d="M9 34c5-3 10-3 15 0 6 3 11 3 15 0" fill="none" stroke="#2459D4" stroke-width="4" stroke-linecap="round"/>
+    <path d="M24 2v5M10 9l4 4M38 9l-4 4M4 19h6M38 19h6" stroke="#FF6B0B" stroke-width="3" stroke-linecap="round"/>
+  </svg>
+  <span class="text-[1.55rem] font-extrabold tracking-tight text-navy">aladin</span>
+</a>
+
+    <ul class="hidden items-center gap-10 text-[14px] font-medium md:absolute md:left-1/2 md:flex md:-translate-x-1/2">
+      <li><a href="/src/pages/main/user/gerenciar-vagas.html" class="nav-link active">Vagas</a></li>
+      <li><a href="/src/pages/main/user/perfil.html" class="nav-link">Perfil</a></li>
+    </ul>
+    <div class="relative">
+      <button id="profile-menu-button" type="button" class="flex items-center gap-2 rounded-full p-1.5 transition hover:bg-white/50" aria-expanded="false" aria-controls="profile-menu">
+        <span class="relative grid h-10 w-10 place-items-center overflow-hidden rounded-full border border-white/80 bg-[linear-gradient(135deg,#DDE8FF,#FFF0E3)] text-sm font-bold text-navy shadow-sm">JS</span>
+        <svg class="hidden h-4 w-4 text-navy/70 sm:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        <span class="absolute right-1 top-1 h-2.5 w-2.5 rounded-full border-2 border-bgCustom bg-orangeCustom"></span>
+      </button>
+      <div id="profile-menu" class="glass-card absolute right-0 top-14 hidden w-52 rounded-2xl p-2 text-sm shadow-card">
+        <a href="/src/pages/main/user/perfil.html" class="block rounded-xl px-3 py-2.5 text-navy hover:bg-white/70">Meu perfil</a>
+        <a href="painel-empresa.html" class="block rounded-xl px-3 py-2.5 text-navy hover:bg-white/70">Painel empresarial</a>
+        <button type="button" class="w-full rounded-xl px-3 py-2.5 text-left text-red-600 hover:bg-red-50">Sair</button>
+      </div>
+    </div>
+  </nav>
+</header>
+
+    
+<main class="relative z-10 flex-grow px-5 pb-10 pt-4">
+  <section class="glass-shell mx-auto max-w-[1080px] rounded-[30px] px-6 py-8 md:px-12 md:py-12" aria-labelledby="painel-title">
+    <h1 id="painel-title" class="mb-7 text-center text-[clamp(1.8rem,4vw,2.5rem)] font-extrabold tracking-[-.03em] text-navy">
+      Painel de Ações Empresariais
+    </h1>
+
+    <div class="grid gap-5 md:grid-cols-2">
+      <article class="glass-card flex min-h-[305px] flex-col items-center justify-center rounded-[25px] px-6 py-9 text-center">
+        <svg class="mb-5 h-24 w-24 text-blueCustom" viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="22" y="18" width="62" height="74" rx="8"/>
+          <circle cx="88" cy="78" r="22"/>
+          <path d="m103 94 14 14M40 40h30M40 55h22M40 70h18"/>
+          <circle cx="32" cy="40" r="3" fill="currentColor" stroke="none"/>
+          <circle cx="32" cy="55" r="3" fill="currentColor" stroke="none"/>
+          <circle cx="32" cy="70" r="3" fill="currentColor" stroke="none"/>
+        </svg>
+        <h2 class="text-lg font-bold text-navy">Acompanhar vagas em andamento</h2>
+        <p class="mt-2 max-w-sm text-sm leading-relaxed text-mutedCustom">
+          Gerencie processos seletivos, visualize candidaturas e acompanhe o andamento das vagas publicadas.
+        </p>
+        <a href="/src/pages/main/user/gerenciar-vagas.html" class="mt-7 rounded-xl border border-navy/20 bg-white/60 px-7 py-3 text-sm font-semibold text-navy transition hover:-translate-y-0.5 hover:border-blueCustom hover:text-blueCustom">
+          Gerenciar vagas
+        </a>
+      </article>
+
+      <article class="glass-card flex min-h-[305px] flex-col items-center justify-center rounded-[25px] px-6 py-9 text-center">
+        <svg class="mb-5 h-24 w-24 text-orangeCustom" viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M24 54h20l38-20v52L44 66H24a16 16 0 0 1 0-32Z"/>
+          <path d="M45 66 52 94H36l-8-28M91 39l8-8M96 53h12M90 69l9 8"/>
+          <circle cx="92" cy="89" r="20"/>
+          <path d="M92 79v20M82 89h20"/>
+        </svg>
+        <h2 class="text-lg font-bold text-navy">Publicar vaga</h2>
+        <p class="mt-2 max-w-sm text-sm leading-relaxed text-mutedCustom">
+          Crie uma nova oportunidade com cargo, requisitos, modalidade e faixa salarial.
+        </p>
+        <button id="open-vacancy-modal" type="button" class="mt-7 rounded-xl border border-navy/20 bg-white/60 px-7 py-3 text-sm font-semibold text-navy transition hover:-translate-y-0.5 hover:border-orangeCustom hover:text-orangeCustom">
+          Criar nova vaga
+        </button>
+      </article>
+    </div>
+  </section>
+
+  <dialog id="vacancy-modal" class="glass-shell w-[min(92vw,620px)] rounded-[26px] p-0 text-navy">
+    <form id="quick-vacancy-form" class="p-6 md:p-8">
+      <div class="flex items-center justify-between gap-5">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[.18em] text-orangeCustom">Nova oportunidade</p>
+          <h2 class="mt-1 text-2xl font-extrabold">Publicar vaga</h2>
+        </div>
+        <button type="button" data-close-dialog class="grid h-10 w-10 place-items-center rounded-full bg-white/60 text-xl hover:bg-white" aria-label="Fechar">×</button>
+      </div>
+      <div class="mt-6 grid gap-4 md:grid-cols-2">
+        <label class="text-sm font-semibold">Cargo
+          <input name="titulo" required class="soft-field mt-2 h-12 w-full rounded-xl px-4 font-normal" placeholder="Ex.: Desenvolvedor Frontend">
+        </label>
+        <label class="text-sm font-semibold">Área
+          <select name="area" required class="soft-field mt-2 h-12 w-full rounded-xl px-4 font-normal">
+            <option value="frontend">Frontend</option><option value="backend">Backend</option><option value="ux/ui">UX/UI</option><option value="dados">Dados</option>
+          </select>
+        </label>
+        <label class="text-sm font-semibold">Localização
+          <input name="cidade" required class="soft-field mt-2 h-12 w-full rounded-xl px-4 font-normal" placeholder="Maceió, AL">
+        </label>
+        <label class="text-sm font-semibold">Modalidade
+          <select name="modalidade" required class="soft-field mt-2 h-12 w-full rounded-xl px-4 font-normal">
+            <option value="REMOTO">Remoto</option><option value="HIBRIDO">Híbrido</option><option value="PRESENCIAL">Presencial</option>
+          </select>
+        </label>
+        <label class="text-sm font-semibold md:col-span-2">Descrição
+          <textarea name="descricao" required class="soft-field mt-2 min-h-28 w-full rounded-xl px-4 py-3 font-normal" placeholder="Descreva responsabilidades e requisitos"></textarea>
+        </label>
+      </div>
+      <div class="mt-6 flex justify-end gap-3">
+        <button type="button" data-close-dialog class="rounded-xl border border-navy/15 bg-white/60 px-5 py-3 text-sm font-semibold">Cancelar</button>
+        <button id="publish-vacancy" type="submit" class="orange-button rounded-xl px-5 py-3 text-sm font-semibold text-white">Publicar vaga</button>
+      </div>
+    </form>
+  </dialog>
+</main>
+
+    
+<footer class="relative z-10 mt-auto px-6 py-7">
+  <div class="mx-auto flex max-w-[1080px] flex-col items-center justify-between gap-3 border-t border-white/80 pt-5 text-center text-[12px] text-mutedCustom sm:flex-row sm:text-left">
+    <p>© 2026 Aladin. Todos os direitos reservados.</p>
+    <nav class="flex items-center gap-5" aria-label="Links do rodapé">
+      <a href="#" class="transition hover:text-navy">Privacidade</a>
+      <a href="#" class="transition hover:text-navy">Termos</a>
+      <a href="#" class="transition hover:text-navy">Contato</a>
+    </nav>
+  </div>
+</footer>
+
+  </div>
+  
+<script>
+  const profileMenuButton = document.getElementById('profile-menu-button');
+  const profileMenu = document.getElementById('profile-menu');
+  if (profileMenuButton && profileMenu) {
+    profileMenuButton.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const willOpen = profileMenu.classList.contains('hidden');
+      profileMenu.classList.toggle('hidden');
+      profileMenuButton.setAttribute('aria-expanded', String(willOpen));
+    });
+    document.addEventListener('click', (event) => {
+      if (!profileMenu.contains(event.target) && !profileMenuButton.contains(event.target)) {
+        profileMenu.classList.add('hidden');
+        profileMenuButton.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+</script>
+
+  
+<script>
+  const vacancyModal = document.getElementById('vacancy-modal');
+  const openVacancyModal = document.getElementById('open-vacancy-modal');
+  openVacancyModal?.addEventListener('click', () => vacancyModal.showModal());
+</script>
+
+</body>
+</html>
