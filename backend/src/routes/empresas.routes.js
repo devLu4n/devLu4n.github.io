@@ -6,6 +6,8 @@ const { requireRole } = require("../middlewares/roles");
 const router = Router();
 
 router.get("/", empresasController.listar);
+router.get("/me", requireAuth, requireRole("EMPRESA", "ADMIN"), empresasController.meuPerfil);
+router.put("/me", requireAuth, requireRole("EMPRESA", "ADMIN"), empresasController.atualizarMeuPerfil);
 router.get("/:id", empresasController.buscarPorId);
 router.post("/", requireAuth, requireRole("EMPRESA", "ADMIN"), empresasController.criar);
 router.put("/:id", requireAuth, requireRole("EMPRESA", "ADMIN"), empresasController.atualizar);

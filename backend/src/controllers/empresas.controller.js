@@ -1,6 +1,47 @@
 const prisma = require("../config/prisma");
 const { parseId } = require("../utils/parseId");
 
+async function meuPerfil(req, res, next) {
+  try {
+    const empresa = await prisma.empresa.findUnique({
+      where: { usuarioId: req.session.usuarioId },
+      include: {
+        usuario: { select: { id: true, nome: true, email: true } },
+      },
+    });
+
+    if (!empresa) {
+      return res.status(404).json({ erro: "Perfil de empresa nao encontrado. Crie seu perfil primeiro." });
+    }
+
+    res.json(empresa);
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function atualizarMeuPerfil(req, res, next) {
+  try {
+    const empresa = await prisma.empresa.findUnique({
+      where: { usuarioId: req.session.usuarioId },
+    });
+
+    if (!empresa) {
+      return res.status(404).json({ erro: "Perfil de empresa nao encontrado." });
+    }
+
+    const { nome, cnpj, descricao, cidade } = req.body;
+    const empresaAtualizada = await prisma.empresa.update({
+      where: { id: empresa.id },
+      data: { nome, cnpj, descricao, cidade },
+    });
+
+    res.json(empresaAtualizada);
+  } catch (err) {
+    next(err);
+  }
+}
+
 async function listar(req, res, next) {
   try {
     const empresas = await prisma.empresa.findMany({
@@ -111,4 +152,4 @@ async function remover(req, res, next) {
   }
 }
 
-module.exports = { listar, buscarPorId, criar, atualizar, remover };
+module.exports = { meuPerfil, atualizarMeuPerfil, listar, buscarPorId, criar, atualizar, remover };
