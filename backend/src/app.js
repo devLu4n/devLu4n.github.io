@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
 const session = require("express-session");
 const helmet = require("helmet");
@@ -23,7 +24,18 @@ if (isProduction) {
 }
 
 app.disable("x-powered-by");
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'"],
+    },
+  },
+}));
 
 app.use(
   cors({
@@ -69,6 +81,15 @@ app.use(
 );
 
 app.use("/api", routes);
+
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
+if (isProduction) {
+  const frontendDir = path.resolve(__dirname, "../../frontend/dist");
+  app.use(express.static(frontendDir, { index: "index.html", maxAge: "1h" }));
+}
 
 app.use((req, res) => {
   res.status(404).json({ erro: "Rota nao encontrada." });
