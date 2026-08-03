@@ -14,30 +14,34 @@
     body { margin: 0; }
     .glass-shell { background: linear-gradient(145deg,rgba(255,255,255,.65),rgba(255,255,255,.38)); border: 1px solid rgba(255,255,255,.9); box-shadow: 0 30px 80px rgba(22,31,58,.12); backdrop-filter: blur(24px); }
     .glass-card { background: linear-gradient(145deg,rgba(255,255,255,.76),rgba(255,255,255,.5)); border: 1px solid rgba(255,255,255,.94); box-shadow: 0 18px 45px rgba(22,31,58,.08); }
-    .nav-link { color: rgba(17,20,38,.62); transition: color .2s; }
+    .nav-link { position: relative; color: rgba(17,20,38,.62); transition: color .2s ease; }
     .nav-link:hover,.nav-link.active { color:#111426; }
-    .nav-link.active { border-bottom:2px solid #FF6B0B; padding-bottom:8px; }
+    .nav-link.active::after { content:''; position:absolute; height:2px; left:0; right:0; bottom:-9px; border-radius:999px; background:linear-gradient(90deg,#3975F6,#FF6B0B); }
   </style>
   <script type="module" src="/src/main.js"></script>
 </head>
 <body class="min-h-screen bg-[linear-gradient(180deg,#F9FBFF_0%,#F2F7FF_100%)] font-sans text-navy antialiased">
   <div class="flex min-h-screen flex-col">
-    <header class="relative z-30 px-5 pt-5">
-      <nav class="glass-card mx-auto flex min-h-[70px] max-w-[1080px] items-center justify-between gap-5 rounded-2xl px-5 md:px-8" aria-label="Navegação principal">
-        <a href="/" class="flex items-center gap-2.5" aria-label="Página inicial do Aladin">
-          <img src="/assets/aladin-logo.svg" alt="" class="h-9 w-9 object-contain" aria-hidden="true">
-          <span class="text-[1.55rem] font-extrabold tracking-tight">Aladin</span>
+    <header class="relative z-30">
+      <nav class="mx-auto flex min-h-[90px] max-w-[1080px] items-center justify-between gap-6 px-6" aria-label="Navegação principal">
+        <a href="/" class="flex items-center gap-2.5 no-underline" aria-label="Aladin — página inicial">
+          <img src="/assets/aladin-logo.svg" alt="" class="h-8 w-8 shrink-0 object-contain" aria-hidden="true">
+          <span class="text-[1.55rem] font-extrabold tracking-tight text-navy">aladin</span>
         </a>
-        <ul class="hidden items-center gap-9 text-sm font-medium md:flex">
+        <ul class="hidden items-center gap-10 text-[14px] font-medium md:flex">
           <li><a href="vagas.html" class="nav-link">Vagas</a></li>
           <li><a href="minhas-candidaturas.html" class="nav-link active">Candidaturas</a></li>
           <li><a href="empresas.html" class="nav-link">Empresas</a></li>
           <li><a href="perfil.html" class="nav-link">Perfil</a></li>
         </ul>
         <div class="relative">
-          <button id="profile-menu-button" type="button" class="rounded-full p-1.5" aria-expanded="false" aria-controls="profile-menu"><span class="grid h-10 w-10 place-items-center rounded-full bg-blue-100 font-bold">EU</span></button>
-          <div id="profile-menu" class="glass-card absolute right-0 top-14 hidden w-48 rounded-2xl p-2 text-sm">
-            <a href="perfil.html" class="block rounded-xl px-3 py-2.5 hover:bg-white/70">Meu perfil</a>
+          <button id="profile-menu-button" type="button" class="flex items-center gap-2 rounded-full p-1.5 transition hover:bg-white/50" aria-expanded="false" aria-controls="profile-menu">
+            <span class="relative grid h-10 w-10 place-items-center overflow-hidden rounded-full border border-white/80 bg-[linear-gradient(135deg,#DDE8FF,#FFF0E3)] text-sm font-bold text-navy shadow-sm">EU</span>
+            <svg class="hidden h-4 w-4 text-navy/70 sm:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            <span class="absolute right-1 top-1 h-2.5 w-2.5 rounded-full border-2 border-bgCustom bg-orangeCustom"></span>
+          </button>
+          <div id="profile-menu" class="glass-card absolute right-0 top-14 hidden w-52 rounded-2xl p-2 text-sm shadow-card">
+            <a href="perfil.html" class="block rounded-xl px-3 py-2.5 text-navy hover:bg-white/70">Meu perfil</a>
             <button type="button" class="w-full rounded-xl px-3 py-2.5 text-left text-red-600 hover:bg-red-50">Sair</button>
           </div>
         </div>
