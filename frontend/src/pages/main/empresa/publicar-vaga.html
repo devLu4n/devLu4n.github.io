@@ -214,13 +214,18 @@
                 <span class="field-error mt-1 hidden text-xs font-normal text-red-600">Informe a cidade.</span>
               </label>
 
-              <label class="text-sm font-semibold text-navy">
-                Salário
-                <span class="soft-field mt-2 flex h-12 overflow-hidden rounded-xl">
+              <div class="text-sm font-semibold text-navy">
+                <label for="job-salary">Salário</label>
+                <div class="mt-2 flex flex-col gap-2 sm:flex-row">
+                <span class="soft-field flex h-12 min-w-0 flex-1 overflow-hidden rounded-xl">
                   <span class="grid w-14 shrink-0 place-items-center border-r border-lineCustom/70 bg-white/45 text-sm font-medium">R$</span>
-                  <input id="job-salary" name="salario" inputmode="decimal" class="min-w-0 flex-1 bg-transparent px-4 font-normal outline-none" placeholder="Ex.: 5.000,00">
+                  <input id="job-salary" name="salario" type="number" inputmode="numeric" min="0" step="1" class="min-w-0 flex-1 bg-transparent px-4 font-normal outline-none disabled:cursor-not-allowed disabled:opacity-50" placeholder="Ex.: 5000">
                 </span>
-              </label>
+                <button id="salary-negotiable" type="button" aria-pressed="false" class="h-12 shrink-0 rounded-xl border border-navy/15 bg-white/55 px-4 text-xs font-semibold text-navy transition hover:border-orangeCustom hover:text-orangeDark">
+                  Salário a combinar
+                </button>
+                </div>
+              </div>
             </div>
 
             <fieldset class="md:col-span-2">
@@ -370,6 +375,25 @@
       field.addEventListener('change', () => validateRequiredField(field));
     });
 
+    const salaryInput = document.getElementById('job-salary');
+    const salaryNegotiableButton = document.getElementById('salary-negotiable');
+    let salaryNegotiable = false;
+
+    function setSalaryNegotiable(enabled) {
+      salaryNegotiable = enabled;
+      salaryNegotiableButton.setAttribute('aria-pressed', String(enabled));
+      salaryNegotiableButton.classList.toggle('bg-orangeCustom', enabled);
+      salaryNegotiableButton.classList.toggle('text-white', enabled);
+      salaryNegotiableButton.classList.toggle('border-orangeCustom', enabled);
+      salaryInput.disabled = enabled;
+      if (enabled) salaryInput.value = '';
+    }
+
+    salaryNegotiableButton.addEventListener('click', () => setSalaryNegotiable(!salaryNegotiable));
+    salaryInput.addEventListener('keydown', (event) => {
+      if (['e', 'E', '+', '-', '.', ','].includes(event.key)) event.preventDefault();
+    });
+
     vacancyForm.addEventListener('submit', async (event) => {
       event.preventDefault();
       const requiredFields = ['job-title', 'job-area', 'job-description', 'job-city'].map(id => document.getElementById(id));
@@ -380,15 +404,12 @@
         return;
       }
 
-      const salaryValue = document.getElementById('job-salary').value
-        .trim()
-        .replace(/\./g, '')
-        .replace(',', '.');
-      const salary = salaryValue ? Math.round(Number(salaryValue)) : null;
+      const salaryValue = salaryInput.value.trim();
+      const salary = salaryNegotiable ? null : Number(salaryValue);
 
-      if (salaryValue && !Number.isFinite(salary)) {
-        showToast('Informe uma faixa salarial válida.');
-        document.getElementById('job-salary').focus();
+      if (!salaryNegotiable && (!salaryValue || !Number.isInteger(salary) || salary < 0)) {
+        showToast('Informe o salário em números ou selecione “Salário a combinar”.');
+        salaryInput.focus();
         return;
       }
 
@@ -410,6 +431,7 @@
         showToast('Vaga publicada com sucesso.');
         localStorage.removeItem('aladin-vaga-rascunho');
         vacancyForm.reset();
+        setSalaryNegotiable(false);
         technologies.splice(0, technologies.length, 'React', 'Node.js');
         renderTechnologies();
         window.setTimeout(() => {
@@ -426,7 +448,8 @@
         area: document.getElementById('job-area').value,
         descricao: document.getElementById('job-description').value,
         cidade: document.getElementById('job-city').value,
-        salario: document.getElementById('job-salary').value,
+        salario: salaryInput.value,
+        salarioACombinar: salaryNegotiable,
         modalidade: new FormData(vacancyForm).get('modalidade'),
         tecnologias
       };
@@ -442,7 +465,8 @@
         document.getElementById('job-area').value = draft.area || '';
         document.getElementById('job-description').value = draft.descricao || '';
         document.getElementById('job-city').value = draft.cidade || '';
-        document.getElementById('job-salary').value = draft.salario || '';
+        salaryInput.value = draft.salario || '';
+        setSalaryNegotiable(Boolean(draft.salarioACombinar));
         if (Array.isArray(draft.tecnologias) && draft.tecnologias.length) {
           technologies.splice(0, technologies.length, ...draft.tecnologias);
         }
