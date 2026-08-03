@@ -465,3 +465,119 @@ document.querySelectorAll('.toast, [id$="-toast"]').forEach((toast) => {
 document.querySelectorAll('[data-close-dialog]').forEach((button) => {
   button.addEventListener('click', () => button.closest('dialog')?.close())
 })
+
+function escapeHtml(value = '') {
+  return String(value).replace(/[&<>'"]/g, (character) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;',
+  })[character])
+}
+
+function technologyTags(value) {
+  return String(value || '').split(',').map((item) => item.trim()).filter(Boolean).slice(0, 5)
+    .map((item) => `<span class="tag">${escapeHtml(item)}</span>`).join('')
+}
+
+async function loadPublicVacancies() {
+  const grid = document.getElementById('jobs-grid')
+  if (!grid) return
+
+  try {
+    const result = await apiRequest('/vagas?limit=50')
+    grid.innerHTML = result.dados.map((vaga) => `
+      <article class="job-card glass-card rounded-[22px] p-4" data-area="${escapeHtml(vaga.area.toLowerCase())}" data-date="${new Date(vaga.createdAt).getTime()}" data-search="${escapeHtml(`${vaga.titulo} ${vaga.empresa?.nome || ''} ${vaga.tecnologias}`.toLowerCase())}">
+        <div class="grid h-12 w-12 place-items-center rounded-xl bg-white/80 text-sm font-extrabold text-blueCustom">TI</div>
+        <h2 class="mt-3 text-base font-bold text-navy">${escapeHtml(vaga.titulo)}</h2>
+        <p class="mt-1 text-xs font-semibold text-orangeCustom">${escapeHtml(vaga.empresa?.nome || 'Empresa')}</p>
+        <p class="mt-1 flex items-center gap-1.5 text-sm text-navy/75"><span aria-hidden="true">⌖</span> ${escapeHtml(vaga.modalidade === 'REMOTO' ? 'Remoto' : vaga.cidade)}</p>
+        <div class="mt-4 flex flex-wrap gap-2">${technologyTags(vaga.tecnologias)}</div>
+        <button class="job-details orange-button mt-4 w-full rounded-xl py-2.5 text-sm font-semibold text-white" data-id="${vaga.id}" data-title="${escapeHtml(vaga.titulo)}" data-company="${escapeHtml(vaga.empresa?.nome || '')}" data-description="${escapeHtml(vaga.descricao)}">Ver vaga</button>
+      </article>`).join('')
+    document.getElementById('jobs-empty')?.classList.toggle('hidden', result.dados.length > 0)
+
+    grid.addEventListener('click', (event) => {
+      const button = event.target.closest('.job-details')
+      if (!button) return
+      document.getElementById('job-modal-title').textContent = button.dataset.title
+      document.getElementById('job-modal-company').textContent = button.dataset.company
+      document.getElementById('job-modal-description').textContent = button.dataset.description
+      const applyButton = document.querySelector('#job-modal .orange-button:not(#close-job-modal)')
+      if (applyButton) applyButton.dataset.vagaId = button.dataset.id
+      document.getElementById('job-modal').showModal()
+    })
+  } catch (error) {
+    grid.innerHTML = `<p class="sm:col-span-2 lg:col-span-3 text-center text-red-600">${escapeHtml(error.message)}</p>`
+  }
+}
+
+async function loadCompanyVacancies() {
+  const list = document.getElementById('company-vacancies')
+  if (!list) return
+
+  try {
+    const empresa = await apiRequest('/empresas/me')
+    list.innerHTML = empresa.vagas.map((vaga) => {
+      const aberta = vaga.status === 'ABERTA'
+      return `<article class="vacancy-card glass-card rounded-[22px] p-5" data-id="${vaga.id}" data-status="${aberta ? 'ativa' : 'encerrada'}" data-search="${escapeHtml(`${vaga.titulo} ${vaga.tecnologias}`.toLowerCase())}">
+        <div class="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center"><div class="min-w-0">
+          <div class="flex flex-wrap items-center gap-2"><h2 class="text-lg font-bold">${escapeHtml(vaga.titulo)}</h2><span class="rounded-full px-2.5 py-1 text-[11px] font-semibold ${aberta ? 'bg-emerald-100/80 text-emerald-700' : 'bg-slate-200/90 text-slate-600'}">${aberta ? 'Ativa' : 'Encerrada'}</span></div>
+          <p class="mt-1 text-xs text-mutedCustom">Publicado em ${new Date(vaga.createdAt).toLocaleDateString('pt-BR')}</p><div class="mt-4 flex flex-wrap gap-2">${technologyTags(vaga.tecnologias)}</div>
+        </div><div class="flex flex-wrap items-center justify-center gap-3"><div class="text-center"><strong class="block text-2xl font-extrabold">${vaga._count?.candidaturas || 0}</strong><span class="text-xs text-mutedCustom">Candidatos</span></div>
+          <a href="/src/pages/main/empresa/candidatos-vaga.html?vaga=${vaga.id}" class="orange-button rounded-xl px-5 py-3 text-sm font-semibold">Ver candidatos</a>
+          ${aberta ? `<button type="button" class="close-vacancy rounded-xl border border-red-300 px-4 py-3 text-sm font-semibold text-red-600">Encerrar vaga</button>` : ''}
+        </div></div></article>`
+    }).join('')
+    document.getElementById('empty-state')?.classList.toggle('hidden', empresa.vagas.length > 0)
+
+    list.addEventListener('click', async (event) => {
+      const button = event.target.closest('.close-vacancy')
+      if (!button) return
+      const card = button.closest('.vacancy-card')
+      if (!window.confirm('Encerrar esta vaga? Ela deixará de aparecer para os candidatos.')) return
+      await apiRequest(`/vagas/${card.dataset.id}`, { method: 'PUT', body: JSON.stringify({ status: 'FECHADA' }) })
+      await loadCompanyVacancies()
+    }, { once: true })
+  } catch (error) {
+    list.innerHTML = `<p class="text-center text-red-600">${escapeHtml(error.message)}</p>`
+  }
+}
+
+loadPublicVacancies()
+loadCompanyVacancies()
+
+function initInterviewVacancyClosure() {
+  if (!location.pathname.endsWith('/empresa/candidatos-vaga.html')) return
+  const vagaId = new URLSearchParams(location.search).get('vaga')
+  if (!vagaId) return
+
+  const main = document.querySelector('main')
+  const button = document.createElement('button')
+  button.type = 'button'
+  button.className = 'fixed bottom-6 left-6 z-40 rounded-xl bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow-card disabled:cursor-not-allowed disabled:opacity-50'
+  button.textContent = 'Encerrar vaga'
+  button.disabled = !document.querySelector('.candidate-card[data-status="entrevista"]')
+  button.title = button.disabled ? 'Convide um candidato para entrevista antes de encerrar' : ''
+  main?.appendChild(button)
+
+  document.addEventListener('click', (event) => {
+    if (event.target.closest('.move-interview, #modal-interview-button')) {
+      window.setTimeout(() => {
+        button.disabled = false
+        button.title = ''
+      })
+    }
+  })
+
+  button.addEventListener('click', async () => {
+    if (!window.confirm('Encerrar esta vaga agora? Novas candidaturas serão bloqueadas.')) return
+    button.disabled = true
+    try {
+      await apiRequest(`/vagas/${vagaId}`, { method: 'PUT', body: JSON.stringify({ status: 'FECHADA' }) })
+      window.location.href = '/src/pages/main/user/gerenciar-vagas.html'
+    } catch (error) {
+      button.disabled = false
+      window.alert(error.message)
+    }
+  })
+}
+
+initInterviewVacancyClosure()

@@ -7,6 +7,10 @@ async function meuPerfil(req, res, next) {
       where: { usuarioId: req.session.usuarioId },
       include: {
         usuario: { select: { id: true, nome: true, email: true } },
+        vagas: {
+          include: { _count: { select: { candidaturas: true } } },
+          orderBy: { createdAt: "desc" },
+        },
       },
     });
 

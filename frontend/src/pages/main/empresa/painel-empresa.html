@@ -172,14 +172,14 @@
         <p class="mt-2 max-w-sm text-sm leading-relaxed text-mutedCustom">
           Crie uma nova oportunidade com cargo, requisitos, modalidade e faixa salarial.
         </p>
-        <button id="open-vacancy-modal" type="button" class="mt-7 rounded-xl border border-navy/20 bg-white/60 px-7 py-3 text-sm font-semibold text-navy transition hover:-translate-y-0.5 hover:border-orangeCustom hover:text-orangeCustom">
+        <a id="open-vacancy-modal" href="/src/pages/main/empresa/publicar-vaga.html" class="mt-7 rounded-xl border border-navy/20 bg-white/60 px-7 py-3 text-sm font-semibold text-navy transition hover:-translate-y-0.5 hover:border-orangeCustom hover:text-orangeCustom">
           Criar nova vaga
-        </button>
+        </a>
       </article>
     </div>
   </section>
 
-  <dialog id="vacancy-modal" class="glass-shell w-[min(92vw,620px)] rounded-[26px] p-0 text-navy">
+  <dialog id="vacancy-modal" class="hidden glass-shell w-[min(92vw,620px)] rounded-[26px] p-0 text-navy">
     <form id="quick-vacancy-form" class="p-6 md:p-8">
       <div class="flex items-center justify-between gap-5">
         <div>
@@ -251,11 +251,5 @@
 </script>
 
   
-<script>
-  const vacancyModal = document.getElementById('vacancy-modal');
-  const openVacancyModal = document.getElementById('open-vacancy-modal');
-  openVacancyModal?.addEventListener('click', () => vacancyModal.showModal());
-</script>
-
 </body>
 </html>
