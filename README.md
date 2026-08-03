@@ -262,6 +262,26 @@ A task definition deve fornecer pelo menos `DATABASE_URL`, `SESSION_SECRET`, `NO
 
 As migrations não são executadas automaticamente pela aplicação. Em alterações futuras no banco, execute `npx prisma migrate deploy` em uma tarefa controlada antes de atualizar o serviço.
 
+## GitHub Pages
+
+O mesmo workflow publica `frontend/dist` no GitHub Pages após um push aprovado na branch `main`. Como este repositório é `devLu4n.github.io`, o frontend fica disponível em:
+
+```text
+https://devlu4n.github.io/
+```
+
+No repositório do GitHub, acesse `Settings > Pages` e selecione `GitHub Actions` em `Source`. Não selecione a raiz da branch `main`, pois ela contém o código-fonte e o README, não os arquivos compilados do frontend.
+
+Configure a repository variable `PUBLIC_API_URL` com o endereço público completo da API, incluindo `/api`:
+
+```text
+https://api.seudominio.com/api
+```
+
+Sem essa variável, o frontend publicado tentará acessar `/api` no próprio domínio do GitHub Pages. Como o GitHub Pages hospeda somente arquivos estáticos, autenticação, vagas e candidaturas dependerão de um backend publicado separadamente.
+
+O backend deve configurar `CORS_ORIGIN=https://devlu4n.github.io` para aceitar cookies e requisições do site publicado. Em uma implantação com frontend e API em domínios diferentes, revise também as políticas `SameSite`, `Secure` e CORS dos cookies de sessão.
+
 ## Licença
 
 Este repositório ainda não possui uma licença definida. Adicione um arquivo `LICENSE` antes de distribuir ou reutilizar o código fora do escopo autorizado pelo projeto.
