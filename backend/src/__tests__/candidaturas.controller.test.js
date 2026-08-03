@@ -1,5 +1,5 @@
 jest.mock("../config/prisma", () => ({
-  candidato: { findUnique: jest.fn() },
+  candidato: { findUnique: jest.fn(), update: jest.fn() },
   vaga: { findUnique: jest.fn() },
   candidatura: {
     findUnique: jest.fn(),
@@ -31,6 +31,12 @@ describe("candidaturas.controller", () => {
   beforeEach(() => jest.clearAllMocks());
 
   describe("candidatar", () => {
+    const curriculo = {
+      nome: "curriculo.pdf",
+      tipo: "application/pdf",
+      dados: "data:application/pdf;base64,JVBERi0xLjQ=",
+    };
+
     it("retorna 400 para vagaId invalido", async () => {
       const res = mockRes();
       await candidatar(mockReq({ params: { vagaId: "abc" } }), res, jest.fn());
@@ -40,7 +46,7 @@ describe("candidaturas.controller", () => {
     it("retorna 400 se candidato nao tem perfil", async () => {
       prisma.candidato.findUnique.mockResolvedValue(null);
       const res = mockRes();
-      await candidatar(mockReq({ params: { vagaId: "1" } }), res, jest.fn());
+      await candidatar(mockReq({ params: { vagaId: "1" }, body: { curriculo } }), res, jest.fn());
       expect(res.status).toHaveBeenCalledWith(400);
     });
 
@@ -48,7 +54,7 @@ describe("candidaturas.controller", () => {
       prisma.candidato.findUnique.mockResolvedValue({ id: 1 });
       prisma.vaga.findUnique.mockResolvedValue(null);
       const res = mockRes();
-      await candidatar(mockReq({ params: { vagaId: "1" } }), res, jest.fn());
+      await candidatar(mockReq({ params: { vagaId: "1" }, body: { curriculo } }), res, jest.fn());
       expect(res.status).toHaveBeenCalledWith(404);
     });
 
@@ -56,7 +62,7 @@ describe("candidaturas.controller", () => {
       prisma.candidato.findUnique.mockResolvedValue({ id: 1 });
       prisma.vaga.findUnique.mockResolvedValue({ id: 1, status: "FECHADA" });
       const res = mockRes();
-      await candidatar(mockReq({ params: { vagaId: "1" } }), res, jest.fn());
+      await candidatar(mockReq({ params: { vagaId: "1" }, body: { curriculo } }), res, jest.fn());
       expect(res.status).toHaveBeenCalledWith(400);
     });
 
@@ -65,7 +71,7 @@ describe("candidaturas.controller", () => {
       prisma.vaga.findUnique.mockResolvedValue({ id: 1, status: "ABERTA" });
       prisma.candidatura.findUnique.mockResolvedValue({ id: 1 });
       const res = mockRes();
-      await candidatar(mockReq({ params: { vagaId: "1" } }), res, jest.fn());
+      await candidatar(mockReq({ params: { vagaId: "1" }, body: { curriculo } }), res, jest.fn());
       expect(res.status).toHaveBeenCalledWith(409);
     });
 
@@ -75,8 +81,19 @@ describe("candidaturas.controller", () => {
       prisma.candidatura.findUnique.mockResolvedValue(null);
       prisma.candidatura.create.mockResolvedValue({ id: 1, status: "PENDENTE" });
       const res = mockRes();
-      await candidatar(mockReq({ params: { vagaId: "1" } }), res, jest.fn());
+      await candidatar(mockReq({ params: { vagaId: "1" }, body: { curriculo } }), res, jest.fn());
       expect(res.status).toHaveBeenCalledWith(201);
+      expect(prisma.candidato.update).toHaveBeenCalledWith({
+        where: { id: 1 },
+        data: { curriculo: JSON.stringify(curriculo) },
+      });
+    });
+
+    it("exige curriculo em PDF ou DOCX", async () => {
+      const res = mockRes();
+      await candidatar(mockReq({ params: { vagaId: "1" } }), res, jest.fn());
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(prisma.candidato.findUnique).not.toHaveBeenCalled();
     });
   });
 

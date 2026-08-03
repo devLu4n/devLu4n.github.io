@@ -382,9 +382,12 @@
     function setSalaryNegotiable(enabled) {
       salaryNegotiable = enabled;
       salaryNegotiableButton.setAttribute('aria-pressed', String(enabled));
-      salaryNegotiableButton.classList.toggle('bg-orangeCustom', enabled);
-      salaryNegotiableButton.classList.toggle('text-white', enabled);
-      salaryNegotiableButton.classList.toggle('border-orangeCustom', enabled);
+      salaryNegotiableButton.style.background = enabled
+        ? 'linear-gradient(180deg, #FF7A16 0%, #FF6208 100%)'
+        : '';
+      salaryNegotiableButton.style.color = enabled ? '#FFFFFF' : '';
+      salaryNegotiableButton.style.borderColor = enabled ? '#FF6B0B' : '';
+      salaryNegotiableButton.style.boxShadow = enabled ? '0 10px 24px rgba(255,107,11,.20)' : '';
       salaryInput.disabled = enabled;
       if (enabled) salaryInput.value = '';
     }

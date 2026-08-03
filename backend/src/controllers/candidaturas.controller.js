@@ -2,12 +2,33 @@ const prisma = require("../config/prisma");
 const { parseId } = require("../utils/parseId");
 
 const STATUS_VALIDOS = ["PENDENTE", "EM_ANALISE", "ENTREVISTA", "APROVADO", "REJEITADO"];
+const CURRICULO_TIPOS = [
+  "application/pdf",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
+const CURRICULO_MAX_BYTES = 2 * 1024 * 1024;
+
+function validarCurriculo(curriculo) {
+  if (!curriculo || typeof curriculo !== "object") return "Anexe seu curriculo em PDF ou DOCX.";
+  if (!curriculo.nome || !CURRICULO_TIPOS.includes(curriculo.tipo)) return "O curriculo deve estar em PDF ou DOCX.";
+  const prefixo = `data:${curriculo.tipo};base64,`;
+  if (typeof curriculo.dados !== "string" || !curriculo.dados.startsWith(prefixo)) return "Arquivo de curriculo invalido.";
+  const base64 = curriculo.dados.slice(prefixo.length);
+  const tamanho = Math.ceil((base64.length * 3) / 4);
+  if (tamanho > CURRICULO_MAX_BYTES) return "O curriculo deve ter no maximo 2 MB.";
+  return null;
+}
 
 async function candidatar(req, res, next) {
   try {
     const vagaId = parseId(req.params.vagaId);
     if (!vagaId) {
       return res.status(400).json({ erro: "ID da vaga invalido." });
+    }
+
+    const erroCurriculo = validarCurriculo(req.body.curriculo);
+    if (erroCurriculo) {
+      return res.status(400).json({ erro: erroCurriculo });
     }
 
     const candidato = await prisma.candidato.findUnique({
@@ -34,7 +55,12 @@ async function candidatar(req, res, next) {
       return res.status(409).json({ erro: "Voce ja se candidatou a esta vaga." });
     }
 
-    const { mensagem } = req.body;
+    const { mensagem, curriculo } = req.body;
+
+    await prisma.candidato.update({
+      where: { id: candidato.id },
+      data: { curriculo: JSON.stringify(curriculo) },
+    });
 
     const candidatura = await prisma.candidatura.create({
       data: {
