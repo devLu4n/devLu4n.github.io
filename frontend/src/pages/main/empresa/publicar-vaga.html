@@ -407,6 +407,9 @@
         vacancyForm.reset();
         technologies.splice(0, technologies.length, 'React', 'Node.js');
         renderTechnologies();
+        window.setTimeout(() => {
+          window.location.href = '/src/pages/main/user/gerenciar-vagas.html';
+        }, 700);
       } catch (error) {
         showToast(error.message);
       }
