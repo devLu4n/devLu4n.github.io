@@ -583,6 +583,114 @@ async function loadVacancyDetails() {
 
 loadVacancyDetails()
 
+function applicationStatus(status) {
+  const statuses = {
+    PENDENTE: ['Novo candidato', 'bg-blueCustom/10 text-blueCustom'],
+    EM_ANALISE: ['Em análise', 'bg-amber-100 text-amber-700'],
+    ENTREVISTA: ['Entrevista', 'bg-orangeCustom/12 text-orangeDark'],
+    APROVADO: ['Aprovado', 'bg-emerald-100 text-emerald-700'],
+    REJEITADO: ['Não selecionado', 'bg-slate-200 text-slate-600'],
+  }
+  return statuses[status] || statuses.PENDENTE
+}
+
+async function loadVacancyCandidates() {
+  const grid = document.getElementById('candidates-grid')
+  if (!grid) return
+  const vagaId = new URLSearchParams(location.search).get('vaga')
+  if (!vagaId || !/^\d+$/.test(vagaId)) {
+    grid.innerHTML = '<p class="lg:col-span-2 text-center text-red-600">Vaga inválida ou não informada.</p>'
+    return
+  }
+
+  try {
+    const [vaga, candidaturas] = await Promise.all([
+      apiRequest(`/vagas/${vagaId}`),
+      apiRequest(`/candidaturas/vagas/${vagaId}`),
+    ])
+    document.getElementById('candidatos-title').textContent = vaga.titulo
+    document.getElementById('candidate-count').textContent = candidaturas.length
+    document.getElementById('vacancy-technologies').innerHTML = technologyTags(vaga.tecnologias)
+
+    const byId = new Map(candidaturas.map((item) => [String(item.id), item]))
+    grid.innerHTML = candidaturas.length ? candidaturas.map((item) => {
+      const candidate = item.candidato
+      const name = candidate.usuario?.nome || 'Candidato'
+      const initials = name.split(/\s+/).slice(0, 2).map((word) => word[0]).join('').toUpperCase()
+      const [statusLabel, statusClasses] = applicationStatus(item.status)
+      const inInterview = item.status === 'ENTREVISTA'
+      return `<article class="candidate-card glass-card rounded-[24px] p-5 md:p-6" data-application-id="${item.id}" data-status="${inInterview ? 'entrevista' : item.status.toLowerCase()}">
+        <div class="flex items-start gap-4"><div class="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-gradient-to-br from-blue-100 to-orange-100 text-lg font-extrabold text-navy">${escapeHtml(initials)}</div>
+        <div class="min-w-0 flex-1"><div class="flex flex-wrap items-center gap-2"><h2 class="truncate text-lg font-bold text-navy">${escapeHtml(name)}</h2><span class="status-badge rounded-full px-2.5 py-1 text-[11px] font-semibold ${statusClasses}">${statusLabel}</span></div>
+        <p class="mt-0.5 text-sm text-navy/80">${escapeHtml(candidate.cargo || 'Cargo não informado')}</p><p class="mt-4 text-sm leading-relaxed text-navy/78">${escapeHtml(candidate.bio || 'O candidato ainda não adicionou um resumo profissional.')}</p></div></div>
+        <div class="mt-5 grid gap-3 sm:grid-cols-2"><button type="button" class="view-real-profile rounded-xl border border-orangeCustom bg-white/45 px-5 py-3 text-sm font-semibold text-orangeDark">Ver perfil</button>
+        <button type="button" class="move-real-interview orange-button rounded-xl px-5 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-65" ${inInterview ? 'disabled' : ''}>${inInterview ? 'Entrevista agendada' : 'Mover para entrevista'}</button></div>
+      </article>`
+    }).join('') : '<p class="lg:col-span-2 rounded-2xl bg-white/55 p-8 text-center text-mutedCustom">Nenhum candidato se inscreveu nesta vaga ainda.</p>'
+
+    const closeVacancyButton = document.getElementById('close-vacancy-after-interview')
+    if (closeVacancyButton && candidaturas.some((item) => item.status === 'ENTREVISTA')) closeVacancyButton.disabled = false
+
+    let activeApplication = null
+    grid.addEventListener('click', async (event) => {
+      const card = event.target.closest('.candidate-card')
+      if (!card) return
+      const application = byId.get(card.dataset.applicationId)
+      if (!application) return
+
+      if (event.target.closest('.view-real-profile')) {
+        activeApplication = application
+        const candidate = application.candidato
+        document.getElementById('candidate-modal-name').textContent = candidate.usuario?.nome || 'Candidato'
+        document.getElementById('candidate-modal-role').textContent = candidate.cargo || candidate.usuario?.email || ''
+        document.getElementById('candidate-modal-bio').textContent = candidate.bio || 'Resumo profissional não informado.'
+        const details = [candidate.cidade, candidate.telefone, candidate.linkedin].filter(Boolean)
+        document.getElementById('candidate-modal-skills').innerHTML = details.map((value) => `<span class="tag">${escapeHtml(value)}</span>`).join('') || '<span class="text-xs text-mutedCustom">Informações adicionais não cadastradas.</span>'
+        document.getElementById('candidate-modal-score').textContent = '—'
+        document.getElementById('candidate-modal-ring').style.setProperty('--score', 0)
+        const modalButton = document.getElementById('modal-interview-button')
+        modalButton.disabled = application.status === 'ENTREVISTA'
+        modalButton.textContent = application.status === 'ENTREVISTA' ? 'Entrevista agendada' : 'Mover para entrevista'
+        document.getElementById('candidate-modal').showModal()
+        return
+      }
+
+      const interviewButton = event.target.closest('.move-real-interview')
+      if (interviewButton) await moveApplicationToInterview(application, card, interviewButton)
+    })
+
+    document.getElementById('modal-interview-button').addEventListener('click', async () => {
+      if (!activeApplication) return
+      const card = grid.querySelector(`[data-application-id="${activeApplication.id}"]`)
+      await moveApplicationToInterview(activeApplication, card, card?.querySelector('.move-real-interview'))
+      document.getElementById('candidate-modal').close()
+    })
+
+    async function moveApplicationToInterview(application, card, button) {
+      if (application.status === 'ENTREVISTA') return
+      if (button) button.disabled = true
+      try {
+        await apiRequest(`/candidaturas/${application.id}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'ENTREVISTA' }) })
+        application.status = 'ENTREVISTA'
+        card.dataset.status = 'entrevista'
+        const badge = card.querySelector('.status-badge')
+        badge.textContent = 'Entrevista'
+        badge.className = 'status-badge rounded-full bg-orangeCustom/12 px-2.5 py-1 text-[11px] font-semibold text-orangeDark'
+        button.textContent = 'Entrevista agendada'
+        const closeButton = document.getElementById('close-vacancy-after-interview')
+        if (closeButton) closeButton.disabled = false
+      } catch (error) {
+        if (button) button.disabled = false
+        window.alert(error.message)
+      }
+    }
+  } catch (error) {
+    grid.innerHTML = `<p class="lg:col-span-2 text-center text-red-600">${escapeHtml(error.message)}</p>`
+  }
+}
+
+loadVacancyCandidates()
+
 function initInterviewVacancyClosure() {
   if (!location.pathname.endsWith('/empresa/candidatos-vaga.html')) return
   const vagaId = new URLSearchParams(location.search).get('vaga')
@@ -590,6 +698,7 @@ function initInterviewVacancyClosure() {
 
   const main = document.querySelector('main')
   const button = document.createElement('button')
+  button.id = 'close-vacancy-after-interview'
   button.type = 'button'
   button.className = 'fixed bottom-6 left-6 z-40 rounded-xl bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow-card disabled:cursor-not-allowed disabled:opacity-50'
   button.textContent = 'Encerrar vaga'
