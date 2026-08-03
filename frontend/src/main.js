@@ -588,6 +588,58 @@ async function loadCompanyVacancies() {
 loadPublicVacancies()
 loadCompanyVacancies()
 
+async function loadCompanies() {
+  const grid = document.getElementById('companies-grid')
+  if (!grid) return
+  const empty = document.getElementById('companies-empty')
+  const search = document.getElementById('company-search')
+
+  try {
+    const companies = await apiRequest('/empresas')
+    grid.innerHTML = companies.map((company) => {
+      const openJobs = company._count?.vagas || 0
+      const biography = company.descricao?.trim() || 'Esta empresa ainda não adicionou uma apresentação ao perfil.'
+      return `<article class="company-card glass-card flex min-h-[285px] flex-col items-center rounded-[22px] p-5 text-center" data-id="${company.id}" data-search="${escapeHtml(`${company.nome} ${company.cidade || ''} ${biography}`.toLowerCase())}">
+        <img src="/assets/empresa.png" alt="Foto de perfil de ${escapeHtml(company.nome)}" class="h-16 w-16 rounded-2xl border border-white/90 object-cover shadow-sm">
+        <h2 class="mt-3 text-lg font-bold text-navy">${escapeHtml(company.nome)}</h2>
+        <p class="mt-1 text-sm text-navy/70">⌖ ${escapeHtml(company.cidade || 'Localização não informada')}</p>
+        <p class="mt-3 line-clamp-2 text-sm leading-relaxed text-mutedCustom">${escapeHtml(biography)}</p>
+        <span class="mt-4 rounded-full px-3 py-1 text-xs font-semibold ${openJobs ? 'bg-orangeCustom text-white' : 'bg-slate-200/80 text-navy/70'}">${openJobs ? `${openJobs} ${openJobs === 1 ? 'vaga aberta' : 'vagas abertas'}` : 'Sem vagas abertas'}</span>
+        <button class="company-details-api orange-button mt-auto w-full rounded-xl py-2.5 text-sm font-semibold text-white">Ver perfil</button>
+      </article>`
+    }).join('')
+
+    function filterCompanies() {
+      const term = search.value.trim().toLowerCase()
+      let visible = 0
+      grid.querySelectorAll('.company-card').forEach((card) => {
+        const show = !term || card.dataset.search.includes(term)
+        card.classList.toggle('hidden', !show)
+        if (show) visible += 1
+      })
+      empty.classList.toggle('hidden', visible > 0)
+    }
+    search.addEventListener('input', filterCompanies)
+    filterCompanies()
+
+    grid.addEventListener('click', (event) => {
+      const button = event.target.closest('.company-details-api')
+      if (!button) return
+      const company = companies.find((item) => String(item.id) === button.closest('.company-card').dataset.id)
+      if (!company) return
+      document.getElementById('company-modal-title').textContent = company.nome
+      document.getElementById('company-modal-text').textContent = company.descricao || 'Esta empresa ainda não adicionou uma apresentação ao perfil.'
+      const jobsLink = document.querySelector('#company-modal a[href*="vagas.html"]')
+      if (jobsLink) jobsLink.href = `vagas.html?empresa=${company.id}`
+      document.getElementById('company-modal').showModal()
+    })
+  } catch (error) {
+    grid.innerHTML = `<p class="sm:col-span-2 lg:col-span-3 py-8 text-center text-red-600">${escapeHtml(error.message)}</p>`
+  }
+}
+
+loadCompanies()
+
 function formatSalary(minimum, maximum) {
   const currency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(value)
   if (minimum != null && maximum != null) return `${currency(minimum)} – ${currency(maximum)}`

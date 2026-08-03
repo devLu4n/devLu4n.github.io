@@ -50,7 +50,9 @@ async function listar(req, res, next) {
   try {
     const empresas = await prisma.empresa.findMany({
       orderBy: { createdAt: "desc" },
-      include: { _count: { select: { vagas: true } } },
+      include: {
+        _count: { select: { vagas: { where: { status: "ABERTA" } } } },
+      },
     });
     res.json(empresas);
   } catch (err) {
