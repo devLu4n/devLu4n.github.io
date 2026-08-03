@@ -1,218 +1,15 @@
 import './style.css'
 import { apiRequest } from './api.js'
+import { clearCurrentUser, getCurrentUser, getStoredUserPhoto, initAuth, isEmpresaUser, renderProfileAvatars, setStoredUserPhoto } from './core/auth.js'
+import { initNavigation } from './components/navigation.js'
+import { initAuthForms } from './features/auth/forms.js'
 
 window.aladinApi = { request: apiRequest }
 
-const EMPRESA_ONLY_PATHS = [
-  '/src/pages/main/empresa/painel-empresa.html',
-  '/src/pages/main/empresa/publicar-vaga.html',
-  '/src/pages/main/empresa/candidatos-vaga.html',
-  '/src/pages/main/user/gerenciar-vagas.html',
-]
-const CANDIDATO_ONLY_PATHS = [
-  '/src/pages/main/user/minhas-candidaturas.html',
-]
-
-let currentUserCache
-
-async function fetchCurrentUser() {
-  try {
-    return await apiRequest('/auth/me')
-  } catch {
-    return null
-  }
-}
-
-async function getCurrentUser() {
-  if (currentUserCache !== undefined) return currentUserCache
-  currentUserCache = await fetchCurrentUser()
-  return currentUserCache
-}
-
-function isEmpresaUser(user) {
-  return user?.usuario?.role === 'EMPRESA'
-}
-
-function getStoredUserPhoto() {
-  try {
-    return localStorage.getItem('aladin-user-photo')
-  } catch {
-    return null
-  }
-}
-
-function setStoredUserPhoto(photoDataUrl) {
-  try {
-    localStorage.setItem('aladin-user-photo', photoDataUrl)
-  } catch {
-    // ignoring localStorage failures
-  }
-}
-
-function getUserPhotoUrl(user) {
-  const stored = getStoredUserPhoto()
-  if (stored) return stored
-  const fromServer = user?.usuario?.candidato?.foto || user?.usuario?.empresa?.foto || user?.usuario?.foto || user?.usuario?.avatarUrl || user?.usuario?.avatar
-  if (fromServer) return fromServer
-  return isEmpresaUser(user) ? '/assets/empresa.png' : '/assets/user.png'
-}
-
-function renderProfileAvatars(user) {
-  const photoUrl = getUserPhotoUrl(user)
-  const profileButton = document.querySelector('#profile-menu-button')
-  const avatarContainer = profileButton?.querySelector('img') || profileButton?.querySelector('span')
-
-  if (avatarContainer) {
-    if (avatarContainer.tagName === 'IMG') {
-      avatarContainer.src = photoUrl
-      return
-    }
-
-    const img = document.createElement('img')
-    img.src = photoUrl
-    img.alt = 'Foto de perfil'
-    img.className = 'h-10 w-10 rounded-full border border-white/80 object-cover shadow-sm'
-    avatarContainer.replaceWith(img)
-  }
-
-  const profileAvatarImage = document.getElementById('profile-avatar')
-  if (profileAvatarImage) {
-    profileAvatarImage.src = photoUrl
-  }
-}
-
-function hideEmpresaLinks() {
-  document.querySelectorAll('a[href*="painel-empresa.html"], a[href*="gerenciar-vagas.html"]').forEach((link) => {
-    link.style.display = 'none'
-  })
-}
-
-function hideCandidateNavigationLinks() {
-  document.querySelectorAll('nav[aria-label="Navegação principal"] a[href*="minhas-candidaturas.html"], nav[aria-label="Navegação principal"] a[href*="empresas.html"]').forEach((link) => {
-    const item = link.closest('li')
-    if (item) item.style.display = 'none'
-    else link.style.display = 'none'
-  })
-}
-
-function applyCompanyNavigation() {
-  document.querySelectorAll('nav[aria-label="Navegação principal"] a').forEach((link) => {
-    if (link.textContent.trim().toLowerCase() === 'vagas') {
-      link.href = '/src/pages/main/empresa/painel-empresa.html'
-    }
-  })
-}
-
-function applyAuthenticatedLogoLinks(user) {
-  if (!user?.usuario) return
-  const destination = isEmpresaUser(user)
-    ? '/src/pages/main/empresa/painel-empresa.html'
-    : '/src/pages/main/user/vagas.html'
-  document.querySelectorAll('a[href="/"]').forEach((link) => {
-    if (link.querySelector('img[src*="aladin-logo"], img[src*="white-logo"]') || /aladin/i.test(link.getAttribute('aria-label') || '')) {
-      link.href = destination
-    }
-  })
-}
-
-async function applyEmpresaAccessRules() {
-  const user = await getCurrentUser()
-  renderProfileAvatars(user)
-  applyAuthenticatedLogoLinks(user)
-  if (isEmpresaUser(user)) {
-    hideCandidateNavigationLinks()
-    applyCompanyNavigation()
-  } else {
-    hideEmpresaLinks()
-  }
-}
-
-async function guardEmpresaPage() {
-  const user = await getCurrentUser()
-  if (!isEmpresaUser(user)) {
-    const redirectTo = user
-      ? '/src/pages/main/user/vagas.html'
-      : '/src/pages/login/login.html?tipo=empresa'
-    location.replace(redirectTo)
-  }
-}
-
-async function guardCandidatoPage() {
-  const user = await getCurrentUser()
-  if (user?.usuario?.role !== 'CANDIDATO') {
-    location.replace(user ? '/src/pages/main/empresa/painel-empresa.html' : '/src/pages/login/login.html')
-  }
-}
-
-async function initPageSecurity() {
-  await applyEmpresaAccessRules()
-  if (EMPRESA_ONLY_PATHS.some((path) => location.pathname.endsWith(path))) {
-    await guardEmpresaPage()
-  }
-  if (CANDIDATO_ONLY_PATHS.some((path) => location.pathname.endsWith(path))) {
-    await guardCandidatoPage()
-  }
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initPageSecurity)
-} else {
-  initPageSecurity()
-}
-
-document.querySelectorAll('nav[aria-label="Navegação principal"]').forEach((nav) => {
-  const links = nav.querySelector(':scope > ul')
-  if (!links) return
-
-  nav.classList.add('relative')
-  const toggle = document.createElement('button')
-  toggle.type = 'button'
-  toggle.className = 'mobile-nav-button'
-  toggle.setAttribute('aria-label', 'Abrir menu de navegação')
-  toggle.setAttribute('aria-expanded', 'false')
-  toggle.textContent = '☰'
-  nav.insertBefore(toggle, links)
-
-  toggle.addEventListener('click', () => {
-    const isOpen = links.classList.toggle('is-mobile-open')
-    toggle.setAttribute('aria-expanded', String(isOpen))
-    toggle.setAttribute('aria-label', isOpen ? 'Fechar menu de navegação' : 'Abrir menu de navegação')
-    toggle.textContent = isOpen ? '×' : '☰'
-  })
-
-  links.addEventListener('click', () => {
-    links.classList.remove('is-mobile-open')
-    toggle.setAttribute('aria-expanded', 'false')
-    toggle.setAttribute('aria-label', 'Abrir menu de navegação')
-    toggle.textContent = '☰'
-  })
-})
-
-document.querySelectorAll('[role="tab"]').forEach((tab) => {
-  const tabList = tab.parentElement
-  tabList?.setAttribute('role', 'tablist')
-  tab.tabIndex = tab.getAttribute('aria-selected') === 'true' ? 0 : -1
-
-  tab.addEventListener('click', () => {
-    tabList?.querySelectorAll('[role="tab"]').forEach((item) => {
-      item.tabIndex = item === tab ? 0 : -1
-    })
-  })
-
-  tab.addEventListener('keydown', (event) => {
-    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return
-    event.preventDefault()
-    const tabs = [...tabList.querySelectorAll('[role="tab"]')]
-    const currentIndex = tabs.indexOf(tab)
-    const nextIndex = event.key === 'Home'
-      ? 0
-      : event.key === 'End'
-        ? tabs.length - 1
-        : (currentIndex + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length
-    tabs[nextIndex].focus()
-    tabs[nextIndex].click()
-  })
-})
+initNavigation()
+initAuthForms()
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAuth)
+else initAuth()
 
 function getFormFeedback(form) {
   let feedback = form.querySelector('[data-form-feedback]')
@@ -234,93 +31,6 @@ function setSubmitting(form, submitting) {
   submitButton.classList.toggle('cursor-wait', submitting)
   submitButton.classList.toggle('opacity-70', submitting)
 }
-
-document.querySelectorAll('#profile-menu button').forEach((logoutButton) => {
-  logoutButton.addEventListener('click', async () => {
-    const originalText = logoutButton.textContent
-    logoutButton.disabled = true
-    logoutButton.textContent = 'Saindo...'
-
-    try {
-      await apiRequest('/auth/logout', { method: 'POST' })
-      currentUserCache = null
-      window.location.replace('/')
-    } catch (error) {
-      logoutButton.disabled = false
-      logoutButton.textContent = originalText
-      window.alert(error.message === 'Failed to fetch'
-        ? 'Não foi possível acessar o servidor. Verifique se o backend está rodando.'
-        : error.message)
-    }
-  })
-})
-
-const loginForm = document.getElementById('login-form')
-loginForm?.addEventListener('submit', async (event) => {
-  event.preventDefault()
-  const feedback = getFormFeedback(loginForm)
-  feedback.textContent = ''
-  setSubmitting(loginForm, true)
-
-  try {
-    const result = await apiRequest('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({
-        email: loginForm.elements.email.value,
-        senha: loginForm.elements.password.value,
-        tipoConta: loginForm.elements.tipo_conta.value,
-      }),
-    })
-
-    window.location.href = result.usuario.role === 'EMPRESA'
-      ? '/src/pages/main/empresa/painel-empresa.html'
-      : '/src/pages/main/user/vagas.html'
-  } catch (error) {
-    feedback.className = 'text-center text-sm font-medium text-red-600'
-    feedback.textContent = error.message
-  } finally {
-    setSubmitting(loginForm, false)
-  }
-})
-
-const registerForm = document.getElementById('register-form')
-registerForm?.addEventListener('submit', async (event) => {
-  event.preventDefault()
-  if (!registerForm.checkValidity()) {
-    registerForm.reportValidity()
-    return
-  }
-
-  const password = registerForm.elements.password.value
-  const confirmation = registerForm.elements.confirmar_senha.value
-  if (password !== confirmation) return
-
-  const feedback = getFormFeedback(registerForm)
-  feedback.textContent = ''
-  setSubmitting(registerForm, true)
-
-  try {
-    const accountType = registerForm.elements.tipo_conta.value
-    await apiRequest('/auth/registro', {
-      method: 'POST',
-      body: JSON.stringify({
-        nome: registerForm.elements.nome.value,
-        email: registerForm.elements.email.value,
-        senha: password,
-        role: accountType === 'empresa' ? 'EMPRESA' : 'CANDIDATO',
-      }),
-    })
-
-    window.location.href = accountType === 'empresa'
-      ? '/src/pages/main/empresa/painel-empresa.html'
-      : '/src/pages/main/user/vagas.html'
-  } catch (error) {
-    feedback.className = 'text-center text-sm font-medium text-red-600'
-    feedback.textContent = error.message
-  } finally {
-    setSubmitting(registerForm, false)
-  }
-})
 
 const quickVacancyForm = document.getElementById('quick-vacancy-form')
 quickVacancyForm?.addEventListener('submit', async (event) => {
@@ -499,7 +209,7 @@ deleteAccountButton?.addEventListener('click', async () => {
   deleteAccountButton.textContent = 'Excluindo conta...'
   try {
     await apiRequest('/auth/me', { method: 'DELETE' })
-    currentUserCache = null
+    clearCurrentUser()
     try {
       localStorage.removeItem('aladin-user-photo')
     } catch {
@@ -948,7 +658,7 @@ function initInterviewVacancyClosure() {
     button.disabled = true
     try {
       await apiRequest(`/vagas/${vagaId}`, { method: 'PUT', body: JSON.stringify({ status: 'FECHADA' }) })
-      window.location.href = '/src/pages/main/user/gerenciar-vagas.html'
+      window.location.href = '/src/pages/main/empresa/gerenciar-vagas.html'
     } catch (error) {
       button.disabled = false
       window.alert(error.message)

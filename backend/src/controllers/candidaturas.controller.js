@@ -1,5 +1,6 @@
 const prisma = require("../config/prisma");
 const { parseId } = require("../utils/parseId");
+const { podeAtualizarStatus } = require("../services/candidaturas.service");
 
 const STATUS_VALIDOS = ["PENDENTE", "EM_ANALISE", "ENTREVISTA", "APROVADO", "REJEITADO"];
 const CURRICULO_TIPOS = [
@@ -214,14 +215,7 @@ async function atualizarStatus(req, res, next) {
     }
 
     const novoStatus = String(status).toUpperCase();
-    const transicoesPermitidas = {
-      PENDENTE: ["EM_ANALISE"],
-      EM_ANALISE: ["ENTREVISTA"],
-      ENTREVISTA: ["APROVADO", "REJEITADO"],
-      APROVADO: [],
-      REJEITADO: [],
-    };
-    if (!transicoesPermitidas[candidatura.status]?.includes(novoStatus)) {
+    if (!podeAtualizarStatus(candidatura.status, novoStatus)) {
       return res.status(400).json({
         erro: "Transicao de status invalida para esta etapa do processo seletivo.",
       });

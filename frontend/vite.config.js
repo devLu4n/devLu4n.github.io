@@ -20,7 +20,7 @@ export default defineConfig({
         perfil: resolve(import.meta.dirname, 'src/pages/main/user/perfil.html'),
         empresas: resolve(import.meta.dirname, 'src/pages/main/user/empresas.html'),
         detalhesVaga: resolve(import.meta.dirname, 'src/pages/main/user/detalhes-vaga.html'),
-        gerenciarVagas: resolve(import.meta.dirname, 'src/pages/main/user/gerenciar-vagas.html'),
+        gerenciarVagas: resolve(import.meta.dirname, 'src/pages/main/empresa/gerenciar-vagas.html'),
         minhasCandidaturas: resolve(import.meta.dirname, 'src/pages/main/user/minhas-candidaturas.html'),
         painelEmpresa: resolve(import.meta.dirname, 'src/pages/main/empresa/painel-empresa.html'),
         publicarVaga: resolve(import.meta.dirname, 'src/pages/main/empresa/publicar-vaga.html'),
