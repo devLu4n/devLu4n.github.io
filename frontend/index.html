@@ -41,11 +41,11 @@
       </ul>
 
       <div class="flex items-center gap-3 shrink-0">
-        <a href="/src/pages/login/login.html" class="px-5 py-2.5 text-[15px] font-semibold text-navy bg-white border-1.5 border-navy/15 rounded-full no-underline transition-all hover:border-navy/40">
+        <a id="header-login-btn" href="/src/pages/login/login.html" class="px-5 py-2.5 text-[15px] font-semibold text-navy bg-white border-1.5 border-navy/15 rounded-full no-underline transition-all hover:border-navy/40">
           <span class="hidden sm:block">Log in</span>
         </a>
-        <a href="/src/pages/main/user/vagas.html" class="px-5 py-2.5 text-[15px] font-bold text-white bg-orangeCustom rounded-full no-underline transition-all shadow-soft hover:-translate-y-0.5 hover:shadow-card">
-          <span class="hidden sm:block">Encontre vagas</span>
+        <a href="/src/pages/signup/signup.html" class="px-5 py-2.5 text-[15px] font-bold text-white bg-orangeCustom rounded-full no-underline transition-all shadow-soft hover:-translate-y-0.5 hover:shadow-card">
+          <span class="hidden sm:block">Cadastro</span>
         </a>
       </div>
 
@@ -374,6 +374,16 @@
       <a class="text-[13px] text-bgCustom no-underline hover:text-white" href="https://www.linkedin.com/in/luanviilela/" target="_blank">@luanviilela</a>
     </div>
   </footer>
- <script type="module" src="/src/main.js"></script>
+
+  <!-- Redireciona usuário logado (cookie aladin.sid) ao clicar em Login -->
+  <script>
+    document.getElementById('header-login-btn').addEventListener('click', function(e) {
+      if (document.cookie.split(';').some(function(c) { return c.trim().startsWith('aladin.sid='); })) {
+        e.preventDefault();
+        window.location.href = '/src/pages/main/user/vagas.html';
+      }
+    });
+  </script>
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>
