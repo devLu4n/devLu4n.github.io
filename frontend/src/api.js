@@ -14,7 +14,9 @@ export async function apiRequest(path, options = {}) {
   const data = isJson ? await response.json() : null
 
   if (!response.ok) {
-    throw new Error(data?.erro || 'Não foi possível concluir a operação.')
+    const error = new Error(data?.erro || 'Não foi possível concluir a operação.')
+    error.status = response.status
+    throw error
   }
 
   return data

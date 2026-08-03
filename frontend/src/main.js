@@ -232,6 +232,91 @@ quickVacancyForm?.addEventListener('submit', async (event) => {
   }
 })
 
+const profileForm = document.getElementById('profile-form')
+if (profileForm) {
+  const profileTitle = document.getElementById('profile-title')
+  const profileRole = document.getElementById('profile-role')
+  const profileCity = document.getElementById('profile-city')
+  const profileAbout = document.getElementById('profile-about')
+  const profileStatus = document.getElementById('profile-save-status')
+  let profileExists = false
+  let registeredUser = null
+
+  function renderCandidateProfile(profile = {}) {
+    profileTitle.textContent = registeredUser?.nome || 'Usuário'
+
+    const role = profile.cargo?.trim() || ''
+    profileRole.textContent = role
+    profileRole.classList.toggle('hidden', !role)
+
+    const city = profile.cidade?.trim() || ''
+    profileCity.querySelector('span:last-child').textContent = city
+    profileCity.classList.toggle('hidden', !city)
+    profileCity.classList.toggle('flex', Boolean(city))
+
+    profileAbout.textContent = profile.bio?.trim() || ''
+    profileForm.elements.nome.value = registeredUser?.nome || ''
+    profileForm.elements.email.value = registeredUser?.email || ''
+    profileForm.elements.cargo.value = role
+    profileForm.elements.cidade.value = city
+    profileForm.elements.bio.value = profile.bio || ''
+  }
+
+  async function loadCandidateProfile() {
+    const currentUser = await getCurrentUser()
+    if (!currentUser?.usuario) {
+      location.replace('/src/pages/login/login.html?tipo=candidato')
+      return
+    }
+
+    registeredUser = currentUser.usuario
+
+    try {
+      const profile = await apiRequest('/candidatos/me')
+      profileExists = true
+      renderCandidateProfile(profile)
+    } catch (error) {
+      if (error.status !== 404) {
+        profileStatus.className = 'mt-3 text-sm font-medium text-red-600'
+        profileStatus.textContent = error.message
+      }
+      renderCandidateProfile()
+    }
+  }
+
+  profileForm.addEventListener('submit', async (event) => {
+    event.preventDefault()
+    profileStatus.textContent = ''
+    setSubmitting(profileForm, true)
+
+    const payload = {
+      cargo: profileForm.elements.cargo.value.trim(),
+      cidade: profileForm.elements.cidade.value.trim(),
+      bio: profileForm.elements.bio.value.trim(),
+    }
+
+    try {
+      const profile = await apiRequest(profileExists ? '/candidatos/me' : '/candidatos', {
+        method: profileExists ? 'PUT' : 'POST',
+        body: JSON.stringify(payload),
+      })
+      profileExists = true
+      renderCandidateProfile(profile)
+      profileStatus.className = 'mt-3 text-sm font-medium text-emerald-700'
+      profileStatus.textContent = 'Perfil salvo com sucesso.'
+      document.getElementById('profile-modal')?.close()
+    } catch (error) {
+      const feedback = getFormFeedback(profileForm)
+      feedback.className = 'text-center text-sm font-medium text-red-600'
+      feedback.textContent = error.message
+    } finally {
+      setSubmitting(profileForm, false)
+    }
+  })
+
+  loadCandidateProfile()
+}
+
 document.querySelectorAll('dialog').forEach((dialog) => {
   if (!dialog.hasAttribute('aria-labelledby')) {
     const heading = dialog.querySelector('h1, h2, h3')

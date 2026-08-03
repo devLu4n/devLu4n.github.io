@@ -5,6 +5,7 @@
   "main": "src/server.js",
   "type": "commonjs",
   "scripts": {
+    "predev": "prisma generate",
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
     "test": "jest --forceExit --detectOpenHandles",

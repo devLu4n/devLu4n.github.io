@@ -140,21 +140,15 @@
 <main class="relative z-10 flex-grow px-5 pb-10 pt-3">
   <section class="glass-shell mx-auto max-w-[1080px] rounded-[30px] px-6 py-9 md:px-12 md:py-12" aria-labelledby="profile-title">
     <div class="mx-auto flex max-w-[720px] flex-col items-center text-center">
-      <div class="grid h-44 w-44 place-items-center overflow-hidden rounded-full border-4 border-white/75 bg-[linear-gradient(145deg,#DDE8FF,#FFE1CA)] text-5xl font-extrabold text-navy shadow-card">
-        JS
-      </div>
-      <h1 id="profile-title" class="mt-5 text-[2rem] font-extrabold tracking-[-.03em] text-navy">João Silva</h1>
-      <p class="mt-1 text-base text-navy/85">Desenvolvedor Full Stack na Tech Alagoas</p>
-      <p class="mt-2 flex items-center gap-2 text-sm text-navy/75"><span aria-hidden="true">⌖</span> Maceió, AL</p>
+      <img id="profile-avatar" src="/assets/user.png" alt="Foto de perfil" class="h-44 w-44 rounded-full border-4 border-white/75 object-cover shadow-card">
+      <h1 id="profile-title" class="mt-5 text-[2rem] font-extrabold tracking-[-.03em] text-navy">Carregando...</h1>
+      <p id="profile-role" class="mt-1 hidden text-base text-navy/85"></p>
+      <p id="profile-city" class="mt-2 hidden items-center gap-2 text-sm text-navy/75"><span aria-hidden="true">⌖</span><span></span></p>
 
       <div class="mt-8 w-full text-left">
         <h2 class="text-base font-bold text-navy">Sobre mim</h2>
-        <p id="profile-about" class="mt-2 text-sm leading-relaxed text-navy/85">
-          Desenvolvedor apaixonado por construir soluções inovadoras no ecossistema tech alagoano. Experiência em React, Node.js e arquitetura de software escalável.
-        </p>
-        <div class="mt-5 flex flex-wrap gap-2">
-          <span class="tag">React</span><span class="tag">Node.js</span><span class="tag">TypeScript</span><span class="tag">PostgreSQL</span><span class="tag">AWS</span>
-        </div>
+        <p id="profile-about" class="mt-2 min-h-5 text-sm leading-relaxed text-navy/85"></p>
+        <p id="profile-save-status" class="mt-3 text-sm font-medium" role="status" aria-live="polite"></p>
         <button id="open-profile-modal" class="orange-button mt-7 w-full rounded-xl py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5">
           Editar perfil
         </button>
@@ -173,19 +167,19 @@
       </div>
       <div class="mt-6 grid gap-4 md:grid-cols-2">
         <label class="text-sm font-semibold">Nome
-          <input id="edit-name" class="soft-field mt-2 h-12 w-full rounded-xl px-4 font-normal" value="João Silva">
+          <input id="edit-name" name="nome" readonly class="soft-field mt-2 h-12 w-full cursor-not-allowed rounded-xl px-4 font-normal opacity-75">
         </label>
         <label class="text-sm font-semibold">Cargo
-          <input id="edit-role" class="soft-field mt-2 h-12 w-full rounded-xl px-4 font-normal" value="Desenvolvedor Full Stack na Tech Alagoas">
+          <input id="edit-role" name="cargo" class="soft-field mt-2 h-12 w-full rounded-xl px-4 font-normal" placeholder="Ex.: Desenvolvedor Front-end">
         </label>
         <label class="text-sm font-semibold">Cidade
-          <input id="edit-city" class="soft-field mt-2 h-12 w-full rounded-xl px-4 font-normal" value="Maceió, AL">
+          <input id="edit-city" name="cidade" class="soft-field mt-2 h-12 w-full rounded-xl px-4 font-normal" placeholder="Ex.: Maceió, AL">
         </label>
         <label class="text-sm font-semibold">E-mail
-          <input type="email" class="soft-field mt-2 h-12 w-full rounded-xl px-4 font-normal" value="joao@exemplo.com">
+          <input id="edit-email" name="email" type="email" readonly class="soft-field mt-2 h-12 w-full cursor-not-allowed rounded-xl px-4 font-normal opacity-75">
         </label>
         <label class="text-sm font-semibold md:col-span-2">Sobre mim
-          <textarea id="edit-about" class="soft-field mt-2 min-h-28 w-full rounded-xl px-4 py-3 font-normal">Desenvolvedor apaixonado por construir soluções inovadoras no ecossistema tech alagoano. Experiência em React, Node.js e arquitetura de software escalável.</textarea>
+          <textarea id="edit-about" name="bio" class="soft-field mt-2 min-h-28 w-full rounded-xl px-4 py-3 font-normal" placeholder="Conte um pouco sobre você"></textarea>
         </label>
       </div>
       <div class="mt-6 flex justify-end gap-3">
@@ -236,16 +230,6 @@
   document.getElementById('close-profile-modal').addEventListener('click', () => profileModal.close());
   document.getElementById('cancel-profile').addEventListener('click', () => profileModal.close());
 
-  document.getElementById('profile-form').addEventListener('submit', (event) => {
-    event.preventDefault();
-    document.getElementById('profile-title').textContent = document.getElementById('edit-name').value;
-    const details = document.querySelector('#profile-title + p');
-    details.textContent = document.getElementById('edit-role').value;
-    const city = details.nextElementSibling;
-    city.lastChild.textContent = ' ' + document.getElementById('edit-city').value;
-    document.getElementById('profile-about').textContent = document.getElementById('edit-about').value;
-    profileModal.close();
-  });
 </script>
 
 </body>

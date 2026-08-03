@@ -22,7 +22,7 @@ async function meuPerfil(req, res, next) {
 
 async function criar(req, res, next) {
   try {
-    const { telefone, linkedin, cidade, curriculo } = req.body;
+    const { cargo, bio, telefone, linkedin, cidade, curriculo } = req.body;
 
     const existente = await prisma.candidato.findUnique({
       where: { usuarioId: req.session.usuarioId },
@@ -33,6 +33,8 @@ async function criar(req, res, next) {
 
     const candidato = await prisma.candidato.create({
       data: {
+        cargo: cargo || null,
+        bio: bio || null,
         telefone: telefone || null,
         linkedin: linkedin || null,
         cidade: cidade || null,
@@ -57,10 +59,10 @@ async function atualizar(req, res, next) {
       return res.status(404).json({ erro: "Perfil de candidato nao encontrado." });
     }
 
-    const { telefone, linkedin, cidade, curriculo } = req.body;
+    const { cargo, bio, telefone, linkedin, cidade, curriculo } = req.body;
     const atualizado = await prisma.candidato.update({
       where: { id: candidato.id },
-      data: { telefone, linkedin, cidade, curriculo },
+      data: { cargo, bio, telefone, linkedin, cidade, curriculo },
     });
 
     res.json(atualizado);
