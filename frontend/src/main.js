@@ -52,7 +52,7 @@ function setStoredUserPhoto(photoDataUrl) {
 function getUserPhotoUrl(user) {
   const stored = getStoredUserPhoto()
   if (stored) return stored
-  const fromServer = user?.usuario?.foto || user?.usuario?.avatarUrl || user?.usuario?.avatar
+  const fromServer = user?.usuario?.candidato?.foto || user?.usuario?.empresa?.foto || user?.usuario?.foto || user?.usuario?.avatarUrl || user?.usuario?.avatar
   if (fromServer) return fromServer
   return isEmpresaUser(user) ? '/assets/empresa.png' : '/assets/user.png'
 }
@@ -459,6 +459,7 @@ if (profileForm) {
       updateEndpoint = '/empresas/me'
     } else {
       payload = {
+        foto: getStoredUserPhoto(),
         cargo: profileForm.elements.cargo.value.trim(),
         cidade: profileForm.elements.cidade.value.trim(),
         bio: profileForm.elements.bio.value.trim(),
@@ -784,10 +785,9 @@ async function loadVacancyCandidates() {
     grid.innerHTML = candidaturas.length ? candidaturas.map((item) => {
       const candidate = item.candidato
       const name = candidate.usuario?.nome || 'Candidato'
-      const initials = name.split(/\s+/).slice(0, 2).map((word) => word[0]).join('').toUpperCase()
       const [statusLabel, statusClasses] = applicationStatus(item.status)
       return `<article class="candidate-card glass-card rounded-[24px] p-5 transition md:p-6 ${vacancyClosed ? 'opacity-55 grayscale-[.25]' : ''}" data-application-id="${item.id}" data-status="${item.status.toLowerCase()}">
-        <div class="flex items-start gap-4"><div class="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-gradient-to-br from-blue-100 to-orange-100 text-lg font-extrabold text-navy">${escapeHtml(initials)}</div>
+        <div class="flex items-start gap-4"><img src="${escapeHtml(candidate.foto || '/assets/user.png')}" alt="Foto de ${escapeHtml(name)}" class="h-16 w-16 shrink-0 rounded-full border border-white/90 object-cover shadow-sm" onerror="this.onerror=null;this.src='/assets/user.png'">
         <div class="min-w-0 flex-1"><div class="flex flex-wrap items-center gap-2"><h2 class="truncate text-lg font-bold text-navy">${escapeHtml(name)}</h2><span class="status-badge rounded-full px-2.5 py-1 text-[11px] font-semibold ${statusClasses}">${statusLabel}</span></div>
         <p class="mt-0.5 text-sm text-navy/80">${escapeHtml(candidate.cargo || 'Cargo não informado')}</p><p class="mt-4 text-sm leading-relaxed text-navy/78">${escapeHtml(candidate.bio || 'O candidato ainda não adicionou um resumo profissional.')}</p>
         <div class="mt-3 flex flex-wrap gap-2">${technologyTags(candidate.tecnologias)}</div></div></div>

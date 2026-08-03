@@ -90,9 +90,12 @@ describe("candidatos.controller", () => {
 
     it("atualiza perfil com sucesso", async () => {
       prisma.candidato.findUnique.mockResolvedValue({ id: 1 });
-      prisma.candidato.update.mockResolvedValue({ id: 1, telefone: "999" });
+      prisma.candidato.update.mockResolvedValue({ id: 1, telefone: "999", foto: "data:image/png;base64,abc" });
       const res = mockRes();
-      await atualizar(mockReq({ body: { telefone: "999" } }), res, jest.fn());
+      await atualizar(mockReq({ body: { telefone: "999", foto: "data:image/png;base64,abc" } }), res, jest.fn());
+      expect(prisma.candidato.update).toHaveBeenCalledWith(expect.objectContaining({
+        data: expect.objectContaining({ foto: "data:image/png;base64,abc" }),
+      }));
       expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ telefone: "999" }));
     });
   });

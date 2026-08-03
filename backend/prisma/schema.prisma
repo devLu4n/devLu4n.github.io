@@ -89,6 +89,7 @@ model Vaga {
 
 model Candidato {
   id         Int      @id @default(autoincrement())
+  foto       String?
   cargo      String?
   bio        String?
   telefone   String?
