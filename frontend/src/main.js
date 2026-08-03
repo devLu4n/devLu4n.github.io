@@ -477,6 +477,15 @@ function technologyTags(value) {
     .map((item) => `<span class="tag">${escapeHtml(item)}</span>`).join('')
 }
 
+function normalizeArea(value = '') {
+  const normalized = String(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+  const aliases = {
+    frontend: 'front-end', backend: 'back-end', 'ux-ui': 'ui-ux', uiux: 'ui-ux', uxui: 'ui-ux', fullstack: 'full-stack',
+  }
+  return aliases[normalized] || normalized
+}
+
 async function loadPublicVacancies() {
   const grid = document.getElementById('jobs-grid')
   if (!grid) return
@@ -484,7 +493,7 @@ async function loadPublicVacancies() {
   try {
     const result = await apiRequest('/vagas?limit=50')
     grid.innerHTML = result.dados.map((vaga) => `
-      <article class="job-card glass-card rounded-[22px] p-4" data-area="${escapeHtml(vaga.area.toLowerCase())}" data-date="${new Date(vaga.createdAt).getTime()}" data-search="${escapeHtml(`${vaga.titulo} ${vaga.empresa?.nome || ''} ${vaga.tecnologias}`.toLowerCase())}">
+      <article class="job-card glass-card rounded-[22px] p-4" data-area="${escapeHtml(normalizeArea(vaga.area))}" data-date="${new Date(vaga.createdAt).getTime()}" data-search="${escapeHtml(`${vaga.titulo} ${vaga.empresa?.nome || ''} ${vaga.tecnologias}`.toLowerCase())}">
         <div class="grid h-12 w-12 place-items-center rounded-xl bg-white/80 text-sm font-extrabold text-blueCustom">TI</div>
         <h2 class="mt-3 text-base font-bold text-navy">${escapeHtml(vaga.titulo)}</h2>
         <p class="mt-1 text-xs font-semibold text-orangeCustom">${escapeHtml(vaga.empresa?.nome || 'Empresa')}</p>
