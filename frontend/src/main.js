@@ -47,11 +47,11 @@ function setStoredUserPhoto(photoDataUrl) {
 }
 
 function getUserPhotoUrl(user) {
-  return getStoredUserPhoto()
-    || user?.usuario?.foto
-    || user?.usuario?.avatarUrl
-    || user?.usuario?.avatar
-    || '/assets/user.png'
+  const stored = getStoredUserPhoto()
+  if (stored) return stored
+  const fromServer = user?.usuario?.foto || user?.usuario?.avatarUrl || user?.usuario?.avatar
+  if (fromServer) return fromServer
+  return isEmpresaUser(user) ? '/assets/empresa.png' : '/assets/user.png'
 }
 
 function renderProfileAvatars(user) {
@@ -311,47 +311,69 @@ if (profileForm) {
   const profileStatus = document.getElementById('profile-save-status')
   let profileExists = false
   let registeredUser = null
+  let userIsEmpresa = false
 
-  function renderCandidateProfile(profile = {}) {
+  function renderProfile(profile = {}) {
     profileTitle.textContent = registeredUser?.nome || 'Usuário'
 
-    const role = profile.cargo?.trim() || ''
-    profileRole.textContent = role
-    profileRole.classList.toggle('hidden', !role)
+    if (userIsEmpresa) {
+      const nomeEmpresa = profile.nome?.trim() || ''
+      profileRole.textContent = nomeEmpresa
+      profileRole.classList.toggle('hidden', !nomeEmpresa)
 
-    const city = profile.cidade?.trim() || ''
-    profileCity.querySelector('span:last-child').textContent = city
-    profileCity.classList.toggle('hidden', !city)
-    profileCity.classList.toggle('flex', Boolean(city))
+      const city = profile.cidade?.trim() || ''
+      profileCity.querySelector('span:last-child').textContent = city
+      profileCity.classList.toggle('hidden', !city)
+      profileCity.classList.toggle('flex', Boolean(city))
 
-    profileAbout.textContent = profile.bio?.trim() || ''
-    profileForm.elements.nome.value = registeredUser?.nome || ''
-    profileForm.elements.email.value = registeredUser?.email || ''
-    profileForm.elements.cargo.value = role
-    profileForm.elements.cidade.value = city
-    profileForm.elements.bio.value = profile.bio || ''
+      profileAbout.textContent = profile.descricao?.trim() || ''
+      profileForm.elements.nome.value = registeredUser?.nome || ''
+      profileForm.elements.email.value = registeredUser?.email || ''
+      profileForm.elements.cargo.value = nomeEmpresa
+      profileForm.elements.cidade.value = city
+      profileForm.elements.bio.value = profile.descricao || ''
+    } else {
+      const role = profile.cargo?.trim() || ''
+      profileRole.textContent = role
+      profileRole.classList.toggle('hidden', !role)
+
+      const city = profile.cidade?.trim() || ''
+      profileCity.querySelector('span:last-child').textContent = city
+      profileCity.classList.toggle('hidden', !city)
+      profileCity.classList.toggle('flex', Boolean(city))
+
+      profileAbout.textContent = profile.bio?.trim() || ''
+      profileForm.elements.nome.value = registeredUser?.nome || ''
+      profileForm.elements.email.value = registeredUser?.email || ''
+      profileForm.elements.cargo.value = role
+      profileForm.elements.cidade.value = city
+      profileForm.elements.bio.value = profile.bio || ''
+    }
   }
 
-  async function loadCandidateProfile() {
+  async function loadProfile() {
     const currentUser = await getCurrentUser()
     if (!currentUser?.usuario) {
-      location.replace('/src/pages/login/login.html?tipo=candidato')
+      location.replace('/src/pages/login/login.html')
       return
     }
 
     registeredUser = currentUser.usuario
+    userIsEmpresa = isEmpresaUser(currentUser)
     renderProfileAvatars(currentUser)
 
+    const endpoint = userIsEmpresa ? '/empresas/me' : '/candidatos/me'
+
     try {
-      const profile = await apiRequest('/candidatos/me')
+      const profile = await apiRequest(endpoint)
       profileExists = true
-      renderCandidateProfile(profile)
+      renderProfile(profile)
     } catch (error) {
       if (error.status !== 404) {
         profileStatus.className = 'mt-3 text-sm font-medium text-red-600'
         profileStatus.textContent = error.message
       }
-      renderCandidateProfile()
+      renderProfile()
     }
   }
 
@@ -376,19 +398,35 @@ if (profileForm) {
     profileStatus.textContent = ''
     setSubmitting(profileForm, true)
 
-    const payload = {
-      cargo: profileForm.elements.cargo.value.trim(),
-      cidade: profileForm.elements.cidade.value.trim(),
-      bio: profileForm.elements.bio.value.trim(),
+    let payload
+    let createEndpoint
+    let updateEndpoint
+
+    if (userIsEmpresa) {
+      payload = {
+        nome: profileForm.elements.cargo.value.trim(),
+        descricao: profileForm.elements.bio.value.trim(),
+        cidade: profileForm.elements.cidade.value.trim(),
+      }
+      createEndpoint = '/empresas'
+      updateEndpoint = '/empresas/me'
+    } else {
+      payload = {
+        cargo: profileForm.elements.cargo.value.trim(),
+        cidade: profileForm.elements.cidade.value.trim(),
+        bio: profileForm.elements.bio.value.trim(),
+      }
+      createEndpoint = '/candidatos'
+      updateEndpoint = '/candidatos/me'
     }
 
     try {
-      const profile = await apiRequest(profileExists ? '/candidatos/me' : '/candidatos', {
+      const profile = await apiRequest(profileExists ? updateEndpoint : createEndpoint, {
         method: profileExists ? 'PUT' : 'POST',
         body: JSON.stringify(payload),
       })
       profileExists = true
-      renderCandidateProfile(profile)
+      renderProfile(profile)
       profileStatus.className = 'mt-3 text-sm font-medium text-emerald-700'
       profileStatus.textContent = 'Perfil salvo com sucesso.'
       document.getElementById('profile-modal')?.close()
@@ -401,7 +439,7 @@ if (profileForm) {
     }
   })
 
-  loadCandidateProfile()
+  loadProfile()
 }
 
 document.querySelectorAll('dialog').forEach((dialog) => {
