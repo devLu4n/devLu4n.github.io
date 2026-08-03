@@ -80,26 +80,22 @@ async function login(req, res, next) {
 
     const usuario = await prisma.usuario.findUnique({ where: { email } });
     if (!usuario) {
-      return res.status(401).json({ erro: "Credenciais invalidas." });
+      return res.status(401).json({ erro: "Conta ou credenciais invalidas." });
     }
 
     if (!usuario.senhaHash) {
-      return res.status(401).json({ erro: "Credenciais invalidas." });
+      return res.status(401).json({ erro: "Conta ou credenciais invalidas." });
     }
 
     const senhaCorreta = await bcrypt.compare(senha, usuario.senhaHash);
     if (!senhaCorreta) {
-      return res.status(401).json({ erro: "Credenciais invalidas." });
+      return res.status(401).json({ erro: "Conta ou credenciais invalidas." });
     }
 
     if (tipoConta) {
       const roleEsperada = String(tipoConta).toLowerCase() === "empresa" ? "EMPRESA" : "CANDIDATO";
       if (usuario.role !== roleEsperada) {
-        return res.status(403).json({
-          erro: roleEsperada === "EMPRESA"
-            ? "Esta conta nao e uma conta empresarial. Entre pela opcao Candidato."
-            : "Esta conta e empresarial. Entre pela opcao Empresa.",
-        });
+        return res.status(401).json({ erro: "Conta ou credenciais invalidas." });
       }
     }
 
