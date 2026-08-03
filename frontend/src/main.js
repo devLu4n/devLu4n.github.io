@@ -3,6 +3,69 @@ import { apiRequest } from './api.js'
 
 window.aladinApi = { request: apiRequest }
 
+const EMPRESA_ONLY_PATHS = [
+  '/src/pages/main/empresa/painel-empresa.html',
+  '/src/pages/main/empresa/publicar-vaga.html',
+  '/src/pages/main/empresa/candidatos-vaga.html',
+  '/src/pages/main/user/gerenciar-vagas.html',
+]
+
+let currentUserCache
+
+async function fetchCurrentUser() {
+  try {
+    return await apiRequest('/auth/me')
+  } catch {
+    return null
+  }
+}
+
+async function getCurrentUser() {
+  if (currentUserCache !== undefined) return currentUserCache
+  currentUserCache = await fetchCurrentUser()
+  return currentUserCache
+}
+
+function isEmpresaUser(user) {
+  return user?.usuario?.role === 'EMPRESA'
+}
+
+function hideEmpresaLinks() {
+  document.querySelectorAll('a[href*="painel-empresa.html"], a[href*="gerenciar-vagas.html"]').forEach((link) => {
+    link.style.display = 'none'
+  })
+}
+
+async function applyEmpresaAccessRules() {
+  const user = await getCurrentUser()
+  if (!isEmpresaUser(user)) {
+    hideEmpresaLinks()
+  }
+}
+
+async function guardEmpresaPage() {
+  const user = await getCurrentUser()
+  if (!isEmpresaUser(user)) {
+    const redirectTo = user
+      ? '/src/pages/main/user/vagas.html'
+      : '/src/pages/login/login.html?tipo=empresa'
+    location.replace(redirectTo)
+  }
+}
+
+async function initPageSecurity() {
+  await applyEmpresaAccessRules()
+  if (EMPRESA_ONLY_PATHS.some((path) => location.pathname.endsWith(path))) {
+    await guardEmpresaPage()
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initPageSecurity)
+} else {
+  initPageSecurity()
+}
+
 document.querySelectorAll('nav[aria-label="Navegação principal"]').forEach((nav) => {
   const links = nav.querySelector(':scope > ul')
   if (!links) return
