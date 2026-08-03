@@ -1,26 +1,39 @@
 # Frontend do Aladin
 
-Frontend multipágina construído com Vite, Tailwind CSS 4 e JavaScript vanilla.
+Frontend multipágina construído com Vite, Tailwind CSS 4 e JavaScript.
+
+Consulte o [README principal](../README.md) para instalação completa, funcionalidades, Docker e deploy.
 
 ## Comandos
 
+Execute dentro de `frontend/`:
+
 ```bash
-npm install
+npm ci
 npm run dev
 npm run build
 npm run preview
 ```
 
-O servidor de desenvolvimento abre em `http://localhost:5173` e encaminha requisições `/api` para o backend em `http://localhost:3333`.
+O servidor de desenvolvimento utiliza `http://localhost:5173` e encaminha `/api` para `http://localhost:3333`.
 
-Para usar uma API em outra origem, defina:
+Para apontar o frontend para outra API, defina:
 
 ```env
 VITE_API_URL=https://api.exemplo.com/api
 ```
 
-## Páginas
+## Estrutura
 
-Todas as páginas em `src/pages` são entradas do build configuradas em `vite.config.js`. O diretório de saída preserva a mesma estrutura de caminhos.
+```text
+public/assets/   imagens e arquivos públicos
+src/components/ comportamentos visuais compartilhados
+src/core/       autenticação, autorização e sessão
+src/features/   funcionalidades organizadas por domínio
+src/pages/      entradas HTML da aplicação multipágina
+src/api.js      cliente HTTP
+src/main.js     inicialização das páginas
+src/style.css   estilos compartilhados
+```
 
-Os estilos compartilhados ficam em `src/style.css`, os tokens em `tailwind.config.js`, as integrações comuns em `src/main.js` e o cliente HTTP em `src/api.js`.
+Todas as páginas de produção precisam estar registradas em `vite.config.js`. O build preserva a estrutura de caminhos dentro de `dist/`.
