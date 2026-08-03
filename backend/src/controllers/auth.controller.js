@@ -38,7 +38,13 @@ async function registrar(req, res, next) {
     const senhaHash = await bcrypt.hash(senha, SALT_ROUNDS);
 
     const usuario = await prisma.usuario.create({
-      data: { nome, email, senhaHash, role: roleUsuario },
+      data: {
+        nome,
+        email,
+        senhaHash,
+        role: roleUsuario,
+        empresa: roleUsuario === "EMPRESA" ? { create: { nome } } : undefined,
+      },
     });
 
     await new Promise((resolve, reject) => {

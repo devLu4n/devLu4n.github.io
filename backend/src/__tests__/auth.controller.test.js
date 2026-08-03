@@ -112,6 +112,29 @@ describe("auth.controller", () => {
       expect(req.session.usuarioId).toBe(5);
       expect(res.status).toHaveBeenCalledWith(201);
     });
+
+    it("cria o perfil empresarial junto com a conta de empresa", async () => {
+      prisma.usuario.findUnique.mockResolvedValue(null);
+      prisma.usuario.create.mockResolvedValue({
+        id: 8, nome: "Empresa Teste", email: "empresa@teste.com", senhaHash: "hash", role: "EMPRESA",
+      });
+      bcrypt.hash.mockResolvedValue("hash");
+
+      const req = mockReq({
+        body: { nome: "Empresa Teste", email: "empresa@teste.com", senha: "123456", role: "EMPRESA" },
+      });
+      const res = mockRes();
+
+      await registrar(req, res, jest.fn());
+
+      expect(prisma.usuario.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          role: "EMPRESA",
+          empresa: { create: { nome: "Empresa Teste" } },
+        }),
+      });
+      expect(res.status).toHaveBeenCalledWith(201);
+    });
   });
 
   describe("login", () => {

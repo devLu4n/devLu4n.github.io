@@ -9,6 +9,10 @@ jest.mock("../config/prisma", () => ({
   },
   empresa: {
     findUnique: jest.fn(),
+    upsert: jest.fn(),
+  },
+  usuario: {
+    findUnique: jest.fn(),
   },
 }));
 
@@ -241,6 +245,30 @@ describe("vagas.controller", () => {
 
       await criar(req, res, jest.fn());
 
+      expect(res.status).toHaveBeenCalledWith(201);
+    });
+
+    it("cria automaticamente o perfil de empresa ausente", async () => {
+      prisma.empresa.findUnique.mockResolvedValue(null);
+      prisma.usuario.findUnique.mockResolvedValue({ nome: "Empresa Teste" });
+      prisma.empresa.upsert.mockResolvedValue({ id: 7, nome: "Empresa Teste" });
+      prisma.vaga.create.mockResolvedValue({ id: 2, titulo: "DevOps" });
+
+      const req = mockReq({
+        body: { titulo: "DevOps", descricao: "D", area: "DevOps", cidade: "Maceio" },
+      });
+      const res = mockRes();
+
+      await criar(req, res, jest.fn());
+
+      expect(prisma.empresa.upsert).toHaveBeenCalledWith({
+        where: { usuarioId: 1 },
+        update: {},
+        create: { nome: "Empresa Teste", usuarioId: 1 },
+      });
+      expect(prisma.vaga.create).toHaveBeenCalledWith(
+        expect.objectContaining({ data: expect.objectContaining({ empresaId: 7 }) })
+      );
       expect(res.status).toHaveBeenCalledWith(201);
     });
   });

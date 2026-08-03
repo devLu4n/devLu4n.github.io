@@ -124,10 +124,19 @@ async function criar(req, res, next) {
       return res.status(400).json({ erro: errosSalario.join(" ") });
     }
 
-    const empresa = await prisma.empresa.findUnique({ where: { usuarioId: req.session.usuarioId } });
+    let empresa = await prisma.empresa.findUnique({ where: { usuarioId: req.session.usuarioId } });
     if (!empresa) {
-      return res.status(400).json({
-        erro: "Voce precisa cadastrar uma empresa antes de publicar vagas.",
+      const usuario = await prisma.usuario.findUnique({
+        where: { id: req.session.usuarioId },
+        select: { nome: true },
+      });
+      if (!usuario) {
+        return res.status(404).json({ erro: "Usuario nao encontrado." });
+      }
+      empresa = await prisma.empresa.upsert({
+        where: { usuarioId: req.session.usuarioId },
+        update: {},
+        create: { nome: usuario.nome, usuarioId: req.session.usuarioId },
       });
     }
 
