@@ -1,5 +1,6 @@
 .git
 .gitignore
+.github
 .vscode
 .docker-cli-temp
 **/node_modules
