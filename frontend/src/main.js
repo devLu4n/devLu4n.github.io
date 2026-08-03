@@ -490,20 +490,9 @@ async function loadPublicVacancies() {
         <p class="mt-1 text-xs font-semibold text-orangeCustom">${escapeHtml(vaga.empresa?.nome || 'Empresa')}</p>
         <p class="mt-1 flex items-center gap-1.5 text-sm text-navy/75"><span aria-hidden="true">⌖</span> ${escapeHtml(vaga.modalidade === 'REMOTO' ? 'Remoto' : vaga.cidade)}</p>
         <div class="mt-4 flex flex-wrap gap-2">${technologyTags(vaga.tecnologias)}</div>
-        <button class="job-details orange-button mt-4 w-full rounded-xl py-2.5 text-sm font-semibold text-white" data-id="${vaga.id}" data-title="${escapeHtml(vaga.titulo)}" data-company="${escapeHtml(vaga.empresa?.nome || '')}" data-description="${escapeHtml(vaga.descricao)}">Ver vaga</button>
+        <a class="job-details orange-button mt-4 block w-full rounded-xl py-2.5 text-center text-sm font-semibold text-white" href="/src/pages/main/user/detalhes-vaga.html?id=${vaga.id}">Ver vaga</a>
       </article>`).join('')
     document.getElementById('jobs-empty')?.classList.toggle('hidden', result.dados.length > 0)
-
-    grid.addEventListener('click', (event) => {
-      const button = event.target.closest('.job-details')
-      if (!button) return
-      document.getElementById('job-modal-title').textContent = button.dataset.title
-      document.getElementById('job-modal-company').textContent = button.dataset.company
-      document.getElementById('job-modal-description').textContent = button.dataset.description
-      const applyButton = document.querySelector('#job-modal .orange-button:not(#close-job-modal)')
-      if (applyButton) applyButton.dataset.vagaId = button.dataset.id
-      document.getElementById('job-modal').showModal()
-    })
   } catch (error) {
     grid.innerHTML = `<p class="sm:col-span-2 lg:col-span-3 text-center text-red-600">${escapeHtml(error.message)}</p>`
   }
@@ -543,6 +532,47 @@ async function loadCompanyVacancies() {
 
 loadPublicVacancies()
 loadCompanyVacancies()
+
+function formatSalary(minimum, maximum) {
+  const currency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(value)
+  if (minimum != null && maximum != null) return `${currency(minimum)} – ${currency(maximum)}`
+  if (minimum != null) return `A partir de ${currency(minimum)}`
+  if (maximum != null) return `Até ${currency(maximum)}`
+  return 'Salário a combinar'
+}
+
+async function loadVacancyDetails() {
+  if (!location.pathname.endsWith('/user/detalhes-vaga.html')) return
+  const vagaId = new URLSearchParams(location.search).get('id')
+  const page = document.querySelector('[aria-labelledby="job-title"]')
+  if (!vagaId || !/^\d+$/.test(vagaId)) {
+    if (page) page.innerHTML = '<p class="p-10 text-center text-red-600">Vaga inválida ou não informada.</p>'
+    return
+  }
+  try {
+    const vaga = await apiRequest(`/vagas/${vagaId}`)
+    const technologies = String(vaga.tecnologias || '').split(',').map((item) => item.trim()).filter(Boolean)
+    document.title = `${vaga.titulo} — Aladin`
+    document.getElementById('job-title').textContent = vaga.titulo
+    document.getElementById('job-company').textContent = vaga.empresa?.nome || 'Empresa'
+    document.getElementById('job-location').textContent = vaga.cidade
+    document.getElementById('job-modality').textContent = `Modalidade: ${vaga.modalidade.charAt(0) + vaga.modalidade.slice(1).toLowerCase()}`
+    document.getElementById('job-salary').textContent = formatSalary(vaga.salarioMin, vaga.salarioMax)
+    document.getElementById('job-description').textContent = vaga.descricao
+    document.getElementById('job-technologies').innerHTML = technologies.length ? technologies.map((item) => `<span class="technology">${escapeHtml(item)}</span>`).join('') : '<span class="text-sm text-mutedCustom">Tecnologias não informadas.</span>'
+    document.getElementById('company-title').textContent = vaga.empresa?.nome || 'Empresa'
+    document.getElementById('company-initials').textContent = (vaga.empresa?.nome || 'E').split(/\s+/).slice(0, 3).map((word) => word[0]).join('').toUpperCase()
+    document.getElementById('company-description').textContent = vaga.empresa?.descricao || 'Conheça a empresa responsável por esta oportunidade.'
+    document.getElementById('company-link').href = `empresas.html?id=${vaga.empresaId}`
+    document.getElementById('apply-dialog-title').textContent = vaga.titulo
+    document.getElementById('apply-dialog-description').textContent = `Confirme o envio do seu perfil para ${vaga.empresa?.nome || 'a empresa responsável'}.`
+    document.getElementById('apply-form').dataset.vagaId = vaga.id
+  } catch (error) {
+    if (page) page.innerHTML = `<p class="p-10 text-center text-red-600">${escapeHtml(error.message)}</p>`
+  }
+}
+
+loadVacancyDetails()
 
 function initInterviewVacancyClosure() {
   if (!location.pathname.endsWith('/empresa/candidatos-vaga.html')) return

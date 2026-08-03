@@ -252,7 +252,7 @@
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                   <path d="M3 21h18M5 21V7l7-4 7 4v14M9 10h1M14 10h1M9 14h1M14 14h1"></path>
                 </svg>
-                Maceió Tech Solutions
+                <span id="job-company">Maceió Tech Solutions</span>
               </span>
 
               <span class="inline-flex items-center gap-2">
@@ -260,17 +260,17 @@
                   <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path>
                   <circle cx="12" cy="10" r="2.5"></circle>
                 </svg>
-                Maceió, AL
+                <span id="job-location">Maceió, AL</span>
               </span>
 
-              <span>Modalidade: Remoto</span>
+              <span id="job-modality">Modalidade: Remoto</span>
 
               <span class="inline-flex items-center gap-2">
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                   <circle cx="12" cy="12" r="9"></circle>
                   <path d="M16 8.5c-.7-.8-1.8-1.3-3-1.3-1.7 0-3 1-3 2.3 0 1.4 1.1 2 3 2.5 2 .5 3 1.1 3 2.5 0 1.3-1.3 2.3-3 2.3-1.3 0-2.5-.5-3.3-1.4M13 5.5v13"></path>
                 </svg>
-                R$ 8 mil – 12 mil
+                <span id="job-salary">R$ 8 mil – 12 mil</span>
               </span>
             </div>
           </div>
@@ -283,7 +283,7 @@
               Sobre a vaga
             </h2>
 
-            <div class="mt-5 space-y-5 text-[15px] leading-[1.8] text-navy/82">
+            <div id="job-description" class="mt-5 whitespace-pre-line text-[15px] leading-[1.8] text-navy/82">
               <p>
                 A Maceió Tech Solutions procura uma pessoa desenvolvedora Full Stack para atuar na evolução
                 de produtos digitais utilizados por empresas e instituições de Alagoas.
@@ -319,7 +319,7 @@
                 </p>
               </div>
 
-              <div class="mt-4 flex flex-wrap gap-3">
+              <div id="job-technologies" class="mt-4 flex flex-wrap gap-3">
                 <span class="technology">React</span>
                 <span class="technology">Node.js</span>
                 <span class="technology">TypeScript</span>
@@ -348,7 +348,7 @@
               </p>
 
               <div class="mt-4 flex items-center gap-3">
-                <div class="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[linear-gradient(135deg,#16385F,#3975F6)] text-sm font-extrabold text-white">
+                <div id="company-initials" class="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[linear-gradient(135deg,#16385F,#3975F6)] text-sm font-extrabold text-white">
                   MTS
                 </div>
 
@@ -358,12 +358,13 @@
                 </div>
               </div>
 
-              <p class="mt-4 text-sm leading-relaxed text-navy/78">
+              <p id="company-description" class="mt-4 text-sm leading-relaxed text-navy/78">
                 Empresa alagoana especializada em desenvolvimento de software, plataformas digitais e
                 transformação tecnológica.
               </p>
 
               <a
+                id="company-link"
                 href="empresas.html"
                 class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-blueCustom hover:text-orangeDark"
               >
@@ -446,7 +447,7 @@
                 Candidatura
               </p>
 
-              <h2 class="mt-1 text-2xl font-extrabold">
+              <h2 id="apply-dialog-title" class="mt-1 text-2xl font-extrabold">
                 Desenvolvedor Full Stack
               </h2>
             </div>
@@ -461,7 +462,7 @@
             </button>
           </div>
 
-          <p class="mt-5 text-sm leading-relaxed text-mutedCustom">
+          <p id="apply-dialog-description" class="mt-5 text-sm leading-relaxed text-mutedCustom">
             Confirme o envio do seu perfil para a Maceió Tech Solutions.
           </p>
 
@@ -572,7 +573,7 @@
     closeApplyDialog.addEventListener("click", closeApplicationDialog);
     cancelApplication.addEventListener("click", closeApplicationDialog);
 
-    applyForm.addEventListener("submit", (event) => {
+    applyForm.addEventListener("submit", async (event) => {
       event.preventDefault();
 
       if (!applicationConfirmation.checked) {
@@ -581,12 +582,24 @@
         return;
       }
 
-      closeApplicationDialog();
-      showToast("Candidatura enviada com sucesso.");
-
-      applyButton.textContent = "Candidatura enviada";
-      applyButton.disabled = true;
-      applyButton.classList.add("cursor-not-allowed", "opacity-65");
+      const submitButton = applyForm.querySelector('[type="submit"]');
+      submitButton.disabled = true;
+      try {
+        await window.aladinApi.request(`/candidaturas/vagas/${applyForm.dataset.vagaId}`, {
+          method: 'POST',
+          body: JSON.stringify({})
+        });
+        closeApplicationDialog();
+        showToast("Candidatura enviada com sucesso.");
+        applyButton.textContent = "Candidatura enviada";
+        applyButton.disabled = true;
+        applyButton.classList.add("cursor-not-allowed", "opacity-65");
+      } catch (error) {
+        applicationError.textContent = error.message;
+        applicationError.classList.remove("hidden");
+      } finally {
+        submitButton.disabled = false;
+      }
     });
 
     function showToast(message) {
