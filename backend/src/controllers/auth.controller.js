@@ -67,7 +67,7 @@ async function registrar(req, res, next) {
 
 async function login(req, res, next) {
   try {
-    let { email, senha } = req.body;
+    let { email, senha, tipoConta } = req.body;
 
     if (!email || !senha) {
       return res.status(400).json({ erro: "email e senha sao obrigatorios." });
@@ -90,6 +90,17 @@ async function login(req, res, next) {
     const senhaCorreta = await bcrypt.compare(senha, usuario.senhaHash);
     if (!senhaCorreta) {
       return res.status(401).json({ erro: "Credenciais invalidas." });
+    }
+
+    if (tipoConta) {
+      const roleEsperada = String(tipoConta).toLowerCase() === "empresa" ? "EMPRESA" : "CANDIDATO";
+      if (usuario.role !== roleEsperada) {
+        return res.status(403).json({
+          erro: roleEsperada === "EMPRESA"
+            ? "Esta conta nao e uma conta empresarial. Entre pela opcao Candidato."
+            : "Esta conta e empresarial. Entre pela opcao Empresa.",
+        });
+      }
     }
 
     await new Promise((resolve, reject) => {

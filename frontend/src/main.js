@@ -255,6 +255,7 @@ loginForm?.addEventListener('submit', async (event) => {
       body: JSON.stringify({
         email: loginForm.elements.email.value,
         senha: loginForm.elements.password.value,
+        tipoConta: loginForm.elements.tipo_conta.value,
       }),
     })
 

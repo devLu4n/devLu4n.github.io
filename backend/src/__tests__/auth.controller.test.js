@@ -217,6 +217,38 @@ describe("auth.controller", () => {
         expect.objectContaining({ mensagem: expect.any(String) })
       );
     });
+
+    it("impede conta empresarial no login de candidato", async () => {
+      prisma.usuario.findUnique.mockResolvedValue({
+        id: 4, email: "empresa@e.com", senhaHash: "hash", role: "EMPRESA",
+      });
+      bcrypt.compare.mockResolvedValue(true);
+      const req = mockReq({
+        body: { email: "empresa@e.com", senha: "123456", tipoConta: "candidato" },
+      });
+      const res = mockRes();
+
+      await login(req, res, jest.fn());
+
+      expect(res.status).toHaveBeenCalledWith(403);
+      expect(req.session.regenerate).not.toHaveBeenCalled();
+    });
+
+    it("impede conta de candidato no login empresarial", async () => {
+      prisma.usuario.findUnique.mockResolvedValue({
+        id: 5, email: "candidato@e.com", senhaHash: "hash", role: "CANDIDATO",
+      });
+      bcrypt.compare.mockResolvedValue(true);
+      const req = mockReq({
+        body: { email: "candidato@e.com", senha: "123456", tipoConta: "empresa" },
+      });
+      const res = mockRes();
+
+      await login(req, res, jest.fn());
+
+      expect(res.status).toHaveBeenCalledWith(403);
+      expect(req.session.regenerate).not.toHaveBeenCalled();
+    });
   });
 
   describe("logout", () => {
