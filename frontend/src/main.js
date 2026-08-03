@@ -103,9 +103,22 @@ function applyCompanyNavigation() {
   })
 }
 
+function applyAuthenticatedLogoLinks(user) {
+  if (!user?.usuario) return
+  const destination = isEmpresaUser(user)
+    ? '/src/pages/main/empresa/painel-empresa.html'
+    : '/src/pages/main/user/vagas.html'
+  document.querySelectorAll('a[href="/"]').forEach((link) => {
+    if (link.querySelector('img[src*="aladin-logo"], img[src*="white-logo"]') || /aladin/i.test(link.getAttribute('aria-label') || '')) {
+      link.href = destination
+    }
+  })
+}
+
 async function applyEmpresaAccessRules() {
   const user = await getCurrentUser()
   renderProfileAvatars(user)
+  applyAuthenticatedLogoLinks(user)
   if (isEmpresaUser(user)) {
     hideCandidateNavigationLinks()
     applyCompanyNavigation()
@@ -231,7 +244,7 @@ document.querySelectorAll('#profile-menu button').forEach((logoutButton) => {
     try {
       await apiRequest('/auth/logout', { method: 'POST' })
       currentUserCache = null
-      window.location.replace('/src/pages/login/login.html')
+      window.location.replace('/')
     } catch (error) {
       logoutButton.disabled = false
       logoutButton.textContent = originalText
