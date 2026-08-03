@@ -30,6 +30,37 @@ function isEmpresaUser(user) {
   return user?.usuario?.role === 'EMPRESA'
 }
 
+function getUserPhotoUrl(user) {
+  return user?.usuario?.foto
+    || user?.usuario?.avatarUrl
+    || user?.usuario?.avatar
+    || '/assets/user.png'
+}
+
+function renderProfileAvatars(user) {
+  const photoUrl = getUserPhotoUrl(user)
+  const profileButton = document.querySelector('#profile-menu-button')
+  const avatarContainer = profileButton?.querySelector('img') || profileButton?.querySelector('span')
+
+  if (avatarContainer) {
+    if (avatarContainer.tagName === 'IMG') {
+      avatarContainer.src = photoUrl
+      return
+    }
+
+    const img = document.createElement('img')
+    img.src = photoUrl
+    img.alt = 'Foto de perfil'
+    img.className = 'h-10 w-10 rounded-full border border-white/80 object-cover shadow-sm'
+    avatarContainer.replaceWith(img)
+  }
+
+  const profileAvatarImage = document.getElementById('profile-avatar')
+  if (profileAvatarImage) {
+    profileAvatarImage.src = photoUrl
+  }
+}
+
 function hideEmpresaLinks() {
   document.querySelectorAll('a[href*="painel-empresa.html"], a[href*="gerenciar-vagas.html"]').forEach((link) => {
     link.style.display = 'none'
@@ -38,6 +69,7 @@ function hideEmpresaLinks() {
 
 async function applyEmpresaAccessRules() {
   const user = await getCurrentUser()
+  renderProfileAvatars(user)
   if (!isEmpresaUser(user)) {
     hideEmpresaLinks()
   }
