@@ -30,8 +30,25 @@ function isEmpresaUser(user) {
   return user?.usuario?.role === 'EMPRESA'
 }
 
+function getStoredUserPhoto() {
+  try {
+    return localStorage.getItem('aladin-user-photo')
+  } catch {
+    return null
+  }
+}
+
+function setStoredUserPhoto(photoDataUrl) {
+  try {
+    localStorage.setItem('aladin-user-photo', photoDataUrl)
+  } catch {
+    // ignoring localStorage failures
+  }
+}
+
 function getUserPhotoUrl(user) {
-  return user?.usuario?.foto
+  return getStoredUserPhoto()
+    || user?.usuario?.foto
     || user?.usuario?.avatarUrl
     || user?.usuario?.avatar
     || '/assets/user.png'
@@ -290,6 +307,7 @@ if (profileForm) {
   const profileRole = document.getElementById('profile-role')
   const profileCity = document.getElementById('profile-city')
   const profileAbout = document.getElementById('profile-about')
+  const profilePhotoInput = document.getElementById('profile-photo-input')
   const profileStatus = document.getElementById('profile-save-status')
   let profileExists = false
   let registeredUser = null
@@ -322,6 +340,7 @@ if (profileForm) {
     }
 
     registeredUser = currentUser.usuario
+    renderProfileAvatars(currentUser)
 
     try {
       const profile = await apiRequest('/candidatos/me')
@@ -335,6 +354,22 @@ if (profileForm) {
       renderCandidateProfile()
     }
   }
+
+  profilePhotoInput?.addEventListener('change', (event) => {
+    const file = event.target.files?.[0]
+    if (!file || !file.type.startsWith('image/')) return
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      const url = reader.result
+      if (typeof url === 'string') {
+        setStoredUserPhoto(url)
+        document.getElementById('profile-avatar').src = url
+        renderProfileAvatars({ usuario: registeredUser })
+      }
+    }
+    reader.readAsDataURL(file)
+  })
 
   profileForm.addEventListener('submit', async (event) => {
     event.preventDefault()
