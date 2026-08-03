@@ -658,7 +658,10 @@ async function loadVacancyDetails() {
     return
   }
   try {
-    const vaga = await apiRequest(`/vagas/${vagaId}`)
+    const [vaga, currentUser] = await Promise.all([
+      apiRequest(`/vagas/${vagaId}`),
+      getCurrentUser(),
+    ])
     const technologies = String(vaga.tecnologias || '').split(',').map((item) => item.trim()).filter(Boolean)
     document.title = `${vaga.titulo} — Aladin`
     document.getElementById('job-title').textContent = vaga.titulo
@@ -669,12 +672,37 @@ async function loadVacancyDetails() {
     document.getElementById('job-description').textContent = vaga.descricao
     document.getElementById('job-technologies').innerHTML = technologies.length ? technologies.map((item) => `<span class="technology">${escapeHtml(item)}</span>`).join('') : '<span class="text-sm text-mutedCustom">Tecnologias não informadas.</span>'
     document.getElementById('company-title').textContent = vaga.empresa?.nome || 'Empresa'
-    document.getElementById('company-initials').textContent = (vaga.empresa?.nome || 'E').split(/\s+/).slice(0, 3).map((word) => word[0]).join('').toUpperCase()
+    const companyAvatar = document.getElementById('company-initials')
+    const companyPhoto = document.createElement('img')
+    companyPhoto.id = 'company-initials'
+    companyPhoto.src = vaga.empresa?.foto || '/assets/empresa.png'
+    companyPhoto.alt = `Foto de perfil de ${vaga.empresa?.nome || 'empresa'}`
+    companyPhoto.className = 'h-14 w-14 shrink-0 rounded-2xl border border-white/90 object-cover shadow-sm'
+    companyPhoto.addEventListener('error', () => {
+      companyPhoto.src = '/assets/empresa.png'
+    }, { once: true })
+    companyAvatar.replaceWith(companyPhoto)
     document.getElementById('company-description').textContent = vaga.empresa?.descricao || 'Conheça a empresa responsável por esta oportunidade.'
     document.getElementById('company-link').href = `empresas.html?id=${vaga.empresaId}`
     document.getElementById('apply-dialog-title').textContent = vaga.titulo
     document.getElementById('apply-dialog-description').textContent = `Confirme o envio do seu perfil para ${vaga.empresa?.nome || 'a empresa responsável'}.`
     document.getElementById('apply-form').dataset.vagaId = vaga.id
+
+    const applyButton = document.getElementById('apply-button')
+    if (vaga.status === 'FECHADA') {
+      applyButton.textContent = 'Vaga encerrada'
+      applyButton.disabled = true
+      applyButton.classList.add('cursor-not-allowed', 'opacity-65')
+    } else if (currentUser?.usuario?.role === 'CANDIDATO') {
+      const applications = await apiRequest('/candidaturas/minhas').catch(() => [])
+      const existingApplication = applications.find((application) => String(application.vaga?.id) === String(vaga.id))
+      if (existingApplication) {
+        const [statusLabel] = applicationStatus(existingApplication.status)
+        applyButton.textContent = `Candidatura enviada · ${statusLabel}`
+        applyButton.disabled = true
+        applyButton.classList.add('cursor-not-allowed', 'opacity-65')
+      }
+    }
   } catch (error) {
     if (page) page.innerHTML = `<p class="p-10 text-center text-red-600">${escapeHtml(error.message)}</p>`
   }
