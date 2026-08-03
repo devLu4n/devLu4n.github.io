@@ -230,7 +230,8 @@ describe("auth.controller", () => {
 
       await login(req, res, jest.fn());
 
-      expect(res.status).toHaveBeenCalledWith(403);
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith({ erro: "Conta ou credenciais invalidas." });
       expect(req.session.regenerate).not.toHaveBeenCalled();
     });
 
@@ -246,7 +247,8 @@ describe("auth.controller", () => {
 
       await login(req, res, jest.fn());
 
-      expect(res.status).toHaveBeenCalledWith(403);
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith({ erro: "Conta ou credenciais invalidas." });
       expect(req.session.regenerate).not.toHaveBeenCalled();
     });
   });
