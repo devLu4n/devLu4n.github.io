@@ -55,11 +55,18 @@ async function candidatar(req, res, next) {
       return res.status(409).json({ erro: "Voce ja se candidatou a esta vaga." });
     }
 
-    const { mensagem, curriculo } = req.body;
+    const { mensagem, curriculo, tecnologias } = req.body;
+    if (!Array.isArray(tecnologias) || !tecnologias.some((item) => typeof item === "string" && item.trim())) {
+      return res.status(400).json({ erro: "Informe pelo menos uma tecnologia." });
+    }
+    const tecnologiasNormalizadas = tecnologias
+      .filter((item) => typeof item === "string" && item.trim())
+      .map((item) => item.trim())
+      .slice(0, 20);
 
     await prisma.candidato.update({
       where: { id: candidato.id },
-      data: { curriculo: JSON.stringify(curriculo) },
+      data: { curriculo: JSON.stringify(curriculo), tecnologias: tecnologiasNormalizadas.join(", ") },
     });
 
     const candidatura = await prisma.candidatura.create({

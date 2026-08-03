@@ -647,6 +647,8 @@ async function loadVacancyCandidates() {
     if (vacancyClosed) {
       document.getElementById('candidatos-title').insertAdjacentHTML('afterend', '<span class="mt-2 inline-flex rounded-full bg-slate-200 px-3 py-1 text-xs font-semibold text-slate-600">Vaga fechada</span>')
     }
+    const closeVacancyButton = document.getElementById('close-vacancy-after-interview')
+    if (closeVacancyButton) closeVacancyButton.classList.toggle('hidden', vacancyClosed)
 
     const byId = new Map(candidaturas.map((item) => [String(item.id), item]))
     grid.innerHTML = candidaturas.length ? candidaturas.map((item) => {
@@ -658,14 +660,14 @@ async function loadVacancyCandidates() {
       return `<article class="candidate-card glass-card rounded-[24px] p-5 transition md:p-6 ${vacancyClosed ? 'opacity-55 grayscale-[.25]' : ''}" data-application-id="${item.id}" data-status="${inInterview ? 'entrevista' : item.status.toLowerCase()}">
         <div class="flex items-start gap-4"><div class="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-gradient-to-br from-blue-100 to-orange-100 text-lg font-extrabold text-navy">${escapeHtml(initials)}</div>
         <div class="min-w-0 flex-1"><div class="flex flex-wrap items-center gap-2"><h2 class="truncate text-lg font-bold text-navy">${escapeHtml(name)}</h2><span class="status-badge rounded-full px-2.5 py-1 text-[11px] font-semibold ${statusClasses}">${statusLabel}</span></div>
-        <p class="mt-0.5 text-sm text-navy/80">${escapeHtml(candidate.cargo || 'Cargo não informado')}</p><p class="mt-4 text-sm leading-relaxed text-navy/78">${escapeHtml(candidate.bio || 'O candidato ainda não adicionou um resumo profissional.')}</p></div></div>
+        <p class="mt-0.5 text-sm text-navy/80">${escapeHtml(candidate.cargo || 'Cargo não informado')}</p><p class="mt-4 text-sm leading-relaxed text-navy/78">${escapeHtml(candidate.bio || 'O candidato ainda não adicionou um resumo profissional.')}</p>
+        <div class="mt-3 flex flex-wrap gap-2">${technologyTags(candidate.tecnologias)}</div></div></div>
         <div class="mt-5 grid gap-3 sm:grid-cols-3"><button type="button" class="view-real-profile rounded-xl border border-orangeCustom bg-white/45 px-4 py-3 text-sm font-semibold text-orangeDark">Ver perfil</button>
         <button type="button" class="download-resume rounded-xl border border-blueCustom bg-white/45 px-4 py-3 text-sm font-semibold text-blueCustom">Baixar currículo</button>
         <button type="button" class="move-real-interview orange-button rounded-xl px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-65" ${inInterview || vacancyClosed ? 'disabled' : ''}>${vacancyClosed ? 'Vaga fechada' : inInterview ? 'Entrevista agendada' : 'Mover para entrevista'}</button></div>
       </article>`
     }).join('') : '<p class="lg:col-span-2 rounded-2xl bg-white/55 p-8 text-center text-mutedCustom">Nenhum candidato se inscreveu nesta vaga ainda.</p>'
 
-    const closeVacancyButton = document.getElementById('close-vacancy-after-interview')
     if (closeVacancyButton && candidaturas.some((item) => item.status === 'ENTREVISTA')) closeVacancyButton.disabled = false
 
     let activeApplication = null
@@ -695,7 +697,7 @@ async function loadVacancyCandidates() {
         document.getElementById('candidate-modal-name').textContent = candidate.usuario?.nome || 'Candidato'
         document.getElementById('candidate-modal-role').textContent = candidate.cargo || candidate.usuario?.email || ''
         document.getElementById('candidate-modal-bio').textContent = candidate.bio || 'Resumo profissional não informado.'
-        const details = [candidate.cidade, candidate.telefone, candidate.linkedin].filter(Boolean)
+        const details = String(candidate.tecnologias || '').split(',').map((item) => item.trim()).filter(Boolean)
         document.getElementById('candidate-modal-skills').innerHTML = details.map((value) => `<span class="tag">${escapeHtml(value)}</span>`).join('') || '<span class="text-xs text-mutedCustom">Informações adicionais não cadastradas.</span>'
         document.getElementById('candidate-modal-score').textContent = '—'
         document.getElementById('candidate-modal-ring').style.setProperty('--score', 0)

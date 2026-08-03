@@ -94,6 +94,7 @@ model Candidato {
   linkedin   String?
   cidade     String?
   curriculo  String?
+  tecnologias String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 

@@ -476,6 +476,15 @@
             </label>
           </div>
 
+          <div class="mt-5">
+            <label for="application-technology-input" class="block text-sm font-semibold text-navy">Suas tecnologias</label>
+            <div class="mt-2 flex min-h-12 flex-wrap items-center gap-2 rounded-2xl border border-white/90 bg-white/55 px-3 py-2">
+              <div id="application-technology-chips" class="contents"></div>
+              <input id="application-technology-input" type="text" class="min-w-[150px] flex-1 bg-transparent py-1 text-sm outline-none" placeholder="Digite e pressione Enter">
+            </div>
+            <p class="mt-1 text-xs text-mutedCustom">Adicione pelo menos uma tecnologia. Use Enter ou vírgula para incluir.</p>
+          </div>
+
           <label class="mt-5 flex items-start gap-3 rounded-2xl border border-white/90 bg-white/55 p-4 text-sm">
             <input
               id="application-confirmation"
@@ -568,11 +577,56 @@
     const applicationError = document.getElementById("application-error");
     const resumeFile = document.getElementById("resume-file");
     const resumeFileName = document.getElementById("resume-file-name");
+    const applicationTechnologyInput = document.getElementById('application-technology-input');
+    const applicationTechnologyChips = document.getElementById('application-technology-chips');
+    const applicationTechnologies = [];
     const toast = document.getElementById("toast");
+
+    function renderApplicationTechnologies() {
+      applicationTechnologyChips.innerHTML = '';
+      applicationTechnologies.forEach((technology, index) => {
+        const chip = document.createElement('span');
+        chip.className = 'technology inline-flex items-center gap-1.5';
+        const text = document.createElement('span');
+        text.textContent = technology;
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.textContent = '×';
+        remove.setAttribute('aria-label', `Remover ${technology}`);
+        remove.addEventListener('click', () => {
+          applicationTechnologies.splice(index, 1);
+          renderApplicationTechnologies();
+        });
+        chip.append(text, remove);
+        applicationTechnologyChips.appendChild(chip);
+      });
+    }
+
+    function addApplicationTechnology(value) {
+      const technology = value.trim().replace(/,$/, '');
+      if (!technology) return;
+      if (!applicationTechnologies.some((item) => item.toLowerCase() === technology.toLowerCase())) applicationTechnologies.push(technology);
+      applicationTechnologyInput.value = '';
+      renderApplicationTechnologies();
+    }
+
+    applicationTechnologyInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ',') {
+        event.preventDefault();
+        addApplicationTechnology(applicationTechnologyInput.value);
+      }
+    });
+    applicationTechnologyInput.addEventListener('blur', () => addApplicationTechnology(applicationTechnologyInput.value));
 
     function resetResume() {
       resumeFile.value = '';
       resumeFileName.textContent = 'PDF ou DOCX, até 2 MB';
+    }
+
+    function resetApplicationTechnologies() {
+      applicationTechnologies.splice(0);
+      applicationTechnologyInput.value = '';
+      renderApplicationTechnologies();
     }
 
     resumeFile.addEventListener('change', () => {
@@ -584,6 +638,7 @@
     applyButton.addEventListener("click", () => {
       applicationConfirmation.checked = false;
       resetResume();
+      resetApplicationTechnologies();
       applicationError.classList.add("hidden");
       applyDialog.showModal();
     });
@@ -592,6 +647,7 @@
       applyDialog.close();
       applicationConfirmation.checked = false;
       resetResume();
+      resetApplicationTechnologies();
       applicationError.classList.add("hidden");
     }
 
@@ -605,6 +661,14 @@
         applicationError.textContent = 'Confirme a autorização para continuar.';
         applicationError.classList.remove("hidden");
         applicationConfirmation.focus();
+        return;
+      }
+
+      addApplicationTechnology(applicationTechnologyInput.value);
+      if (!applicationTechnologies.length) {
+        applicationError.textContent = 'Informe pelo menos uma tecnologia.';
+        applicationError.classList.remove('hidden');
+        applicationTechnologyInput.focus();
         return;
       }
 
@@ -638,7 +702,7 @@
         const base64 = String(dados).replace(/^data:[^;]+;base64,/, `data:${tipo};base64,`);
         await window.aladinApi.request(`/candidaturas/vagas/${applyForm.dataset.vagaId}`, {
           method: 'POST',
-          body: JSON.stringify({ curriculo: { nome: file.name, tipo, dados: base64 } })
+          body: JSON.stringify({ curriculo: { nome: file.name, tipo, dados: base64 }, tecnologias: applicationTechnologies })
         });
         closeApplicationDialog();
         showToast("Candidatura enviada com sucesso.");
