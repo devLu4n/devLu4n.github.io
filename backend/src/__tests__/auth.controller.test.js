@@ -4,6 +4,7 @@ jest.mock("../config/prisma", () => ({
   usuario: {
     findUnique: jest.fn(),
     create: jest.fn(),
+    delete: jest.fn(),
   },
 }));
 
@@ -13,13 +14,14 @@ jest.mock("bcryptjs", () => ({
 }));
 
 const prisma = require("../config/prisma");
-const { registrar, login, logout, me } = require("../controllers/auth.controller");
+const { registrar, login, logout, excluirConta, me } = require("../controllers/auth.controller");
 
 function mockRes() {
   const res = {};
   res.status = jest.fn().mockReturnValue(res);
   res.json = jest.fn().mockReturnValue(res);
   res.clearCookie = jest.fn().mockReturnValue(res);
+  res.send = jest.fn().mockReturnValue(res);
   return res;
 }
 
@@ -267,6 +269,25 @@ describe("auth.controller", () => {
         secure: false,
       });
       expect(res.json).toHaveBeenCalled();
+    });
+  });
+
+  describe("excluirConta", () => {
+    it("exclui o usuario autenticado, encerra a sessao e limpa o cookie", async () => {
+      prisma.usuario.delete.mockResolvedValue({ id: 7 });
+      const req = mockReq({ session: {
+        usuarioId: 7,
+        destroy: jest.fn((cb) => cb(null)),
+      } });
+      const res = mockRes();
+
+      await excluirConta(req, res, jest.fn());
+
+      expect(prisma.usuario.delete).toHaveBeenCalledWith({ where: { id: 7 } });
+      expect(req.session.destroy).toHaveBeenCalled();
+      expect(res.clearCookie).toHaveBeenCalledWith("aladin.sid", expect.objectContaining({ httpOnly: true }));
+      expect(res.status).toHaveBeenCalledWith(204);
+      expect(res.send).toHaveBeenCalled();
     });
   });
 

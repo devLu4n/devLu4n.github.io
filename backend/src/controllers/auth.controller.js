@@ -129,6 +129,25 @@ function logout(req, res, next) {
   });
 }
 
+async function excluirConta(req, res, next) {
+  try {
+    const usuarioId = req.session.usuarioId;
+    await prisma.usuario.delete({ where: { id: usuarioId } });
+
+    req.session.destroy((err) => {
+      if (err) return next(err);
+      res.clearCookie("aladin.sid", {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+      });
+      res.status(204).send();
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 async function me(req, res, next) {
   try {
     if (!req.session || !req.session.usuarioId) {
@@ -150,4 +169,4 @@ async function me(req, res, next) {
   }
 }
 
-module.exports = { registrar, login, logout, me };
+module.exports = { registrar, login, logout, excluirConta, me };

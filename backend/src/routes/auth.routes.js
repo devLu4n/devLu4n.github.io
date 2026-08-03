@@ -7,6 +7,7 @@ const router = Router();
 router.post("/registro", authController.registrar);
 router.post("/login", authController.login);
 router.post("/logout", authController.logout);
+router.delete("/me", requireAuth, authController.excluirConta);
 router.get("/me", requireAuth, authController.me);
 
 module.exports = router;

@@ -489,6 +489,29 @@ if (profileForm) {
   loadProfile()
 }
 
+const deleteAccountButton = document.getElementById('delete-account')
+deleteAccountButton?.addEventListener('click', async () => {
+  const confirmation = window.prompt('Esta ação é permanente e removerá todos os dados vinculados à conta. Digite EXCLUIR para confirmar:')
+  if (confirmation !== 'EXCLUIR') return
+
+  deleteAccountButton.disabled = true
+  deleteAccountButton.textContent = 'Excluindo conta...'
+  try {
+    await apiRequest('/auth/me', { method: 'DELETE' })
+    currentUserCache = null
+    try {
+      localStorage.removeItem('aladin-user-photo')
+    } catch {
+      // A conta já foi excluída; falhas no armazenamento local não impedem a saída.
+    }
+    window.location.replace('/')
+  } catch (error) {
+    deleteAccountButton.disabled = false
+    deleteAccountButton.textContent = 'Excluir conta'
+    window.alert(error.message)
+  }
+})
+
 document.querySelectorAll('dialog').forEach((dialog) => {
   if (!dialog.hasAttribute('aria-labelledby')) {
     const heading = dialog.querySelector('h1, h2, h3')
