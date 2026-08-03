@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Modalidade {
+  REMOTO
+  HIBRIDO
+  PRESENCIAL
+}
+
+enum StatusVaga {
+  ABERTA
+  FECHADA
+}
+
+enum Role {
+  CANDIDATO
+  EMPRESA
+  ADMIN
+}
+
+enum StatusCandidatura {
+  PENDENTE
+  EM_ANALISE
+  ENTREVISTA
+  APROVADO
+  REJEITADO
+}
+
+model Usuario {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  email     String   @unique
+  senhaHash String
+  role      Role     @default(CANDIDATO)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  empresa   Empresa?
+  candidato Candidato?
+
+  @@map("usuarios")
+}
+
+model Empresa {
+  id          Int      @id @default(autoincrement())
+  nome        String
+  cnpj        String?  @unique
+  descricao   String?
+  cidade      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  usuarioId Int     @unique
+  usuario   Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  vagas Vaga[]
+
+  @@map("empresas")
+}
+
+model Vaga {
+  id          Int         @id @default(autoincrement())
+  titulo      String
+  descricao   String
+  area        String
+  cidade      String
+  modalidade  Modalidade  @default(PRESENCIAL)
+  tecnologias String
+  salarioMin  Int?
+  salarioMax  Int?
+  status      StatusVaga  @default(ABERTA)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  empresaId Int
+  empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+
+  candidaturas Candidatura[]
+
+  @@map("vagas")
+}
+
+model Candidato {
+  id         Int      @id @default(autoincrement())
+  telefone   String?
+  linkedin   String?
+  cidade     String?
+  curriculo  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  usuarioId Int      @unique
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  candidaturas Candidatura[]
+
+  @@map("candidatos")
+}
+
+model Candidatura {
+  id        Int                @id @default(autoincrement())
+  status    StatusCandidatura  @default(PENDENTE)
+  mensagem  String?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  candidatoId Int
+  candidato   Candidato @relation(fields: [candidatoId], references: [id], onDelete: Cascade)
+
+  vagaId Int
+  vaga   Vaga @relation(fields: [vagaId], references: [id], onDelete: Cascade)
+
+  @@unique([candidatoId, vagaId])
+  @@map("candidaturas")
+}
