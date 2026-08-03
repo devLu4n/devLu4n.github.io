@@ -141,6 +141,26 @@ function setSubmitting(form, submitting) {
   submitButton.classList.toggle('opacity-70', submitting)
 }
 
+document.querySelectorAll('#profile-menu button').forEach((logoutButton) => {
+  logoutButton.addEventListener('click', async () => {
+    const originalText = logoutButton.textContent
+    logoutButton.disabled = true
+    logoutButton.textContent = 'Saindo...'
+
+    try {
+      await apiRequest('/auth/logout', { method: 'POST' })
+      currentUserCache = null
+      window.location.replace('/src/pages/login/login.html')
+    } catch (error) {
+      logoutButton.disabled = false
+      logoutButton.textContent = originalText
+      window.alert(error.message === 'Failed to fetch'
+        ? 'Não foi possível acessar o servidor. Verifique se o backend está rodando.'
+        : error.message)
+    }
+  })
+})
+
 const loginForm = document.getElementById('login-form')
 loginForm?.addEventListener('submit', async (event) => {
   event.preventDefault()
