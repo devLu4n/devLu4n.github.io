@@ -9,6 +9,8 @@ RUN npm run build
 
 FROM node:20-bookworm-slim AS backend-dependencies
 WORKDIR /app/backend
+RUN apt-get update && apt-get install -y --no-install-recommends openssl \
+  && rm -rf /var/lib/apt/lists/*
 COPY backend/package.json backend/package-lock.json ./
 COPY backend/prisma ./prisma
 RUN npm ci && npx prisma generate && npm prune --omit=dev
@@ -17,6 +19,8 @@ FROM node:20-bookworm-slim AS runtime
 ENV NODE_ENV=production
 ENV PORT=3333
 WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends openssl \
+  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=backend-dependencies --chown=node:node /app/backend/node_modules ./backend/node_modules
 COPY --chown=node:node backend/package.json ./backend/package.json

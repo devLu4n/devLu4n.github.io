@@ -1,6 +1,7 @@
 .git
 .gitignore
 .vscode
+.docker-cli-temp
 **/node_modules
 **/dist
 **/.env
