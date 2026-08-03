@@ -34,9 +34,8 @@
         <span class="text-[1.6rem] font-extrabold text-navy tracking-tight">aladin</span>
       </a>
 
-      <ul class="hidden md:flex items-center gap-1 list-none" role="list">
+      <ul class="hidden md:absolute md:left-1/2 md:-translate-x-1/2 md:flex items-center gap-1 list-none" role="list">
         <li><a href="#vagas" class="block px-4 py-2 text-[15px] font-semibold text-navy/70 no-underline rounded-full transition-colors hover:text-navy hover:bg-white">Vagas</a></li>
-        <li><a href="#empresas" class="block px-4 py-2 text-[15px] font-semibold text-navy/70 no-underline rounded-full transition-colors hover:text-navy hover:bg-white">Empresas</a></li>
         <li><a href="#como-funciona" class="block px-4 py-2 text-[15px] font-semibold text-navy/70 no-underline rounded-full transition-colors hover:text-navy hover:bg-white">Como funciona</a></li>
         <li><a href="#sobre" class="block px-4 py-2 text-[15px] font-semibold text-navy/70 no-underline rounded-full transition-colors hover:text-navy hover:bg-white">Sobre</a></li>
       </ul>
@@ -342,29 +341,29 @@
       <nav aria-label="Links de vagas">
         <h3 class="text-[12px] font-bold tracking-widest uppercase text-whiteCustom/35 mb-4">Vagas</h3>
         <ul class="flex flex-col gap-2.5 list-none">
-          <li><a href="/src/pages/main/user/vagas.html" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">Todas as vagas</a></li>
-          <li><a href="/src/pages/main/user/vagas.html" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">CLT</a></li>
-          <li><a href="/src/pages/main/user/vagas.html" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">PJ</a></li>
-          <li><a href="/src/pages/main/user/vagas.html?modo=remoto" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">Remoto</a></li>
+          <li><a href="#" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">Todas as vagas</a></li>
+          <li><a href="#" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">CLT</a></li>
+          <li><a href="#" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">PJ</a></li>
+          <li><a href="#" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">Remoto</a></li>
         </ul>
       </nav>
 
       <nav aria-label="Links para empresas">
         <h3 class="text-[12px] font-bold tracking-widest uppercase text-whiteCustom/35 mb-4">Empresas</h3>
         <ul class="flex flex-col gap-2.5 list-none">
-          <li><a href="/src/pages/main/empresa/publicar-vaga.html" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">Anunciar vaga</a></li>
-          <li><a href="/src/pages/notready.html" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">Planos</a></li>
-          <li><a href="/src/pages/main/user/empresas.html" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">Órgãos do estado</a></li>
+          <li><a href="#" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">Anunciar vaga</a></li>
+          <li><a href="#" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">Planos</a></li>
+          <li><a href="#" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">Órgãos do estado</a></li>
         </ul>
       </nav>
 
       <nav aria-label="Links institucionais">
         <h3 class="text-[12px] font-bold tracking-widest uppercase text-whiteCustom/35 mb-4">Aladin</h3>
         <ul class="flex flex-col gap-2.5 list-none">
-          <li><a href="#sobre" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">Sobre</a></li>
-          <li><a href="/src/pages/notready.html" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">Blog</a></li>
-          <li><a href="/src/pages/notready.html" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">Contato</a></li>
-          <li><a href="/src/pages/notready.html" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">Privacidade</a></li>
+          <li><a href="#" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">Sobre</a></li>
+          <li><a href="#" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">Blog</a></li>
+          <li><a href="#" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">Contato</a></li>
+          <li><a href="#" class="text-[14px] text-whiteCustom/55 no-underline transition-colors hover:text-whiteCustom">Privacidade</a></li>
         </ul>
       </nav>
 
@@ -376,13 +375,21 @@
     </div>
   </footer>
 
-  <!-- Redireciona usuário logado (cookie aladin.sid) ao clicar em Login -->
+  <!-- Redireciona usuário logado ao clicar em Login -->
   <script>
     document.getElementById('header-login-btn').addEventListener('click', function(e) {
-      if (document.cookie.split(';').some(function(c) { return c.trim().startsWith('aladin.sid='); })) {
-        e.preventDefault();
-        window.location.href = '/src/pages/main/user/vagas.html';
-      }
+      e.preventDefault();
+      fetch('/api/auth/me', { credentials: 'include' })
+        .then(function(res) {
+          if (res.ok) {
+            window.location.href = '/src/pages/main/user/vagas.html';
+          } else {
+            window.location.href = '/src/pages/login/login.html';
+          }
+        })
+        .catch(function() {
+          window.location.href = '/src/pages/login/login.html';
+        });
     });
   </script>
   <script type="module" src="/src/main.js"></script>
