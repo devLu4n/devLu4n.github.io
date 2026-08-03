@@ -87,10 +87,20 @@ function hideEmpresaLinks() {
   })
 }
 
+function hideCandidateNavigationLinks() {
+  document.querySelectorAll('nav[aria-label="Navegação principal"] a[href*="minhas-candidaturas.html"], nav[aria-label="Navegação principal"] a[href*="empresas.html"]').forEach((link) => {
+    const item = link.closest('li')
+    if (item) item.style.display = 'none'
+    else link.style.display = 'none'
+  })
+}
+
 async function applyEmpresaAccessRules() {
   const user = await getCurrentUser()
   renderProfileAvatars(user)
-  if (!isEmpresaUser(user)) {
+  if (isEmpresaUser(user)) {
+    hideCandidateNavigationLinks()
+  } else {
     hideEmpresaLinks()
   }
 }
