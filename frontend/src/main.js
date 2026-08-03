@@ -95,11 +95,20 @@ function hideCandidateNavigationLinks() {
   })
 }
 
+function applyCompanyNavigation() {
+  document.querySelectorAll('nav[aria-label="Navegação principal"] a').forEach((link) => {
+    if (link.textContent.trim().toLowerCase() === 'vagas') {
+      link.href = '/src/pages/main/empresa/painel-empresa.html'
+    }
+  })
+}
+
 async function applyEmpresaAccessRules() {
   const user = await getCurrentUser()
   renderProfileAvatars(user)
   if (isEmpresaUser(user)) {
     hideCandidateNavigationLinks()
+    applyCompanyNavigation()
   } else {
     hideEmpresaLinks()
   }
