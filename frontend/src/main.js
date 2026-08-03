@@ -9,6 +9,9 @@ const EMPRESA_ONLY_PATHS = [
   '/src/pages/main/empresa/candidatos-vaga.html',
   '/src/pages/main/user/gerenciar-vagas.html',
 ]
+const CANDIDATO_ONLY_PATHS = [
+  '/src/pages/main/user/minhas-candidaturas.html',
+]
 
 let currentUserCache
 
@@ -102,10 +105,20 @@ async function guardEmpresaPage() {
   }
 }
 
+async function guardCandidatoPage() {
+  const user = await getCurrentUser()
+  if (user?.usuario?.role !== 'CANDIDATO') {
+    location.replace(user ? '/src/pages/main/empresa/painel-empresa.html' : '/src/pages/login/login.html')
+  }
+}
+
 async function initPageSecurity() {
   await applyEmpresaAccessRules()
   if (EMPRESA_ONLY_PATHS.some((path) => location.pathname.endsWith(path))) {
     await guardEmpresaPage()
+  }
+  if (CANDIDATO_ONLY_PATHS.some((path) => location.pathname.endsWith(path))) {
+    await guardCandidatoPage()
   }
 }
 
@@ -611,6 +624,10 @@ async function loadVacancyCandidates() {
     document.getElementById('candidatos-title').textContent = vaga.titulo
     document.getElementById('candidate-count').textContent = candidaturas.length
     document.getElementById('vacancy-technologies').innerHTML = technologyTags(vaga.tecnologias)
+    const vacancyClosed = vaga.status === 'FECHADA'
+    if (vacancyClosed) {
+      document.getElementById('candidatos-title').insertAdjacentHTML('afterend', '<span class="mt-2 inline-flex rounded-full bg-slate-200 px-3 py-1 text-xs font-semibold text-slate-600">Vaga fechada</span>')
+    }
 
     const byId = new Map(candidaturas.map((item) => [String(item.id), item]))
     grid.innerHTML = candidaturas.length ? candidaturas.map((item) => {
@@ -619,12 +636,13 @@ async function loadVacancyCandidates() {
       const initials = name.split(/\s+/).slice(0, 2).map((word) => word[0]).join('').toUpperCase()
       const [statusLabel, statusClasses] = applicationStatus(item.status)
       const inInterview = item.status === 'ENTREVISTA'
-      return `<article class="candidate-card glass-card rounded-[24px] p-5 md:p-6" data-application-id="${item.id}" data-status="${inInterview ? 'entrevista' : item.status.toLowerCase()}">
+      return `<article class="candidate-card glass-card rounded-[24px] p-5 transition md:p-6 ${vacancyClosed ? 'opacity-55 grayscale-[.25]' : ''}" data-application-id="${item.id}" data-status="${inInterview ? 'entrevista' : item.status.toLowerCase()}">
         <div class="flex items-start gap-4"><div class="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-gradient-to-br from-blue-100 to-orange-100 text-lg font-extrabold text-navy">${escapeHtml(initials)}</div>
         <div class="min-w-0 flex-1"><div class="flex flex-wrap items-center gap-2"><h2 class="truncate text-lg font-bold text-navy">${escapeHtml(name)}</h2><span class="status-badge rounded-full px-2.5 py-1 text-[11px] font-semibold ${statusClasses}">${statusLabel}</span></div>
         <p class="mt-0.5 text-sm text-navy/80">${escapeHtml(candidate.cargo || 'Cargo não informado')}</p><p class="mt-4 text-sm leading-relaxed text-navy/78">${escapeHtml(candidate.bio || 'O candidato ainda não adicionou um resumo profissional.')}</p></div></div>
-        <div class="mt-5 grid gap-3 sm:grid-cols-2"><button type="button" class="view-real-profile rounded-xl border border-orangeCustom bg-white/45 px-5 py-3 text-sm font-semibold text-orangeDark">Ver perfil</button>
-        <button type="button" class="move-real-interview orange-button rounded-xl px-5 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-65" ${inInterview ? 'disabled' : ''}>${inInterview ? 'Entrevista agendada' : 'Mover para entrevista'}</button></div>
+        <div class="mt-5 grid gap-3 sm:grid-cols-3"><button type="button" class="view-real-profile rounded-xl border border-orangeCustom bg-white/45 px-4 py-3 text-sm font-semibold text-orangeDark">Ver perfil</button>
+        <button type="button" class="download-resume rounded-xl border border-blueCustom bg-white/45 px-4 py-3 text-sm font-semibold text-blueCustom">Baixar currículo</button>
+        <button type="button" class="move-real-interview orange-button rounded-xl px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-65" ${inInterview || vacancyClosed ? 'disabled' : ''}>${vacancyClosed ? 'Vaga fechada' : inInterview ? 'Entrevista agendada' : 'Mover para entrevista'}</button></div>
       </article>`
     }).join('') : '<p class="lg:col-span-2 rounded-2xl bg-white/55 p-8 text-center text-mutedCustom">Nenhum candidato se inscreveu nesta vaga ainda.</p>'
 
@@ -637,6 +655,20 @@ async function loadVacancyCandidates() {
       if (!card) return
       const application = byId.get(card.dataset.applicationId)
       if (!application) return
+
+      if (event.target.closest('.download-resume')) {
+        try {
+          const resume = JSON.parse(application.candidato.curriculo || '{}')
+          if (!resume.dados) throw new Error('Currículo não encontrado.')
+          const link = document.createElement('a')
+          link.href = resume.dados
+          link.download = resume.nome || 'curriculo'
+          link.click()
+        } catch (error) {
+          window.alert(error.message || 'Não foi possível baixar o currículo.')
+        }
+        return
+      }
 
       if (event.target.closest('.view-real-profile')) {
         activeApplication = application
@@ -690,6 +722,52 @@ async function loadVacancyCandidates() {
 }
 
 loadVacancyCandidates()
+
+async function loadCandidateApplications() {
+  const list = document.getElementById('candidate-applications')
+  if (!list) return
+  const empty = document.getElementById('candidate-applications-empty')
+
+  try {
+    const applications = await apiRequest('/candidaturas/minhas')
+    list.innerHTML = applications.map((application) => {
+      const vacancy = application.vaga
+      const closed = vacancy.status === 'FECHADA'
+      const [statusLabel, statusClasses] = applicationStatus(application.status)
+      return `<article class="candidate-application glass-card rounded-[22px] p-5 transition ${closed ? 'opacity-55 grayscale-[.2]' : ''}" data-closed="${closed}" data-search="${escapeHtml(`${vacancy.titulo} ${vacancy.empresa?.nome || ''}`.toLowerCase())}">
+        <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-center"><div class="min-w-0">
+          <div class="flex flex-wrap items-center gap-2"><h2 class="text-lg font-bold">${escapeHtml(vacancy.titulo)}</h2>
+          <span class="rounded-full px-2.5 py-1 text-[11px] font-semibold ${closed ? 'bg-slate-200 text-slate-600' : 'bg-emerald-100 text-emerald-700'}">${closed ? 'Vaga fechada' : 'Vaga aberta'}</span></div>
+          <p class="mt-1 text-sm font-medium text-orangeDark">${escapeHtml(vacancy.empresa?.nome || 'Empresa')}</p>
+          <p class="mt-2 text-xs text-mutedCustom">${escapeHtml(vacancy.modalidade === 'REMOTO' ? 'Remoto' : vacancy.cidade)} · Candidatura em ${new Date(application.createdAt).toLocaleDateString('pt-BR')}</p>
+        </div><div class="flex flex-wrap items-center gap-3"><span class="rounded-full px-3 py-2 text-xs font-semibold ${statusClasses}">${statusLabel}</span>
+          <a href="detalhes-vaga.html?id=${vacancy.id}" class="rounded-xl border border-blueCustom px-4 py-2.5 text-sm font-semibold text-blueCustom">Ver vaga</a>
+        </div></div>
+      </article>`
+    }).join('')
+
+    const search = document.getElementById('application-search')
+    const filter = document.getElementById('application-filter')
+    function filterApplications() {
+      const term = search.value.trim().toLowerCase()
+      let visible = 0
+      list.querySelectorAll('.candidate-application').forEach((card) => {
+        const statusMatches = filter.value === 'todas' || (filter.value === 'fechadas') === (card.dataset.closed === 'true')
+        const show = statusMatches && (!term || card.dataset.search.includes(term))
+        card.classList.toggle('hidden', !show)
+        if (show) visible += 1
+      })
+      empty.classList.toggle('hidden', visible > 0)
+    }
+    search.addEventListener('input', filterApplications)
+    filter.addEventListener('change', filterApplications)
+    filterApplications()
+  } catch (error) {
+    list.innerHTML = `<p class="py-8 text-center text-red-600">${escapeHtml(error.message)}</p>`
+  }
+}
+
+loadCandidateApplications()
 
 function initInterviewVacancyClosure() {
   if (!location.pathname.endsWith('/empresa/candidatos-vaga.html')) return

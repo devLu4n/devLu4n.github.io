@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Acompanhe suas candidaturas no Aladin.">
+  <title>Minhas candidaturas — Aladin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    .glass-shell { background: linear-gradient(145deg,rgba(255,255,255,.65),rgba(255,255,255,.38)); border: 1px solid rgba(255,255,255,.9); box-shadow: 0 30px 80px rgba(22,31,58,.12); backdrop-filter: blur(24px); }
+    .glass-card { background: linear-gradient(145deg,rgba(255,255,255,.76),rgba(255,255,255,.5)); border: 1px solid rgba(255,255,255,.94); box-shadow: 0 18px 45px rgba(22,31,58,.08); }
+    .nav-link { color: rgba(17,20,38,.62); transition: color .2s; }
+    .nav-link:hover,.nav-link.active { color:#111426; }
+    .nav-link.active { border-bottom:2px solid #FF6B0B; padding-bottom:8px; }
+  </style>
+  <script type="module" src="/src/main.js"></script>
+</head>
+<body class="min-h-screen bg-[linear-gradient(180deg,#F9FBFF_0%,#F2F7FF_100%)] font-sans text-navy antialiased">
+  <div class="flex min-h-screen flex-col">
+    <header class="relative z-30 px-5 pt-5">
+      <nav class="glass-card mx-auto flex min-h-[70px] max-w-[1080px] items-center justify-between gap-5 rounded-2xl px-5 md:px-8" aria-label="Navegação principal">
+        <a href="/" class="flex items-center gap-2.5" aria-label="Página inicial do Aladin">
+          <img src="/assets/aladin-logo.svg" alt="" class="h-9 w-9 object-contain" aria-hidden="true">
+          <span class="text-[1.55rem] font-extrabold tracking-tight">Aladin</span>
+        </a>
+        <ul class="hidden items-center gap-9 text-sm font-medium md:flex">
+          <li><a href="vagas.html" class="nav-link">Vagas</a></li>
+          <li><a href="minhas-candidaturas.html" class="nav-link active">Candidaturas</a></li>
+          <li><a href="empresas.html" class="nav-link">Empresas</a></li>
+          <li><a href="perfil.html" class="nav-link">Perfil</a></li>
+        </ul>
+        <div class="relative">
+          <button id="profile-menu-button" type="button" class="rounded-full p-1.5" aria-expanded="false" aria-controls="profile-menu"><span class="grid h-10 w-10 place-items-center rounded-full bg-blue-100 font-bold">EU</span></button>
+          <div id="profile-menu" class="glass-card absolute right-0 top-14 hidden w-48 rounded-2xl p-2 text-sm">
+            <a href="perfil.html" class="block rounded-xl px-3 py-2.5 hover:bg-white/70">Meu perfil</a>
+            <button type="button" class="w-full rounded-xl px-3 py-2.5 text-left text-red-600 hover:bg-red-50">Sair</button>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="flex-grow px-5 pb-12 pt-10">
+      <section class="glass-shell mx-auto max-w-[960px] rounded-[30px] px-5 py-8 md:px-10 md:py-10" aria-labelledby="applications-title">
+        <div class="text-center">
+          <p class="text-xs font-bold uppercase tracking-[.2em] text-orangeDark">Área do candidato</p>
+          <h1 id="applications-title" class="mt-2 text-[clamp(2rem,5vw,3rem)] font-extrabold tracking-[-.04em]">Minhas candidaturas</h1>
+          <p class="mx-auto mt-2 max-w-xl text-sm text-mutedCustom">Acompanhe o andamento dos processos seletivos e o status das vagas.</p>
+        </div>
+        <div class="mx-auto mt-7 flex max-w-xl gap-3">
+          <input id="application-search" type="search" class="h-12 min-w-0 flex-1 rounded-xl border border-navy/10 bg-white/70 px-4 text-sm outline-none focus:border-blueCustom" placeholder="Buscar por vaga ou empresa">
+          <select id="application-filter" class="h-12 rounded-xl border border-navy/10 bg-white/70 px-4 text-sm outline-none">
+            <option value="todas">Todas</option>
+            <option value="abertas">Vagas abertas</option>
+            <option value="fechadas">Vagas fechadas</option>
+          </select>
+        </div>
+        <div id="candidate-applications" class="mt-8 flex flex-col gap-4">
+          <p class="py-8 text-center text-mutedCustom">Carregando candidaturas...</p>
+        </div>
+        <div id="candidate-applications-empty" class="mt-6 hidden rounded-2xl bg-white/55 p-8 text-center text-mutedCustom">Nenhuma candidatura encontrada.</div>
+      </section>
+    </main>
+    <footer class="px-6 py-7"><div class="mx-auto max-w-[960px] border-t border-white/80 pt-5 text-center text-xs text-mutedCustom">© 2026 Aladin. Todos os direitos reservados.</div></footer>
+  </div>
+  <script>
+    const profileMenuButton = document.getElementById('profile-menu-button');
+    const profileMenu = document.getElementById('profile-menu');
+    profileMenuButton?.addEventListener('click', (event) => { event.stopPropagation(); profileMenu.classList.toggle('hidden'); });
+    document.addEventListener('click', () => profileMenu?.classList.add('hidden'));
+  </script>
+</body>
+</html>
