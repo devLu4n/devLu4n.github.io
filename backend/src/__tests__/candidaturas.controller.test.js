@@ -210,6 +210,7 @@ describe("candidaturas.controller", () => {
     it("atualiza status com sucesso", async () => {
       prisma.candidatura.findUnique.mockResolvedValue({
         id: 1,
+        status: "ENTREVISTA",
         vaga: { empresa: { usuarioId: 1 } },
       });
       prisma.candidatura.update.mockResolvedValue({ id: 1, status: "APROVADO" });
@@ -219,6 +220,36 @@ describe("candidaturas.controller", () => {
         res, jest.fn()
       );
       expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "APROVADO" }));
+    });
+
+    it("impede pular etapas do processo seletivo", async () => {
+      prisma.candidatura.findUnique.mockResolvedValue({
+        id: 1,
+        status: "PENDENTE",
+        vaga: { empresa: { usuarioId: 1 } },
+      });
+      const res = mockRes();
+      await atualizarStatus(
+        mockReq({ params: { id: "1" }, body: { status: "ENTREVISTA" } }),
+        res, jest.fn()
+      );
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(prisma.candidatura.update).not.toHaveBeenCalled();
+    });
+
+    it("permite rejeitar candidato depois da entrevista", async () => {
+      prisma.candidatura.findUnique.mockResolvedValue({
+        id: 1,
+        status: "ENTREVISTA",
+        vaga: { empresa: { usuarioId: 1 } },
+      });
+      prisma.candidatura.update.mockResolvedValue({ id: 1, status: "REJEITADO" });
+      const res = mockRes();
+      await atualizarStatus(
+        mockReq({ params: { id: "1" }, body: { status: "REJEITADO" } }),
+        res, jest.fn()
+      );
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ status: "REJEITADO" }));
     });
   });
 });

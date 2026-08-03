@@ -693,6 +693,18 @@ function applicationStatus(status) {
   return statuses[status] || statuses.PENDENTE
 }
 
+function candidateWorkflowActions(status, vacancyClosed = false) {
+  if (vacancyClosed) return '<button type="button" class="rounded-xl bg-slate-200 px-4 py-3 text-sm font-semibold text-slate-500" disabled>Vaga fechada</button>'
+  const actions = {
+    PENDENTE: '<button type="button" data-next-status="EM_ANALISE" class="orange-button rounded-xl px-4 py-3 text-sm font-semibold text-white">Mover para análise</button>',
+    EM_ANALISE: '<button type="button" data-next-status="ENTREVISTA" class="orange-button rounded-xl px-4 py-3 text-sm font-semibold text-white">Chamar para entrevista</button>',
+    ENTREVISTA: '<button type="button" data-next-status="APROVADO" class="rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white">Aprovar</button><button type="button" data-next-status="REJEITADO" class="rounded-xl border border-red-500 bg-white/60 px-4 py-3 text-sm font-semibold text-red-600">Rejeitar</button>',
+    APROVADO: '<button type="button" class="rounded-xl bg-emerald-100 px-4 py-3 text-sm font-semibold text-emerald-700" disabled>Processo concluído</button>',
+    REJEITADO: '<button type="button" class="rounded-xl bg-slate-200 px-4 py-3 text-sm font-semibold text-slate-600" disabled>Processo concluído</button>',
+  }
+  return actions[status] || actions.PENDENTE
+}
+
 async function loadVacancyCandidates() {
   const grid = document.getElementById('candidates-grid')
   if (!grid) return
@@ -723,15 +735,14 @@ async function loadVacancyCandidates() {
       const name = candidate.usuario?.nome || 'Candidato'
       const initials = name.split(/\s+/).slice(0, 2).map((word) => word[0]).join('').toUpperCase()
       const [statusLabel, statusClasses] = applicationStatus(item.status)
-      const inInterview = item.status === 'ENTREVISTA'
-      return `<article class="candidate-card glass-card rounded-[24px] p-5 transition md:p-6 ${vacancyClosed ? 'opacity-55 grayscale-[.25]' : ''}" data-application-id="${item.id}" data-status="${inInterview ? 'entrevista' : item.status.toLowerCase()}">
+      return `<article class="candidate-card glass-card rounded-[24px] p-5 transition md:p-6 ${vacancyClosed ? 'opacity-55 grayscale-[.25]' : ''}" data-application-id="${item.id}" data-status="${item.status.toLowerCase()}">
         <div class="flex items-start gap-4"><div class="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-gradient-to-br from-blue-100 to-orange-100 text-lg font-extrabold text-navy">${escapeHtml(initials)}</div>
         <div class="min-w-0 flex-1"><div class="flex flex-wrap items-center gap-2"><h2 class="truncate text-lg font-bold text-navy">${escapeHtml(name)}</h2><span class="status-badge rounded-full px-2.5 py-1 text-[11px] font-semibold ${statusClasses}">${statusLabel}</span></div>
         <p class="mt-0.5 text-sm text-navy/80">${escapeHtml(candidate.cargo || 'Cargo não informado')}</p><p class="mt-4 text-sm leading-relaxed text-navy/78">${escapeHtml(candidate.bio || 'O candidato ainda não adicionou um resumo profissional.')}</p>
         <div class="mt-3 flex flex-wrap gap-2">${technologyTags(candidate.tecnologias)}</div></div></div>
-        <div class="mt-5 grid gap-3 sm:grid-cols-3"><button type="button" class="view-real-profile rounded-xl border border-orangeCustom bg-white/45 px-4 py-3 text-sm font-semibold text-orangeDark">Ver perfil</button>
-        <button type="button" class="download-resume rounded-xl border border-blueCustom bg-white/45 px-4 py-3 text-sm font-semibold text-blueCustom">Baixar currículo</button>
-        <button type="button" class="move-real-interview orange-button rounded-xl px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-65" ${inInterview || vacancyClosed ? 'disabled' : ''}>${vacancyClosed ? 'Vaga fechada' : inInterview ? 'Entrevista agendada' : 'Mover para entrevista'}</button></div>
+        <div class="mt-5 grid gap-3 sm:grid-cols-2"><button type="button" class="view-real-profile rounded-xl border border-orangeCustom bg-white/45 px-4 py-3 text-sm font-semibold text-orangeDark">Ver perfil</button>
+        <button type="button" class="download-resume rounded-xl border border-blueCustom bg-white/45 px-4 py-3 text-sm font-semibold text-blueCustom">Baixar currículo</button></div>
+        <div class="candidate-workflow-actions mt-3 flex flex-wrap gap-3">${candidateWorkflowActions(item.status, vacancyClosed)}</div>
       </article>`
     }).join('') : '<p class="lg:col-span-2 rounded-2xl bg-white/55 p-8 text-center text-mutedCustom">Nenhum candidato se inscreveu nesta vaga ainda.</p>'
 
@@ -769,36 +780,45 @@ async function loadVacancyCandidates() {
         document.getElementById('candidate-modal-score').textContent = '—'
         document.getElementById('candidate-modal-ring').style.setProperty('--score', 0)
         const modalButton = document.getElementById('modal-interview-button')
-        modalButton.disabled = application.status === 'ENTREVISTA'
-        modalButton.textContent = application.status === 'ENTREVISTA' ? 'Entrevista agendada' : 'Mover para entrevista'
+        const nextStatus = application.status === 'PENDENTE' ? 'EM_ANALISE' : application.status === 'EM_ANALISE' ? 'ENTREVISTA' : ''
+        modalButton.dataset.nextStatus = nextStatus
+        modalButton.disabled = !nextStatus || vacancyClosed
+        modalButton.textContent = vacancyClosed ? 'Vaga fechada' : nextStatus === 'EM_ANALISE' ? 'Mover para análise' : nextStatus === 'ENTREVISTA' ? 'Chamar para entrevista' : 'Use as ações no card'
         document.getElementById('candidate-modal').showModal()
         return
       }
 
-      const interviewButton = event.target.closest('.move-real-interview')
-      if (interviewButton) await moveApplicationToInterview(application, card, interviewButton)
+      const workflowButton = event.target.closest('[data-next-status]')
+      if (workflowButton) await updateApplicationStatus(application, card, workflowButton, workflowButton.dataset.nextStatus)
     })
 
     document.getElementById('modal-interview-button').addEventListener('click', async () => {
       if (!activeApplication) return
       const card = grid.querySelector(`[data-application-id="${activeApplication.id}"]`)
-      await moveApplicationToInterview(activeApplication, card, card?.querySelector('.move-real-interview'))
+      const button = document.getElementById('modal-interview-button')
+      if (button.dataset.nextStatus) await updateApplicationStatus(activeApplication, card, button, button.dataset.nextStatus)
       document.getElementById('candidate-modal').close()
     })
 
-    async function moveApplicationToInterview(application, card, button) {
-      if (application.status === 'ENTREVISTA') return
+    async function updateApplicationStatus(application, card, button, nextStatus) {
+      if (!nextStatus) return
       if (button) button.disabled = true
       try {
-        await apiRequest(`/candidaturas/${application.id}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'ENTREVISTA' }) })
-        application.status = 'ENTREVISTA'
-        card.dataset.status = 'entrevista'
+        await apiRequest(`/candidaturas/${application.id}/status`, { method: 'PATCH', body: JSON.stringify({ status: nextStatus }) })
+        application.status = nextStatus
+        card.dataset.status = nextStatus.toLowerCase()
+        const [statusLabel, statusClasses] = applicationStatus(nextStatus)
         const badge = card.querySelector('.status-badge')
-        badge.textContent = 'Entrevista'
-        badge.className = 'status-badge rounded-full bg-orangeCustom/12 px-2.5 py-1 text-[11px] font-semibold text-orangeDark'
-        button.textContent = 'Entrevista agendada'
-        const closeButton = document.getElementById('close-vacancy-after-interview')
-        if (closeButton) closeButton.disabled = false
+        badge.textContent = statusLabel
+        badge.className = `status-badge rounded-full px-2.5 py-1 text-[11px] font-semibold ${statusClasses}`
+        card.querySelector('.candidate-workflow-actions').innerHTML = candidateWorkflowActions(nextStatus)
+        if (nextStatus === 'ENTREVISTA') {
+          const closeButton = document.getElementById('close-vacancy-after-interview')
+          if (closeButton) {
+            closeButton.disabled = false
+            closeButton.title = ''
+          }
+        }
       } catch (error) {
         if (button) button.disabled = false
         window.alert(error.message)
@@ -871,15 +891,6 @@ function initInterviewVacancyClosure() {
   button.disabled = !document.querySelector('.candidate-card[data-status="entrevista"]')
   button.title = button.disabled ? 'Convide um candidato para entrevista antes de encerrar' : ''
   main?.appendChild(button)
-
-  document.addEventListener('click', (event) => {
-    if (event.target.closest('.move-interview, #modal-interview-button')) {
-      window.setTimeout(() => {
-        button.disabled = false
-        button.title = ''
-      })
-    }
-  })
 
   button.addEventListener('click', async () => {
     if (!window.confirm('Encerrar esta vaga agora? Novas candidaturas serão bloqueadas.')) return

@@ -213,9 +213,23 @@ async function atualizarStatus(req, res, next) {
       });
     }
 
+    const novoStatus = String(status).toUpperCase();
+    const transicoesPermitidas = {
+      PENDENTE: ["EM_ANALISE"],
+      EM_ANALISE: ["ENTREVISTA"],
+      ENTREVISTA: ["APROVADO", "REJEITADO"],
+      APROVADO: [],
+      REJEITADO: [],
+    };
+    if (!transicoesPermitidas[candidatura.status]?.includes(novoStatus)) {
+      return res.status(400).json({
+        erro: "Transicao de status invalida para esta etapa do processo seletivo.",
+      });
+    }
+
     const atualizada = await prisma.candidatura.update({
       where: { id },
-      data: { status: String(status).toUpperCase() },
+      data: { status: novoStatus },
     });
 
     res.json(atualizada);
