@@ -37,7 +37,6 @@ Crie `.env` a partir de `.env.example`:
 | `NODE_ENV` | Recomendada | `development`, `test` ou `production` |
 | `SESSION_SECRET` | Obrigatória em produção | Assinatura criptográfica da sessão |
 | `CORS_ORIGIN` | Opcional | Origem autorizada; padrão `http://localhost:5173` |
-| `GEMINI_API_KEY` | Opcional | Integração de análise de candidatos |
 
 ## Estrutura
 

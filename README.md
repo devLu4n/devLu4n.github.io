@@ -104,10 +104,9 @@ PORT=3333
 NODE_ENV=development
 SESSION_SECRET="substitua-por-um-segredo-longo-e-aleatorio"
 CORS_ORIGIN="http://localhost:5173"
-GEMINI_API_KEY=
 ```
 
-`GEMINI_API_KEY` é opcional. `SESSION_SECRET` é obrigatório em produção.
+`SESSION_SECRET` é obrigatório em produção e deve ser diferente do valor utilizado no desenvolvimento.
 
 Prepare o banco de dados:
 
