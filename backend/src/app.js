@@ -10,6 +10,7 @@ const PgSession = require("connect-pg-simple")(session);
 
 const routes = require("./routes");
 const { errorHandler } = require("./middlewares/errorHandler");
+const { cookieOptions } = require("./config/session");
 
 const app = express();
 const isProduction = process.env.NODE_ENV === "production";
@@ -71,12 +72,7 @@ app.use(
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: isProduction,
-      maxAge: 1000 * 60 * 60 * 24,
-    },
+    cookie: cookieOptions(),
   })
 );
 

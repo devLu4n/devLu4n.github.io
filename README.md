@@ -34,7 +34,8 @@ Plataforma de recrutamento voltada a vagas de tecnologia. O sistema conecta cand
 | Autenticação | Express Session, PostgreSQL Session Store e bcryptjs |
 | Testes | Jest |
 | Conteinerização | Docker multi-stage |
-| CI/CD | GitHub Actions, Amazon ECR e Amazon ECS |
+| AWS | Lambda, API Gateway HTTP API, Amazon RDS e Secrets Manager |
+| CI/CD | GitHub Actions e AWS SAM |
 
 ## Arquitetura
 
@@ -76,8 +77,11 @@ backend/
     ├── services/                  regras de negócio reutilizáveis
     ├── utils/                     utilitários puros
     ├── app.js                     configuração do Express
-    └── server.js                  inicialização do servidor
+    ├── lambda.js                  adaptador para AWS Lambda
+    └── server.js                  inicialização do servidor local
 ```
+
+O mesmo Express continua funcionando localmente por `server.js`. Na AWS, `lambda.js` entrega a aplicação ao API Gateway sem abrir uma porta HTTP.
 
 ## Pré-requisitos
 
@@ -215,6 +219,37 @@ Quando o PostgreSQL estiver na máquina hospedeira, ajuste o host de `DATABASE_U
 
 O contêiner expõe a porta `3333` e possui health check em `/health`.
 
+## Backend serverless na AWS
+
+O arquivo `template.yaml` descreve a API como infraestrutura versionada:
+
+- API Gateway HTTP API como entrada pública.
+- Lambda empacotada pela imagem `Dockerfile.lambda`.
+- acesso ao PostgreSQL do RDS por subnets e security groups informados no deploy.
+- `DATABASE_URL` e `SESSION_SECRET` obtidos de um segredo do Secrets Manager.
+- retenção dos logs da Lambda por sete dias.
+- limite de cinco execuções simultâneas para proteger o banco de conexões excessivas.
+
+O segredo deve ser um objeto JSON com estas chaves:
+
+```json
+{
+  "DATABASE_URL": "postgresql://usuario:senha@host:5432/aladin?schema=public",
+  "SESSION_SECRET": "segredo-longo-e-aleatorio"
+}
+```
+
+Depois que o RDS, o segredo, as subnets e os security groups estiverem prontos, o deploy manual em Ohio pode ser iniciado com:
+
+```bash
+sam build
+sam deploy --guided --profile luan-admin --region us-east-2
+```
+
+Informe `https://devlu4n.github.io` em `AllowedOrigin`. Ao final, copie o output `ApiUrl`, acrescente `/api` e use o resultado como `PUBLIC_API_URL` no GitHub.
+
+As migrations não são executadas pela Lambda. Antes da primeira publicação e sempre que o schema mudar, execute `npx prisma migrate deploy` em um ambiente com acesso de rede ao RDS.
+
 ## CI/CD na AWS
 
 O workflow `.github/workflows/ci-cd.yml` possui duas etapas.
@@ -227,17 +262,18 @@ Executada em pull requests e pushes para `main`:
 2. Gera o Prisma Client.
 3. Executa os testes do backend.
 4. Compila o frontend.
-5. Valida a construção da imagem Docker.
+5. Valida as imagens Docker local e da Lambda.
 
 ### Entrega contínua
 
 Executada após a integração contínua em pushes para `main`:
 
 1. Autentica na AWS por OpenID Connect.
-2. Publica imagens com as tags do commit e `latest` no Amazon ECR.
-3. Cria uma nova revisão da task definition.
-4. Atualiza o serviço no Amazon ECS.
-5. Aguarda o serviço atingir um estado estável.
+2. Compila a aplicação com AWS SAM.
+3. Publica a imagem no ECR gerenciado pelo SAM.
+4. Cria ou atualiza a stack da Lambda e do API Gateway.
+
+O deploy automático só é executado quando a variável `AWS_DEPLOY_ENABLED` tem o valor `true`. Mantenha-a desativada até concluir o RDS, a rede e o segredo.
 
 Configure um environment chamado `production` no GitHub.
 
@@ -252,15 +288,11 @@ Variables obrigatórias:
 | Nome | Descrição |
 | --- | --- |
 | `AWS_REGION` | Região dos recursos AWS |
-| `ECR_REPOSITORY` | Nome do repositório no ECR |
-| `ECS_CLUSTER` | Nome do cluster ECS |
-| `ECS_SERVICE` | Nome do serviço ECS |
-| `ECS_TASK_DEFINITION` | Família ou ARN da task definition atual |
-| `ECS_CONTAINER_NAME` | Nome do contêiner atualizado dentro da task definition |
-
-A task definition deve fornecer pelo menos `DATABASE_URL`, `SESSION_SECRET`, `NODE_ENV=production` e `PORT=3333`. Segredos de produção devem ficar no AWS Secrets Manager ou no Systems Manager Parameter Store.
-
-As migrations não são executadas automaticamente pela aplicação. Em alterações futuras no banco, execute `npx prisma migrate deploy` em uma tarefa controlada antes de atualizar o serviço.
+| `AWS_DEPLOY_ENABLED` | Use `true` somente quando a infraestrutura estiver pronta |
+| `FRONTEND_ORIGIN` | Origem do frontend, sem barra final |
+| `APPLICATION_SECRET_ARN` | ARN do segredo da aplicação no Secrets Manager |
+| `LAMBDA_SUBNET_IDS` | IDs das subnets separados por vírgula |
+| `LAMBDA_SECURITY_GROUP_IDS` | IDs dos security groups separados por vírgula |
 
 ## GitHub Pages
 

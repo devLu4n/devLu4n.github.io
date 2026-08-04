@@ -1,0 +1,91 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Backend serverless do Aladin com Lambda, API Gateway HTTP API e Prisma.
+
+Parameters:
+  AllowedOrigin:
+    Type: String
+    Default: https://devlu4n.github.io
+    Description: Origem exata autorizada a enviar cookies para a API.
+  ApplicationSecretArn:
+    Type: String
+    Description: ARN do segredo com as chaves DATABASE_URL e SESSION_SECRET.
+  LambdaSubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: Subnets privadas com acesso ao RDS PostgreSQL.
+  LambdaSecurityGroupIds:
+    Type: List<AWS::EC2::SecurityGroup::Id>
+    Description: Security groups autorizados a acessar o RDS.
+
+Globals:
+  Function:
+    Timeout: 25
+    MemorySize: 512
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        NODE_ENV: production
+        CORS_ORIGIN: !Ref AllowedOrigin
+
+Resources:
+  AladinHttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: $default
+      CorsConfiguration:
+        AllowCredentials: true
+        AllowHeaders:
+          - Content-Type
+        AllowMethods:
+          - GET
+          - POST
+          - PUT
+          - PATCH
+          - DELETE
+          - OPTIONS
+        AllowOrigins:
+          - !Ref AllowedOrigin
+
+  AladinApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      ReservedConcurrentExecutions: 5
+      Policies:
+        - AWSLambdaVPCAccessExecutionRole
+      VpcConfig:
+        SubnetIds: !Ref LambdaSubnetIds
+        SecurityGroupIds: !Ref LambdaSecurityGroupIds
+      Environment:
+        Variables:
+          DATABASE_URL: !Sub "{{resolve:secretsmanager:${ApplicationSecretArn}:SecretString:DATABASE_URL}}"
+          SESSION_SECRET: !Sub "{{resolve:secretsmanager:${ApplicationSecretArn}:SecretString:SESSION_SECRET}}"
+      Events:
+        ApiRoot:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref AladinHttpApi
+            Path: /
+            Method: ANY
+        ApiProxy:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref AladinHttpApi
+            Path: /{proxy+}
+            Method: ANY
+    Metadata:
+      DockerContext: .
+      Dockerfile: Dockerfile.lambda
+      DockerTag: nodejs22-v1
+
+  AladinApiLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${AladinApiFunction}
+      RetentionInDays: 7
+
+Outputs:
+  ApiUrl:
+    Description: URL pública usada em PUBLIC_API_URL no GitHub.
+    Value: !Sub https://${AladinHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}

@@ -2,7 +2,7 @@
 
 API REST construída com Node.js, Express, Prisma e PostgreSQL.
 
-Consulte o [README principal](../README.md) para instalação completa, arquitetura, Docker e deploy.
+Consulte o [README principal](../README.md) para instalação completa, arquitetura, Docker e deploy com AWS SAM.
 
 ## Comandos
 
@@ -49,7 +49,10 @@ src/routes/      endpoints da API
 src/services/    regras de negócio
 src/utils/       funções utilitárias
 src/__tests__/   testes automatizados
+src/lambda.js    entrada da aplicação na AWS Lambda
 ```
+
+O servidor local continua usando `src/server.js`. A imagem serverless usa `src/lambda.js`, definida por `Dockerfile.lambda` e `template.yaml` na raiz do projeto.
 
 Em produção, aplique migrations com:
 

@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const prisma = require("../config/prisma");
+const { clearCookieOptions } = require("../config/session");
 
 const SALT_ROUNDS = 10;
 
@@ -120,11 +121,7 @@ async function login(req, res, next) {
 function logout(req, res, next) {
   req.session.destroy((err) => {
     if (err) return next(err);
-    res.clearCookie("aladin.sid", {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-    });
+    res.clearCookie("aladin.sid", clearCookieOptions());
     res.json({ mensagem: "Logout realizado com sucesso." });
   });
 }
@@ -136,11 +133,7 @@ async function excluirConta(req, res, next) {
 
     req.session.destroy((err) => {
       if (err) return next(err);
-      res.clearCookie("aladin.sid", {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
-      });
+      res.clearCookie("aladin.sid", clearCookieOptions());
       res.status(204).send();
     });
   } catch (err) {

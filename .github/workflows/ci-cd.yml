@@ -55,6 +55,9 @@ jobs:
       - name: Validar imagem Docker
         run: docker build --tag aladin:${{ github.sha }} .
 
+      - name: Validar imagem da Lambda
+        run: docker build --file Dockerfile.lambda --tag aladin-lambda:${{ github.sha }} .
+
   pages_build:
     name: Compilar frontend para o GitHub Pages
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
@@ -101,19 +104,14 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-  deploy:
-    name: Publicar no Amazon ECS
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  deploy_api:
+    name: Publicar API serverless na AWS
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.AWS_DEPLOY_ENABLED == 'true'
     needs: quality
     runs-on: ubuntu-latest
     environment: production
     env:
       AWS_REGION: ${{ vars.AWS_REGION }}
-      ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
-      ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
-      ECS_SERVICE: ${{ vars.ECS_SERVICE }}
-      ECS_TASK_DEFINITION: ${{ vars.ECS_TASK_DEFINITION }}
-      ECS_CONTAINER_NAME: ${{ vars.ECS_CONTAINER_NAME }}
     steps:
       - name: Baixar código
         uses: actions/checkout@v4
@@ -124,47 +122,24 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Entrar no Amazon ECR
-        id: ecr
-        uses: aws-actions/amazon-ecr-login@v2
+      - name: Configurar AWS SAM
+        uses: aws-actions/setup-sam@v2
 
-      - name: Gerar e publicar imagem
-        id: image
-        env:
-          REGISTRY: ${{ steps.ecr.outputs.registry }}
-        run: |
-          IMAGE="$REGISTRY/$ECR_REPOSITORY:${GITHUB_SHA}"
-          docker build --tag "$IMAGE" --tag "$REGISTRY/$ECR_REPOSITORY:latest" .
-          docker push "$IMAGE"
-          docker push "$REGISTRY/$ECR_REPOSITORY:latest"
-          echo "uri=$IMAGE" >> "$GITHUB_OUTPUT"
+      - name: Compilar aplicação serverless
+        run: sam build
 
-      - name: Obter definição atual da tarefa
-        run: |
-          aws ecs describe-task-definition \
-            --task-definition "$ECS_TASK_DEFINITION" \
-            --query taskDefinition > task-definition.json
-
-      - name: Atualizar imagem da tarefa
-        env:
-          IMAGE: ${{ steps.image.outputs.uri }}
-        run: |
-          jq --arg IMAGE "$IMAGE" --arg NAME "$ECS_CONTAINER_NAME" \
-            'del(.taskDefinitionArn,.revision,.status,.requiresAttributes,.compatibilities,.registeredAt,.registeredBy) |
-             .containerDefinitions |= map(if .name == $NAME then .image = $IMAGE else . end)' \
-            task-definition.json > task-definition-next.json
-
-      - name: Registrar tarefa e atualizar serviço
-        run: |
-          TASK_ARN=$(aws ecs register-task-definition \
-            --cli-input-json file://task-definition-next.json \
-            --query 'taskDefinition.taskDefinitionArn' \
-            --output text)
-          aws ecs update-service \
-            --cluster "$ECS_CLUSTER" \
-            --service "$ECS_SERVICE" \
-            --task-definition "$TASK_ARN" \
-            --force-new-deployment
-          aws ecs wait services-stable \
-            --cluster "$ECS_CLUSTER" \
-            --services "$ECS_SERVICE"
+      - name: Publicar stack
+        run: >-
+          sam deploy
+          --stack-name aladin-api
+          --region "$AWS_REGION"
+          --resolve-s3
+          --resolve-image-repos
+          --no-confirm-changeset
+          --no-fail-on-empty-changeset
+          --capabilities CAPABILITY_IAM
+          --parameter-overrides
+          "AllowedOrigin=${{ vars.FRONTEND_ORIGIN }}"
+          "ApplicationSecretArn=${{ vars.APPLICATION_SECRET_ARN }}"
+          "LambdaSubnetIds=${{ vars.LAMBDA_SUBNET_IDS }}"
+          "LambdaSecurityGroupIds=${{ vars.LAMBDA_SECURITY_GROUP_IDS }}"
