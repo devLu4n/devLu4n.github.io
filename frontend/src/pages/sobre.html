@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Conheça a história, o propósito e a identidade visual do Aladin.">
+  <title>Sobre o Aladin</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/white-logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="min-h-screen overflow-x-hidden bg-bgCustom font-sans text-navy antialiased">
+  <a href="#main-content" class="absolute -top-full left-4 z-[9999] rounded-b-lg bg-blueCustom px-4 py-2 text-sm text-white transition-all focus:top-0">Pular para o conteúdo principal</a>
+
+  <header class="sticky top-0 z-[100] border-b border-white/60 bg-bgCustom/85 backdrop-blur-xl">
+    <nav class="mx-auto flex h-[84px] max-w-[1280px] items-center justify-between gap-6 px-5 md:px-8" aria-label="Navegação principal">
+      <a href="/" class="flex shrink-0 items-center gap-2" aria-label="Aladin, página inicial">
+        <img src="/assets/aladin-logo.svg" alt="" class="h-10 w-10 object-contain" aria-hidden="true">
+        <span class="text-[1.6rem] font-extrabold tracking-tight">aladin</span>
+      </a>
+      <ul class="hidden items-center gap-1 md:flex" role="list">
+        <li><a href="/#vagas" class="rounded-full px-4 py-2 text-[15px] font-semibold text-navy/70 transition hover:bg-white hover:text-navy">Vagas</a></li>
+        <li><a href="/#como-funciona" class="rounded-full px-4 py-2 text-[15px] font-semibold text-navy/70 transition hover:bg-white hover:text-navy">Como funciona</a></li>
+        <li><a href="/src/pages/sobre.html" aria-current="page" class="rounded-full bg-white px-4 py-2 text-[15px] font-semibold text-navy">Sobre</a></li>
+      </ul>
+      <div class="flex shrink-0 items-center gap-2 sm:gap-3">
+        <a href="/src/pages/login/login.html" class="rounded-full border border-navy/15 bg-white px-4 py-2.5 text-sm font-semibold transition hover:border-navy/40">Entrar</a>
+        <a href="/src/pages/signup/signup.html" class="rounded-full bg-orangeCustom px-4 py-2.5 text-sm font-bold text-white shadow-soft transition hover:-translate-y-0.5">Criar conta</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="relative overflow-hidden px-5 py-20 md:px-8 md:py-28" aria-labelledby="about-title">
+      <div class="absolute -left-40 top-10 h-[360px] w-[360px] rounded-full bg-orangeCustom/20 blur-[90px]" aria-hidden="true"></div>
+      <div class="absolute -right-32 bottom-0 h-[420px] w-[420px] rounded-full bg-blueCustom/20 blur-[100px]" aria-hidden="true"></div>
+      <div class="relative mx-auto grid max-w-[1180px] items-center gap-12 lg:grid-cols-[1.1fr_.9fr]">
+        <div>
+          <p class="mb-4 text-xs font-bold uppercase tracking-[.22em] text-orangeCustom">Sobre o Aladin</p>
+          <h1 id="about-title" class="max-w-[760px] text-[clamp(2.8rem,6vw,5rem)] font-extrabold leading-[1.04] tracking-[-.045em]">
+            Tecnologia com raízes em <span class="text-blueCustom">Alagoas</span>
+          </h1>
+          <p class="mt-7 max-w-[700px] text-[clamp(1rem,1.5vw,1.2rem)] leading-8 text-mutedCustom">
+            O Aladin é uma plataforma de recrutamento para aproximar profissionais de tecnologia e empresas em uma experiência simples, transparente e conectada à identidade alagoana.
+          </p>
+          <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+            <a href="/src/pages/signup/signup.html?tipo=candidato" class="rounded-xl bg-blueCustom px-6 py-3.5 text-center text-sm font-bold text-white shadow-card transition hover:-translate-y-0.5">Quero encontrar uma vaga</a>
+            <a href="/src/pages/signup/signup.html?tipo=empresa" class="rounded-xl border border-navy/15 bg-white/70 px-6 py-3.5 text-center text-sm font-bold transition hover:-translate-y-0.5 hover:bg-white">Quero publicar uma vaga</a>
+          </div>
+        </div>
+        <div class="rounded-[34px] border border-white/90 bg-white/65 p-8 shadow-card backdrop-blur-xl md:p-12">
+          <img src="/assets/aladin-logo.svg" alt="Símbolo do Aladin" class="mx-auto h-44 w-44 object-contain md:h-56 md:w-56">
+          <p class="mt-7 text-center text-sm leading-7 text-mutedCustom">Uma marca criada para unir luz, território e oportunidade.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-5 py-16 md:px-8 md:py-24" aria-labelledby="brand-title">
+      <div class="mx-auto max-w-[1180px]">
+        <div class="max-w-[760px]">
+          <p class="mb-3 text-xs font-bold uppercase tracking-[.2em] text-orangeCustom">Nossa identidade</p>
+          <h2 id="brand-title" class="text-[clamp(2rem,4vw,3.3rem)] font-extrabold tracking-[-.035em]">Uma logo que conta de onde viemos</h2>
+          <p class="mt-5 text-base leading-8 text-mutedCustom">Cada parte do símbolo foi pensada para representar uma característica marcante de Alagoas.</p>
+        </div>
+        <div class="mt-10 grid gap-5 md:grid-cols-2">
+          <article class="rounded-[28px] border border-white/80 bg-white/75 p-7 shadow-soft md:p-9">
+            <div class="mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-orangeLt text-orangeCustom">
+              <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
+            </div>
+            <h3 class="text-xl font-extrabold">O sol de Alagoas</h3>
+            <p class="mt-3 text-sm leading-7 text-mutedCustom">Na parte superior, o sol representa a luz, a energia e o clima de Alagoas. Ele também simboliza o começo de novas jornadas profissionais e a capacidade de uma oportunidade iluminar caminhos.</p>
+          </article>
+          <article class="rounded-[28px] border border-white/80 bg-white/75 p-7 shadow-soft md:p-9">
+            <div class="mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-blueLt text-blueCustom">
+              <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6c3-2 5-2 8 0s5 2 8 0M4 12c3-2 5-2 8 0s5 2 8 0M4 18c3-2 5-2 8 0s5 2 8 0"/></svg>
+            </div>
+            <h3 class="text-xl font-extrabold">O mapa de Alagoas</h3>
+            <p class="mt-3 text-sm leading-7 text-mutedCustom">A composição azul na parte inferior nasce da forma do mapa alagoano. Suas linhas também lembram movimento e conexão, traduzindo a aproximação entre talentos, empresas e diferentes regiões do estado.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-5 py-16 md:px-8 md:py-24" aria-labelledby="origin-title">
+      <div class="mx-auto grid max-w-[1180px] gap-8 rounded-[34px] border border-white/90 bg-[linear-gradient(135deg,rgba(255,255,255,.82),rgba(230,239,255,.72))] p-7 shadow-card backdrop-blur-xl md:p-12 lg:grid-cols-[.8fr_1.2fr]">
+        <div>
+          <p class="mb-3 text-xs font-bold uppercase tracking-[.2em] text-blueCustom">Como surgiu</p>
+          <h2 id="origin-title" class="text-[clamp(2rem,4vw,3rem)] font-extrabold tracking-[-.035em]">Um projeto pessoal que ganhou forma</h2>
+        </div>
+        <div class="space-y-5 text-[15px] leading-8 text-mutedCustom">
+          <p>O Aladin foi desenvolvido como projeto pessoal para transformar aprendizado em uma solução completa e próxima de um produto real. A proposta nasceu da vontade de explorar um problema relevante: tornar a busca por oportunidades em tecnologia mais organizada e humana.</p>
+          <p>O projeto reúne experiência de usuário, desenvolvimento front-end e back-end, banco de dados, autenticação, armazenamento de currículos, gestão de processos seletivos, containers, integração contínua e infraestrutura na AWS.</p>
+          <p>Mais do que apresentar telas, o Aladin demonstra um fluxo de ponta a ponta no qual candidatos acompanham sua evolução e empresas administram vagas e candidaturas com clareza.</p>
+          <p class="rounded-2xl border border-orangeCustom/15 bg-orangeLt/65 p-4 text-sm text-navy/80"><strong>Transparência:</strong> o Aladin é uma iniciativa independente e não representa oficialmente o Governo de Alagoas ou qualquer órgão público.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-5 py-16 md:px-8 md:py-24" aria-labelledby="principles-title">
+      <div class="mx-auto max-w-[1180px]">
+        <div class="text-center">
+          <p class="mb-3 text-xs font-bold uppercase tracking-[.2em] text-orangeCustom">O que nos orienta</p>
+          <h2 id="principles-title" class="text-[clamp(2rem,4vw,3.2rem)] font-extrabold tracking-[-.035em]">Princípios do projeto</h2>
+        </div>
+        <div class="mt-10 grid gap-5 md:grid-cols-3">
+          <article class="rounded-[24px] border border-borderColor bg-white p-7">
+            <span class="text-sm font-extrabold text-blueCustom">01</span>
+            <h3 class="mt-4 text-lg font-extrabold">Acesso simples</h3>
+            <p class="mt-3 text-sm leading-7 text-mutedCustom">Reduzir etapas desnecessárias para que pessoas encontrem vagas e empresas encontrem talentos com mais facilidade.</p>
+          </article>
+          <article class="rounded-[24px] border border-borderColor bg-white p-7">
+            <span class="text-sm font-extrabold text-blueCustom">02</span>
+            <h3 class="mt-4 text-lg font-extrabold">Processos transparentes</h3>
+            <p class="mt-3 text-sm leading-7 text-mutedCustom">Dar visibilidade às informações da vaga e às etapas da candidatura, do envio do currículo até a decisão final.</p>
+          </article>
+          <article class="rounded-[24px] border border-borderColor bg-white p-7">
+            <span class="text-sm font-extrabold text-blueCustom">03</span>
+            <h3 class="mt-4 text-lg font-extrabold">Identidade local</h3>
+            <p class="mt-3 text-sm leading-7 text-mutedCustom">Valorizar o ecossistema de tecnologia alagoano sem limitar conexões, aprendizados e oportunidades de crescimento.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-5 pb-24 pt-8 md:px-8">
+      <div class="mx-auto max-w-[1100px] rounded-[32px] bg-navy px-7 py-12 text-center text-white shadow-card md:px-14 md:py-16">
+        <p class="text-xs font-bold uppercase tracking-[.2em] text-orangeCustom">Faça parte</p>
+        <h2 class="mx-auto mt-4 max-w-[760px] text-[clamp(2rem,4vw,3.3rem)] font-extrabold tracking-[-.035em]">Toda grande trajetória começa com uma oportunidade</h2>
+        <p class="mx-auto mt-5 max-w-[660px] text-sm leading-7 text-white/65">Conheça as vagas disponíveis ou publique uma oportunidade para encontrar profissionais de tecnologia.</p>
+        <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+          <a href="/src/pages/main/user/vagas.html" class="rounded-xl bg-orangeCustom px-6 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5">Explorar vagas</a>
+          <a href="/src/pages/signup/signup.html?tipo=empresa" class="rounded-xl border border-white/20 bg-white/10 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/15">Cadastrar empresa</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-navy px-5 py-12 text-white md:px-8">
+    <div class="mx-auto flex max-w-[1180px] flex-col items-center justify-between gap-6 border-b border-white/10 pb-8 sm:flex-row">
+      <a href="/" class="flex items-center gap-3" aria-label="Aladin, página inicial">
+        <img src="/assets/white-logo.svg" alt="" class="h-11 w-11 object-contain" aria-hidden="true">
+        <span class="text-2xl font-extrabold">aladin</span>
+      </a>
+      <nav class="flex flex-wrap justify-center gap-5 text-sm text-white/60" aria-label="Links do rodapé">
+        <a href="/#vagas" class="transition hover:text-white">Vagas</a>
+        <a href="/#como-funciona" class="transition hover:text-white">Como funciona</a>
+        <a href="/src/pages/sobre.html" class="text-white">Sobre</a>
+      </nav>
+    </div>
+    <p class="mx-auto mt-8 max-w-[1180px] text-center text-xs text-white/40 sm:text-left">Projeto pessoal independente desenvolvido com foco em tecnologia e no ecossistema alagoano.</p>
+  </footer>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
