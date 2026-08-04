@@ -28,24 +28,33 @@ export function isEmpresaUser(user) {
   return user?.usuario?.role === 'EMPRESA'
 }
 
-export function getStoredUserPhoto() {
+function getUserPhotoStorageKey(user = currentUserCache) {
+  const usuario = user?.usuario || user
+  if (!usuario?.id || !usuario?.role) return null
+  return `aladin-user-photo:${usuario.role}:${usuario.id}`
+}
+
+export function getStoredUserPhoto(user) {
   try {
-    return localStorage.getItem('aladin-user-photo')
+    localStorage.removeItem('aladin-user-photo')
+    const storageKey = getUserPhotoStorageKey(user)
+    return storageKey ? localStorage.getItem(storageKey) : null
   } catch {
     return null
   }
 }
 
-export function setStoredUserPhoto(photoDataUrl) {
+export function setStoredUserPhoto(photoDataUrl, user) {
   try {
-    localStorage.setItem('aladin-user-photo', photoDataUrl)
+    const storageKey = getUserPhotoStorageKey(user)
+    if (storageKey) localStorage.setItem(storageKey, photoDataUrl)
   } catch {
     // O perfil continua funcional quando o armazenamento local está indisponível.
   }
 }
 
 function getUserPhotoUrl(user) {
-  return getStoredUserPhoto()
+  return getStoredUserPhoto(user)
     || user?.usuario?.candidato?.foto
     || user?.usuario?.empresa?.foto
     || user?.usuario?.foto
