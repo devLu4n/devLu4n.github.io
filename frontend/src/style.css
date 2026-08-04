@@ -6,6 +6,12 @@
   outline-offset: 3px;
 }
 
+dialog[open] {
+  margin: auto;
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
