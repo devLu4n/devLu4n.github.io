@@ -7,9 +7,14 @@
 }
 
 dialog[open] {
-  margin: auto;
+  position: fixed;
+  inset: auto;
+  top: 50%;
+  left: 50%;
+  margin: 0;
   max-height: calc(100dvh - 2rem);
   overflow-y: auto;
+  translate: -50% -50%;
 }
 
 @media (prefers-reduced-motion: reduce) {
