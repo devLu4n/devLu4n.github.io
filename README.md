@@ -230,6 +230,8 @@ O arquivo `template.yaml` descreve a API como infraestrutura versionada:
 - retenção dos logs da Lambda por sete dias.
 - limite de cinco execuções simultâneas para proteger o banco de conexões excessivas.
 
+O arquivo `infrastructure/database.yaml` cria o RDS PostgreSQL privado, os security groups e o grupo de subnets. A senha mestra é gerada e armazenada automaticamente pela AWS. Como este é um ambiente de estudo com foco em controle de custo, excluir a stack também exclui o banco e seus backups automáticos; faça uma exportação antes de excluir caso precise preservar os dados.
+
 O segredo deve ser um objeto JSON com estas chaves:
 
 ```json

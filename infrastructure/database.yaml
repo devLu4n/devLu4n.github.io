@@ -1,0 +1,95 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: PostgreSQL do Aladin no Amazon RDS com acesso privado pela Lambda.
+
+Parameters:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC compartilhada pela Lambda e pelo RDS.
+  SubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: Subnets de pelo menos duas zonas de disponibilidade.
+  DatabaseInstanceClass:
+    Type: String
+    Default: db.t4g.micro
+    AllowedValues:
+      - db.t4g.micro
+      - db.t3.micro
+    Description: Menor classe escolhida para o ambiente do projeto.
+
+Resources:
+  LambdaSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Saida da Lambda do Aladin para o PostgreSQL
+      VpcId: !Ref VpcId
+      Tags:
+        - Key: Project
+          Value: aladin
+
+  DatabaseSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Entrada PostgreSQL permitida somente pela Lambda do Aladin
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          SourceSecurityGroupId: !Ref LambdaSecurityGroup
+      Tags:
+        - Key: Project
+          Value: aladin
+
+  DatabaseSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Subnets do PostgreSQL do Aladin
+      SubnetIds: !Ref SubnetIds
+      Tags:
+        - Key: Project
+          Value: aladin
+
+  Database:
+    Type: AWS::RDS::DBInstance
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      AllocatedStorage: 20
+      AutoMinorVersionUpgrade: true
+      BackupRetentionPeriod: 1
+      DBInstanceClass: !Ref DatabaseInstanceClass
+      DBName: aladin
+      DBSubnetGroupName: !Ref DatabaseSubnetGroup
+      DeleteAutomatedBackups: true
+      DeletionProtection: false
+      Engine: postgres
+      ManageMasterUserPassword: true
+      MasterUsername: aladin_admin
+      MultiAZ: false
+      EnablePerformanceInsights: false
+      Port: 5432
+      PubliclyAccessible: false
+      StorageEncrypted: true
+      StorageType: gp3
+      VPCSecurityGroups:
+        - !GetAtt DatabaseSecurityGroup.GroupId
+      Tags:
+        - Key: Project
+          Value: aladin
+
+Outputs:
+  DatabaseEndpoint:
+    Description: Endpoint privado do PostgreSQL.
+    Value: !GetAtt Database.Endpoint.Address
+  DatabasePort:
+    Description: Porta do PostgreSQL.
+    Value: !GetAtt Database.Endpoint.Port
+  DatabaseSecretArn:
+    Description: ARN do segredo gerenciado pelo RDS com usuario e senha.
+    Value: !GetAtt Database.MasterUserSecret.SecretArn
+  LambdaSecurityGroupId:
+    Description: Security group que deve ser associado a Lambda.
+    Value: !GetAtt LambdaSecurityGroup.GroupId
+  LambdaSubnetIds:
+    Description: Subnets que devem ser associadas a Lambda.
+    Value: !Join [",", !Ref SubnetIds]
