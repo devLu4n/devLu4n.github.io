@@ -11,6 +11,7 @@ const PgSession = require("connect-pg-simple")(session);
 const routes = require("./routes");
 const { errorHandler } = require("./middlewares/errorHandler");
 const { cookieOptions } = require("./config/session");
+const { sessionStoreOptions } = require("./config/sessionStore");
 
 const app = express();
 const isProduction = process.env.NODE_ENV === "production";
@@ -58,12 +59,7 @@ const authLimiter = rateLimit({
 app.use("/api/auth", authLimiter);
 
 const sessionStore = process.env.DATABASE_URL
-  ? new PgSession({
-      conString: process.env.DATABASE_URL,
-      ssl: isProduction ? { rejectUnauthorized: true } : undefined,
-      tableName: "user_sessions",
-      createTableIfMissing: false,
-    })
+  ? new PgSession(sessionStoreOptions(process.env.DATABASE_URL, isProduction))
   : undefined;
 
 app.use(
