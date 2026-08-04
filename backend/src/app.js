@@ -60,6 +60,7 @@ app.use("/api/auth", authLimiter);
 const sessionStore = process.env.DATABASE_URL
   ? new PgSession({
       conString: process.env.DATABASE_URL,
+      ssl: isProduction ? { rejectUnauthorized: true } : undefined,
       tableName: "user_sessions",
       createTableIfMissing: false,
     })
