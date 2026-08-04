@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Encontre vagas de tecnologia publicadas no Aladin.">
+  <title>Todas as vagas — Aladin</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/white-logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body class="min-h-screen bg-bgCustom font-sans text-navy antialiased">
+  <a href="#main-content" class="absolute -top-full left-4 z-[9999] rounded-b-lg bg-blueCustom px-4 py-2 text-sm text-white focus:top-0">Pular para o conteúdo principal</a>
+
+  <header class="sticky top-0 z-[100] border-b border-white/70 bg-bgCustom/90 backdrop-blur-xl">
+    <nav class="mx-auto flex h-[84px] max-w-[1280px] items-center justify-between gap-5 px-5 md:px-8" aria-label="Navegação principal">
+      <a href="/" class="flex shrink-0 items-center gap-2" aria-label="Aladin, página inicial">
+        <img src="/assets/aladin-logo.svg" alt="" class="h-10 w-10 object-contain" aria-hidden="true">
+        <span class="text-[1.6rem] font-extrabold tracking-tight">aladin</span>
+      </a>
+      <ul class="hidden items-center gap-1 md:flex" role="list">
+        <li><a href="/src/pages/todas-vagas.html" aria-current="page" class="rounded-full bg-white px-4 py-2 text-[15px] font-semibold">Vagas</a></li>
+        <li><a href="/#como-funciona" class="rounded-full px-4 py-2 text-[15px] font-semibold text-navy/70 transition hover:bg-white">Como funciona</a></li>
+        <li><a href="/src/pages/sobre.html" class="rounded-full px-4 py-2 text-[15px] font-semibold text-navy/70 transition hover:bg-white">Sobre</a></li>
+      </ul>
+      <div class="flex shrink-0 items-center gap-2 sm:gap-3">
+        <a href="/src/pages/login/login.html" class="rounded-full border border-navy/15 bg-white px-4 py-2.5 text-sm font-semibold">Entrar</a>
+        <a href="/src/pages/signup/signup.html" class="rounded-full bg-orangeCustom px-4 py-2.5 text-sm font-bold text-white shadow-soft">Criar conta</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="relative overflow-hidden bg-navy px-5 py-14 text-white md:px-8 md:py-16" aria-labelledby="jobs-title">
+      <div class="absolute -left-20 top-0 h-64 w-64 rounded-full bg-blueCustom/25 blur-[80px]" aria-hidden="true"></div>
+      <div class="absolute -right-20 bottom-0 h-64 w-64 rounded-full bg-orangeCustom/20 blur-[80px]" aria-hidden="true"></div>
+      <div class="relative mx-auto max-w-[1280px]">
+        <p class="text-xs font-bold uppercase tracking-[.2em] text-orangeCustom">Oportunidades</p>
+        <div class="mt-3 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+          <div>
+            <h1 id="jobs-title" class="text-[clamp(2.2rem,5vw,3.7rem)] font-extrabold tracking-[-.04em]">Todas as vagas</h1>
+            <p class="mt-3 text-sm text-white/55"><strong id="total-count" class="text-orangeCustom">0</strong> oportunidades disponíveis no momento</p>
+          </div>
+          <p class="max-w-[430px] text-sm leading-7 text-white/55">Pesquise por área, modalidade, localização ou tecnologia.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-b border-borderColor bg-white/85 px-5 py-5 md:px-8" aria-label="Pesquisa de vagas">
+      <form id="jobs-search-form" class="mx-auto grid max-w-[1280px] gap-3 md:grid-cols-[1fr_1fr_auto]">
+        <label class="flex h-12 items-center gap-3 rounded-xl border border-borderColor bg-bgCustom px-4 focus-within:border-blueCustom">
+          <svg class="h-5 w-5 text-mutedCustom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <span class="sr-only">Cargo, empresa ou tecnologia</span>
+          <input id="job-search" type="search" class="w-full bg-transparent text-sm outline-none" placeholder="Cargo, empresa ou tecnologia">
+        </label>
+        <label class="flex h-12 items-center gap-3 rounded-xl border border-borderColor bg-bgCustom px-4 focus-within:border-blueCustom">
+          <svg class="h-5 w-5 text-mutedCustom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span class="sr-only">Cidade</span>
+          <input id="city-search" type="search" class="w-full bg-transparent text-sm outline-none" placeholder="Cidade">
+        </label>
+        <button type="submit" class="h-12 rounded-xl bg-blueCustom px-7 text-sm font-bold text-white shadow-soft">Buscar vagas</button>
+      </form>
+    </section>
+
+    <section class="mx-auto grid max-w-[1280px] gap-7 px-5 py-10 md:px-8 lg:grid-cols-[280px_1fr]" aria-label="Catálogo de vagas">
+      <aside class="h-fit rounded-[24px] border border-borderColor bg-white p-6 shadow-soft lg:sticky lg:top-[104px]" aria-labelledby="filters-title">
+        <div class="flex items-center justify-between gap-3"><h2 id="filters-title" class="font-extrabold">Filtros</h2><button id="clear-filters" type="button" class="text-xs font-bold text-blueCustom hover:underline">Limpar tudo</button></div>
+        <fieldset class="mt-7">
+          <legend class="text-xs font-bold uppercase tracking-[.13em] text-mutedCustom">Área</legend>
+          <div id="area-filters" class="mt-3 flex flex-wrap gap-2">
+            <button type="button" data-area="Front-end" class="filter-chip">Front-end</button><button type="button" data-area="Back-end" class="filter-chip">Back-end</button>
+            <button type="button" data-area="DevOps" class="filter-chip">DevOps</button><button type="button" data-area="Dados" class="filter-chip">Dados</button>
+            <button type="button" data-area="Mobile" class="filter-chip">Mobile</button><button type="button" data-area="Segurança" class="filter-chip">Segurança</button>
+            <button type="button" data-area="QA" class="filter-chip">QA</button><button type="button" data-area="UI/UX" class="filter-chip">UI/UX</button>
+            <button type="button" data-area="Full Stack" class="filter-chip">Full Stack</button><button type="button" data-area="Arquitetura" class="filter-chip">Arquitetura</button>
+          </div>
+        </fieldset>
+        <fieldset class="mt-7 border-t border-borderColor pt-6">
+          <legend class="text-xs font-bold uppercase tracking-[.13em] text-mutedCustom">Modalidade</legend>
+          <div id="modality-filters" class="mt-3 flex flex-wrap gap-2">
+            <button type="button" data-modality="REMOTO" class="filter-chip filter-chip-orange">Remoto</button><button type="button" data-modality="HIBRIDO" class="filter-chip filter-chip-orange">Híbrido</button><button type="button" data-modality="PRESENCIAL" class="filter-chip filter-chip-orange">Presencial</button>
+          </div>
+        </fieldset>
+        <div class="mt-7 border-t border-borderColor pt-6">
+          <label for="salary-filter" class="text-xs font-bold uppercase tracking-[.13em] text-mutedCustom">Salário mínimo</label>
+          <div class="mt-3 flex justify-between text-xs text-mutedCustom"><span>R$ 0</span><strong id="salary-label" class="text-navy">Qualquer valor</strong></div>
+          <input id="salary-filter" type="range" min="0" max="20000" step="1000" value="0" class="mt-3 w-full accent-blueCustom">
+        </div>
+      </aside>
+
+      <div class="min-w-0">
+        <div class="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+          <p class="text-sm text-mutedCustom">Mostrando <strong id="showing-count" class="text-navy">0</strong> de <strong id="filtered-count" class="text-navy">0</strong> vagas</p>
+          <label class="flex items-center gap-2 text-sm text-mutedCustom">Ordenar <select id="jobs-sort" class="rounded-lg border border-borderColor bg-white px-3 py-2 text-sm text-navy"><option value="recent">Mais recentes</option><option value="salary-desc">Maior salário</option><option value="salary-asc">Menor salário</option><option value="title">Título</option></select></label>
+        </div>
+        <div id="all-jobs-grid" class="grid gap-5 md:grid-cols-2" aria-live="polite"><div class="col-span-full rounded-[24px] border border-borderColor bg-white p-10 text-center text-mutedCustom">Carregando vagas...</div></div>
+        <div id="jobs-empty" class="mt-5 hidden rounded-[24px] border border-borderColor bg-white p-12 text-center"><p class="text-lg font-extrabold">Nenhuma vaga encontrada</p><p class="mt-2 text-sm text-mutedCustom">Tente remover ou alterar algum filtro.</p></div>
+        <nav id="jobs-pagination" class="mt-9 flex flex-wrap justify-center gap-2" aria-label="Paginação de vagas"></nav>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-navy px-5 py-12 text-white md:px-8"><div class="mx-auto flex max-w-[1280px] flex-col items-center justify-between gap-6 border-b border-white/10 pb-8 sm:flex-row"><a href="/" class="flex items-center gap-3"><img src="/assets/white-logo.svg" alt="" class="h-11 w-11 object-contain"><span class="text-2xl font-extrabold">aladin</span></a><nav class="flex flex-wrap justify-center gap-5 text-sm text-white/60" aria-label="Links do rodapé"><a href="/src/pages/todas-vagas.html" class="text-white">Vagas</a><a href="/src/pages/sobre.html">Sobre</a><a href="/src/pages/signup/signup.html?tipo=empresa">Publicar vaga</a></nav></div><p class="mx-auto mt-8 max-w-[1280px] text-center text-xs text-white/40 sm:text-left">Aladin, conectando talentos e oportunidades em tecnologia.</p></footer>
+  <script type="module" src="/src/features/jobs/allJobs.js"></script>
+</body>
+</html>
