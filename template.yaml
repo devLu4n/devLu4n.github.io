@@ -51,7 +51,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
-      ReservedConcurrentExecutions: 5
       Policies:
         - AWSLambdaVPCAccessExecutionRole
       VpcConfig:
