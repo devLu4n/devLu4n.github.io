@@ -1,50 +1,49 @@
--- CreateEnum
 CREATE TYPE "Role" AS ENUM ('CANDIDATO', 'EMPRESA', 'ADMIN');
 
--- CreateEnum
-CREATE TYPE "StatusCandidatura" AS ENUM ('PENDENTE', 'EM_ANALISE', 'ENTREVISTA', 'APROVADO', 'REJEITADO');
+ALTER TABLE "usuarios"
+ADD COLUMN "role" "Role" NOT NULL DEFAULT 'CANDIDATO',
+DROP COLUMN "tipo",
+DROP COLUMN "cpf",
+DROP COLUMN "telefone",
+DROP COLUMN "cidade",
+DROP COLUMN "dataNascimento";
 
--- AlterTable
-ALTER TABLE "usuarios" ADD COLUMN     "role" "Role" NOT NULL DEFAULT 'CANDIDATO';
+DROP TYPE "TipoUsuario";
 
--- CreateTable
-CREATE TABLE "candidatos" (
-    "id" SERIAL NOT NULL,
-    "telefone" TEXT,
-    "linkedin" TEXT,
-    "cidade" TEXT,
-    "curriculo" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-    "usuarioId" INTEGER NOT NULL,
+ALTER TABLE "candidatos"
+ALTER COLUMN "curriculo" DROP NOT NULL;
 
-    CONSTRAINT "candidatos_pkey" PRIMARY KEY ("id")
+ALTER TYPE "StatusCandidatura" RENAME TO "StatusCandidatura_old";
+CREATE TYPE "StatusCandidatura" AS ENUM (
+  'PENDENTE',
+  'EM_ANALISE',
+  'ENTREVISTA',
+  'APROVADO',
+  'REJEITADO'
 );
 
--- CreateTable
-CREATE TABLE "candidaturas" (
-    "id" SERIAL NOT NULL,
-    "status" "StatusCandidatura" NOT NULL DEFAULT 'PENDENTE',
-    "mensagem" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-    "candidatoId" INTEGER NOT NULL,
-    "vagaId" INTEGER NOT NULL,
+ALTER TABLE "candidaturas" ALTER COLUMN "status" DROP DEFAULT;
+ALTER TABLE "candidaturas"
+ALTER COLUMN "status" TYPE "StatusCandidatura"
+USING (
+  CASE "status"::text
+    WHEN 'ENVIADA' THEN 'PENDENTE'
+    WHEN 'EM_ANALISE' THEN 'EM_ANALISE'
+    WHEN 'APROVADA' THEN 'APROVADO'
+    WHEN 'REPROVADA' THEN 'REJEITADO'
+  END
+)::"StatusCandidatura";
+ALTER TABLE "candidaturas" ALTER COLUMN "status" SET DEFAULT 'PENDENTE';
+ALTER TABLE "candidaturas"
+ADD COLUMN "mensagem" TEXT,
+DROP COLUMN "compatibilidade",
+DROP COLUMN "feedbackIA";
 
-    CONSTRAINT "candidaturas_pkey" PRIMARY KEY ("id")
-);
+DROP TYPE "StatusCandidatura_old";
 
--- CreateIndex
-CREATE UNIQUE INDEX "candidatos_usuarioId_key" ON "candidatos"("usuarioId");
+DROP INDEX "candidaturas_vagaId_candidatoId_key";
+CREATE UNIQUE INDEX "candidaturas_candidatoId_vagaId_key"
+ON "candidaturas"("candidatoId", "vagaId");
 
--- CreateIndex
-CREATE UNIQUE INDEX "candidaturas_candidatoId_vagaId_key" ON "candidaturas"("candidatoId", "vagaId");
-
--- AddForeignKey
-ALTER TABLE "candidatos" ADD CONSTRAINT "candidatos_usuarioId_fkey" FOREIGN KEY ("usuarioId") REFERENCES "usuarios"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "candidaturas" ADD CONSTRAINT "candidaturas_candidatoId_fkey" FOREIGN KEY ("candidatoId") REFERENCES "candidatos"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "candidaturas" ADD CONSTRAINT "candidaturas_vagaId_fkey" FOREIGN KEY ("vagaId") REFERENCES "vagas"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "vagas" ADD COLUMN "tecnologias" TEXT NOT NULL DEFAULT '';
+ALTER TABLE "vagas" ALTER COLUMN "tecnologias" DROP DEFAULT;

@@ -14,4 +14,4 @@ coverage/
 Thumbs.db
 .vscode/
 .idea/
-
+.aws-sam/

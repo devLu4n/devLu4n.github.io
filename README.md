@@ -250,7 +250,7 @@ sam deploy --guided --profile luan-admin --region us-east-2
 
 Informe `https://devlu4n.github.io` em `AllowedOrigin`. Ao final, copie o output `ApiUrl`, acrescente `/api` e use o resultado como `PUBLIC_API_URL` no GitHub.
 
-As migrations não são executadas pela Lambda. Antes da primeira publicação e sempre que o schema mudar, execute `npx prisma migrate deploy` em um ambiente com acesso de rede ao RDS.
+As migrations são aplicadas pela função administrativa `AladinMigrationFunction`, que não possui endpoint público. Depois de publicar uma alteração de schema, invoque essa função uma vez e confirme o resultado antes de liberar a nova versão da API.
 
 ## CI/CD na AWS
 

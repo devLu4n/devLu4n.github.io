@@ -84,7 +84,38 @@ Resources:
       LogGroupName: !Sub /aws/lambda/${AladinApiFunction}
       RetentionInDays: 7
 
+  AladinMigrationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Timeout: 120
+      Policies:
+        - AWSLambdaVPCAccessExecutionRole
+      VpcConfig:
+        SubnetIds: !Ref LambdaSubnetIds
+        SecurityGroupIds: !Ref LambdaSecurityGroupIds
+      Environment:
+        Variables:
+          DATABASE_URL: !Sub "{{resolve:secretsmanager:${ApplicationSecretArn}:SecretString:DATABASE_URL}}"
+          SESSION_SECRET: !Sub "{{resolve:secretsmanager:${ApplicationSecretArn}:SecretString:SESSION_SECRET}}"
+      ImageConfig:
+        Command:
+          - src/migrate.handler
+    Metadata:
+      DockerContext: .
+      Dockerfile: Dockerfile.lambda
+      DockerTag: migrate-nodejs22-v1
+
+  AladinMigrationLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${AladinMigrationFunction}
+      RetentionInDays: 7
+
 Outputs:
   ApiUrl:
     Description: URL pública usada em PUBLIC_API_URL no GitHub.
     Value: !Sub https://${AladinHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}
+  MigrationFunctionName:
+    Description: Funcao administrativa usada para aplicar migrations do Prisma.
+    Value: !Ref AladinMigrationFunction

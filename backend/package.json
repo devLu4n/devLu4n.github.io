@@ -25,12 +25,12 @@
     "express-session": "^1.18.0",
     "helmet": "^8.3.0",
     "pg": "^8.22.0",
+    "prisma": "^5.22.0",
     "serverless-http": "^4.0.0"
   },
   "devDependencies": {
     "jest": "^29.7.0",
-    "nodemon": "^3.1.4",
-    "prisma": "^5.22.0"
+    "nodemon": "^3.1.4"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
