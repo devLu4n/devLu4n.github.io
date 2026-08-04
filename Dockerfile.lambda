@@ -3,6 +3,7 @@
 FROM public.ecr.aws/lambda/nodejs:22
 
 ADD https://truststore.pki.rds.amazonaws.com/us-east-2/us-east-2-bundle.pem /opt/rds-ca/us-east-2-bundle.pem
+RUN chmod 0644 /opt/rds-ca/us-east-2-bundle.pem
 ENV NODE_EXTRA_CA_CERTS=/opt/rds-ca/us-east-2-bundle.pem
 
 COPY backend/package.json backend/package-lock.json ./
