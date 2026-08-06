@@ -1,5 +1,6 @@
 import { apiRequest } from '../../api.js'
 import { clearCurrentUser } from '../../core/auth.js'
+import { announce } from '../../components/feedback.js'
 
 function feedbackFor(form) {
   let feedback = form.querySelector('[data-form-feedback]')
@@ -35,7 +36,7 @@ export function initAuthForms() {
       } catch (error) {
         logoutButton.disabled = false
         logoutButton.textContent = originalText
-        window.alert(error.message === 'Failed to fetch' ? 'Não foi possível acessar o servidor.' : error.message)
+        announce(error.message === 'Failed to fetch' ? 'Não foi possível acessar o servidor.' : error.message)
       }
     })
   })

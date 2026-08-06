@@ -3,71 +3,80 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Encontre vagas de tecnologia publicadas no Aladin.">
+  <meta name="description" content="Encontre vagas de tecnologia publicadas no Aladin e filtre por área, modalidade, cidade e salário.">
   <title>Todas as vagas — Aladin</title>
   <link rel="icon" type="image/svg+xml" href="/assets/white-logo.svg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/src/style.css">
 </head>
 <body class="min-h-screen bg-bgCustom font-sans text-navy antialiased">
-  <a href="#main-content" class="absolute -top-full left-4 z-[9999] rounded-b-lg bg-blueCustom px-4 py-2 text-sm text-white focus:top-0">Pular para o conteúdo principal</a>
+  <a href="#main-content" class="absolute -top-full left-4 z-50 rounded-b-lg bg-blueCustom px-4 py-2 text-sm font-semibold text-white focus:top-0">Pular para o conteúdo principal</a>
 
-  <header class="sticky top-0 z-[100] border-b border-white/70 bg-bgCustom/90 backdrop-blur-xl">
-    <nav class="relative mx-auto flex h-[84px] max-w-[1280px] items-center justify-between gap-5 px-5 md:px-8" aria-label="Navegação principal">
-      <a href="/" class="flex shrink-0 items-center gap-2" aria-label="Aladin, página inicial">
-        <img src="/assets/aladin-logo.svg" alt="" class="h-10 w-10 object-contain" aria-hidden="true">
-        <span class="text-[1.6rem] font-extrabold tracking-tight">aladin</span>
+  <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
+    <nav class="relative mx-auto flex h-[72px] max-w-[1280px] items-center justify-between gap-5 px-5 md:px-8" aria-label="Navegação principal">
+      <a href="/" class="flex shrink-0 items-center gap-2.5" aria-label="Aladin, página inicial">
+        <img src="/assets/aladin-logo.svg" alt="" width="40" height="40" class="h-9 w-9 object-contain" aria-hidden="true">
+        <span class="text-xl font-extrabold tracking-tight">aladin</span>
       </a>
+
       <ul class="hidden items-center gap-1 md:absolute md:left-1/2 md:flex md:-translate-x-1/2" role="list">
-        <li><a href="/src/pages/todas-vagas.html" aria-current="page" class="rounded-full bg-white px-4 py-2 text-[15px] font-semibold">Vagas</a></li>
-        <li><a href="/src/pages/como-funciona.html" class="rounded-full px-4 py-2 text-[15px] font-semibold text-navy/70 transition hover:bg-white">Como funciona</a></li>
-        <li><a href="/src/pages/sobre.html" class="rounded-full px-4 py-2 text-[15px] font-semibold text-navy/70 transition hover:bg-white">Sobre</a></li>
+        <li><a href="/src/pages/todas-vagas.html" aria-current="page" class="rounded-lg bg-slate-100 px-3.5 py-2 text-sm font-bold text-navy">Vagas</a></li>
+        <li><a href="/src/pages/como-funciona.html" class="rounded-lg px-3.5 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-navy">Como funciona</a></li>
+        <li><a href="/src/pages/sobre.html" class="rounded-lg px-3.5 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-navy">Sobre</a></li>
       </ul>
-      <div class="flex shrink-0 items-center gap-2 sm:gap-3">
-        <a href="/src/pages/login/login.html" class="rounded-full border border-navy/15 bg-white px-4 py-2.5 text-sm font-semibold">Entrar</a>
-        <a href="/src/pages/signup/signup.html" class="rounded-full bg-orangeCustom px-4 py-2.5 text-sm font-bold text-white shadow-soft">Criar conta</a>
+
+      <div class="flex shrink-0 items-center gap-2">
+        <a href="/src/pages/login/login.html" class="motion-interactive hidden min-h-11 items-center rounded-lg px-4 text-sm font-semibold text-slate-700 hover:bg-slate-100 sm:inline-flex">Entrar</a>
+        <a href="/src/pages/signup/signup.html" class="motion-interactive inline-flex min-h-11 items-center rounded-lg bg-blueCustom px-4 text-sm font-bold text-white shadow-button hover:bg-blueDark">Criar conta</a>
       </div>
     </nav>
   </header>
 
   <main id="main-content">
-    <section class="relative overflow-hidden bg-navy px-5 py-14 text-white md:px-8 md:py-16" aria-labelledby="jobs-title">
-      <div class="absolute -left-20 top-0 h-64 w-64 rounded-full bg-blueCustom/25 blur-[80px]" aria-hidden="true"></div>
-      <div class="absolute -right-20 bottom-0 h-64 w-64 rounded-full bg-orangeCustom/20 blur-[80px]" aria-hidden="true"></div>
+    <section class="relative overflow-hidden border-b border-slate-200 bg-white px-5 pb-12 pt-14 md:px-8 md:pb-16 md:pt-20" aria-labelledby="jobs-title">
+      <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_10%,rgba(3,105,161,.10),transparent_32%),radial-gradient(circle_at_10%_90%,rgba(14,165,233,.07),transparent_28%)]" aria-hidden="true"></div>
       <div class="relative mx-auto max-w-[1280px]">
-        <p class="text-xs font-bold uppercase tracking-[.2em] text-orangeCustom">Oportunidades</p>
-        <div class="mt-3 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+        <div class="grid items-end gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
           <div>
-            <h1 id="jobs-title" class="text-[clamp(2.2rem,5vw,3.7rem)] font-extrabold tracking-[-.04em]">Todas as vagas</h1>
-            <p class="mt-3 text-sm text-white/55"><strong id="total-count" class="text-orangeCustom">0</strong> oportunidades disponíveis no momento</p>
+            <div class="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-3 py-1.5 text-xs font-bold uppercase tracking-[.12em] text-blueCustom">
+              <span class="h-1.5 w-1.5 rounded-full bg-blueCustom" aria-hidden="true"></span>
+              Oportunidades em tecnologia
+            </div>
+            <h1 id="jobs-title" class="mt-5 max-w-[760px] text-[clamp(2.4rem,5vw,4.4rem)] font-extrabold leading-[1.04] tracking-[-.05em] text-navy">Encontre uma vaga que combine com o seu próximo passo.</h1>
           </div>
-          <p class="max-w-[430px] text-sm leading-7 text-white/55">Pesquise por área, modalidade, localização ou tecnologia.</p>
+          <div class="border-l-2 border-sky-200 pl-5">
+            <p class="text-sm leading-7 text-slate-600">Pesquise oportunidades reais por cargo, tecnologia, localização e modelo de trabalho.</p>
+            <p class="mt-3 text-sm font-semibold text-navy"><strong id="total-count" class="text-2xl font-extrabold text-blueCustom">0</strong> vagas abertas no momento</p>
+          </div>
         </div>
+
+        <form id="jobs-search-form" class="mt-10 grid gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-search md:grid-cols-[1fr_1fr_auto]" aria-label="Pesquisar vagas">
+          <label class="flex min-h-12 items-center gap-3 rounded-xl bg-slate-50 px-4 ring-1 ring-inset ring-slate-200 focus-within:ring-2 focus-within:ring-blueCustom">
+            <svg class="h-5 w-5 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <span class="sr-only">Cargo, empresa ou tecnologia</span>
+            <input id="job-search" type="search" class="w-full bg-transparent text-sm outline-none placeholder:text-slate-400" placeholder="Cargo, empresa ou tecnologia">
+          </label>
+          <label class="flex min-h-12 items-center gap-3 rounded-xl bg-slate-50 px-4 ring-1 ring-inset ring-slate-200 focus-within:ring-2 focus-within:ring-blueCustom">
+            <svg class="h-5 w-5 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span class="sr-only">Cidade</span>
+            <input id="city-search" type="search" class="w-full bg-transparent text-sm outline-none placeholder:text-slate-400" placeholder="Cidade ou região">
+          </label>
+          <button type="submit" class="motion-interactive min-h-12 rounded-xl bg-blueCustom px-7 text-sm font-bold text-white shadow-button hover:bg-blueDark">Buscar vagas</button>
+        </form>
       </div>
     </section>
 
-    <section class="border-b border-borderColor bg-white/85 px-5 py-5 md:px-8" aria-label="Pesquisa de vagas">
-      <form id="jobs-search-form" class="mx-auto grid max-w-[1280px] gap-3 md:grid-cols-[1fr_1fr_auto]">
-        <label class="flex h-12 items-center gap-3 rounded-xl border border-borderColor bg-bgCustom px-4 focus-within:border-blueCustom">
-          <svg class="h-5 w-5 text-mutedCustom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          <span class="sr-only">Cargo, empresa ou tecnologia</span>
-          <input id="job-search" type="search" class="w-full bg-transparent text-sm outline-none" placeholder="Cargo, empresa ou tecnologia">
-        </label>
-        <label class="flex h-12 items-center gap-3 rounded-xl border border-borderColor bg-bgCustom px-4 focus-within:border-blueCustom">
-          <svg class="h-5 w-5 text-mutedCustom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span class="sr-only">Cidade</span>
-          <input id="city-search" type="search" class="w-full bg-transparent text-sm outline-none" placeholder="Cidade">
-        </label>
-        <button type="submit" class="h-12 rounded-xl bg-blueCustom px-7 text-sm font-bold text-white shadow-soft">Buscar vagas</button>
-      </form>
-    </section>
+    <section class="mx-auto grid max-w-[1280px] gap-8 px-5 py-10 md:px-8 md:py-14 lg:grid-cols-[260px_minmax(0,1fr)]" aria-label="Catálogo de vagas">
+      <aside class="h-fit rounded-2xl border border-slate-200 bg-white p-5 shadow-soft lg:sticky lg:top-[96px]" aria-labelledby="filters-title">
+        <div class="flex items-center justify-between gap-3 border-b border-slate-200 pb-4">
+          <div class="flex items-center gap-2">
+            <svg class="h-5 w-5 text-blueCustom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+            <h2 id="filters-title" class="font-extrabold">Filtros</h2>
+          </div>
+          <button id="clear-filters" type="button" class="text-xs font-bold text-blueCustom hover:text-blueDark hover:underline">Limpar</button>
+        </div>
 
-    <section class="mx-auto grid max-w-[1280px] gap-7 px-5 py-10 md:px-8 lg:grid-cols-[280px_1fr]" aria-label="Catálogo de vagas">
-      <aside class="h-fit rounded-[24px] border border-borderColor bg-white p-6 shadow-soft lg:sticky lg:top-[104px]" aria-labelledby="filters-title">
-        <div class="flex items-center justify-between gap-3"><h2 id="filters-title" class="font-extrabold">Filtros</h2><button id="clear-filters" type="button" class="text-xs font-bold text-blueCustom hover:underline">Limpar tudo</button></div>
-        <fieldset class="mt-7">
-          <legend class="text-xs font-bold uppercase tracking-[.13em] text-mutedCustom">Área</legend>
+        <fieldset class="mt-5">
+          <legend class="text-xs font-bold uppercase tracking-[.12em] text-slate-500">Área</legend>
           <div id="area-filters" class="mt-3 flex flex-wrap gap-2">
             <button type="button" data-area="Front-end" class="filter-chip">Front-end</button><button type="button" data-area="Back-end" class="filter-chip">Back-end</button>
             <button type="button" data-area="DevOps" class="filter-chip">DevOps</button><button type="button" data-area="Dados" class="filter-chip">Dados</button>
@@ -76,32 +85,58 @@
             <button type="button" data-area="Full Stack" class="filter-chip">Full Stack</button><button type="button" data-area="Arquitetura" class="filter-chip">Arquitetura</button>
           </div>
         </fieldset>
-        <fieldset class="mt-7 border-t border-borderColor pt-6">
-          <legend class="text-xs font-bold uppercase tracking-[.13em] text-mutedCustom">Modalidade</legend>
+
+        <fieldset class="mt-6 border-t border-slate-200 pt-5">
+          <legend class="text-xs font-bold uppercase tracking-[.12em] text-slate-500">Modalidade</legend>
           <div id="modality-filters" class="mt-3 flex flex-wrap gap-2">
-            <button type="button" data-modality="REMOTO" class="filter-chip filter-chip-orange">Remoto</button><button type="button" data-modality="HIBRIDO" class="filter-chip filter-chip-orange">Híbrido</button><button type="button" data-modality="PRESENCIAL" class="filter-chip filter-chip-orange">Presencial</button>
+            <button type="button" data-modality="REMOTO" class="filter-chip">Remoto</button><button type="button" data-modality="HIBRIDO" class="filter-chip">Híbrido</button><button type="button" data-modality="PRESENCIAL" class="filter-chip">Presencial</button>
           </div>
         </fieldset>
-        <div class="mt-7 border-t border-borderColor pt-6">
-          <label for="salary-filter" class="text-xs font-bold uppercase tracking-[.13em] text-mutedCustom">Salário mínimo</label>
-          <div class="mt-3 flex justify-between text-xs text-mutedCustom"><span>R$ 0</span><strong id="salary-label" class="text-navy">Qualquer valor</strong></div>
-          <input id="salary-filter" type="range" min="0" max="20000" step="1000" value="0" class="mt-3 w-full accent-blueCustom">
+
+        <div class="mt-6 border-t border-slate-200 pt-5">
+          <label for="salary-filter" class="text-xs font-bold uppercase tracking-[.12em] text-slate-500">Salário mínimo</label>
+          <div class="mt-3 flex items-center justify-between text-xs text-slate-500"><span>R$ 0</span><strong id="salary-label" class="rounded-md bg-slate-100 px-2 py-1 text-navy">Qualquer valor</strong></div>
+          <input id="salary-filter" type="range" min="0" max="20000" step="1000" value="0" class="mt-4 w-full accent-blueCustom">
         </div>
       </aside>
 
       <div class="min-w-0">
-        <div class="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
-          <p class="text-sm text-mutedCustom">Mostrando <strong id="showing-count" class="text-navy">0</strong> de <strong id="filtered-count" class="text-navy">0</strong> vagas</p>
-          <label class="flex items-center gap-2 text-sm text-mutedCustom">Ordenar <select id="jobs-sort" class="rounded-lg border border-borderColor bg-white px-3 py-2 text-sm text-navy"><option value="recent">Mais recentes</option><option value="salary-desc">Maior salário</option><option value="salary-asc">Menor salário</option><option value="title">Título</option></select></label>
+        <div class="mb-5 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-[.12em] text-blueCustom">Resultados</p>
+            <p class="mt-1 text-sm text-slate-600">Mostrando <strong id="showing-count" class="text-navy">0</strong> de <strong id="filtered-count" class="text-navy">0</strong> vagas</p>
+          </div>
+          <label class="flex items-center gap-3 text-sm font-medium text-slate-600">Ordenar por
+            <select id="jobs-sort" class="min-h-11 rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-navy outline-none focus:border-blueCustom focus:ring-2 focus:ring-blueCustom/15">
+              <option value="recent">Mais recentes</option><option value="salary-desc">Maior salário</option><option value="salary-asc">Menor salário</option><option value="title">Título</option>
+            </select>
+          </label>
         </div>
-        <div id="all-jobs-grid" class="grid gap-5 md:grid-cols-2" aria-live="polite"><div class="col-span-full rounded-[24px] border border-borderColor bg-white p-10 text-center text-mutedCustom">Carregando vagas...</div></div>
-        <div id="jobs-empty" class="mt-5 hidden rounded-[24px] border border-borderColor bg-white p-12 text-center"><p class="text-lg font-extrabold">Nenhuma vaga encontrada</p><p class="mt-2 text-sm text-mutedCustom">Tente remover ou alterar algum filtro.</p></div>
+
+        <div id="all-jobs-grid" class="grid gap-4 xl:grid-cols-2" aria-live="polite">
+          <div class="col-span-full rounded-2xl border border-slate-200 bg-white p-10 text-center text-slate-500">Carregando vagas...</div>
+        </div>
+
+        <div id="jobs-empty" class="mt-5 hidden rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
+          <span class="mx-auto grid h-12 w-12 place-items-center rounded-xl bg-slate-100 text-slate-500" aria-hidden="true"><svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
+          <p class="mt-4 text-lg font-extrabold">Nenhuma vaga encontrada</p>
+          <p class="mt-2 text-sm text-slate-500">Tente remover ou alterar algum filtro para ampliar a busca.</p>
+          <button type="button" onclick="document.getElementById('clear-filters').click()" class="mt-5 text-sm font-bold text-blueCustom hover:underline">Limpar todos os filtros</button>
+        </div>
+
         <nav id="jobs-pagination" class="mt-9 flex flex-wrap justify-center gap-2" aria-label="Paginação de vagas"></nav>
       </div>
     </section>
   </main>
 
-  <footer class="bg-navy px-5 py-12 text-white md:px-8"><div class="mx-auto flex max-w-[1280px] flex-col items-center justify-between gap-6 border-b border-white/10 pb-8 sm:flex-row"><a href="/" class="flex items-center gap-3"><img src="/assets/white-logo.svg" alt="" class="h-11 w-11 object-contain"><span class="text-2xl font-extrabold">aladin</span></a><nav class="flex flex-wrap justify-center gap-5 text-sm text-white/60" aria-label="Links do rodapé"><a href="/src/pages/todas-vagas.html" class="text-white">Vagas</a><a href="/src/pages/sobre.html">Sobre</a><a href="/src/pages/signup/signup.html?tipo=empresa">Publicar vaga</a></nav></div><p class="mx-auto mt-8 max-w-[1280px] text-center text-xs text-white/40 sm:text-left">Aladin, conectando talentos e oportunidades em tecnologia.</p></footer>
+  <footer class="bg-navy px-5 py-12 text-white md:px-8">
+    <div class="mx-auto flex max-w-[1280px] flex-col items-center justify-between gap-6 border-b border-white/10 pb-8 sm:flex-row">
+      <a href="/" class="flex items-center gap-2.5" aria-label="Aladin, página inicial"><img src="/assets/white-logo.svg" alt="" width="40" height="40" class="h-9 w-9 object-contain" aria-hidden="true"><span class="text-xl font-extrabold">aladin</span></a>
+      <nav class="flex flex-wrap justify-center gap-5 text-sm font-medium text-slate-400" aria-label="Links do rodapé"><a href="/src/pages/todas-vagas.html" class="text-white">Vagas</a><a href="/src/pages/como-funciona.html" class="hover:text-white">Como funciona</a><a href="/src/pages/sobre.html" class="hover:text-white">Sobre</a><a href="/src/pages/signup/signup.html?tipo=empresa" class="hover:text-white">Publicar vaga</a></nav>
+    </div>
+    <p class="mx-auto mt-7 max-w-[1280px] text-center text-xs text-slate-500 sm:text-left">Projeto independente criado para conectar talentos e empresas de tecnologia.</p>
+  </footer>
+
   <script type="module" src="/src/features/jobs/allJobs.js"></script>
 </body>
 </html>

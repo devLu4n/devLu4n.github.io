@@ -31,7 +31,7 @@ function modalityLabel(value) {
 
 function technologyTags(value) {
   return String(value || '').split(',').map((item) => item.trim()).filter(Boolean).slice(0, 4)
-    .map((item) => `<span class="rounded-lg bg-blueLt px-2.5 py-1 text-xs font-semibold text-blueCustom">${escapeHtml(item)}</span>`).join('')
+    .map((item) => `<span class="rounded-md bg-sky-50 px-2.5 py-1 text-[11px] font-bold text-blueCustom ring-1 ring-inset ring-sky-100">${escapeHtml(item)}</span>`).join('')
 }
 
 function filteredJobs() {
@@ -70,11 +70,18 @@ function render() {
   if (state.page > Math.max(totalPages, 1)) state.page = 1
   const visible = jobs.slice((state.page - 1) * PAGE_SIZE, state.page * PAGE_SIZE)
   grid.innerHTML = visible.map((job) => `
-    <article class="group flex min-h-[285px] flex-col rounded-[24px] border border-borderColor bg-white p-5 shadow-soft transition hover:-translate-y-1 hover:border-blueCustom hover:shadow-card">
-      <header class="flex items-center gap-4"><img src="${escapeHtml(job.empresa?.foto || '/assets/empresa.png')}" alt="Foto de ${escapeHtml(job.empresa?.nome || 'empresa')}" class="h-12 w-12 shrink-0 rounded-xl border border-borderColor object-cover" onerror="this.onerror=null;this.src='/assets/empresa.png'"><div class="min-w-0"><p class="truncate text-xs font-bold uppercase tracking-[.08em] text-orangeCustom">${escapeHtml(job.empresa?.nome || 'Empresa')}</p><h2 class="mt-1 line-clamp-2 font-extrabold leading-6">${escapeHtml(job.titulo)}</h2></div></header>
-      <div class="mt-5 flex flex-wrap gap-2">${technologyTags(job.tecnologias)}<span class="rounded-lg bg-orangeLt px-2.5 py-1 text-xs font-semibold text-orangeCustom">${escapeHtml(modalityLabel(job.modalidade))}</span></div>
-      <div class="mt-5 grid gap-2 text-sm text-mutedCustom sm:grid-cols-2"><p>Local: <strong class="font-semibold text-navy/80">${escapeHtml(job.modalidade === 'REMOTO' ? 'Remoto' : job.cidade)}</strong></p><p class="sm:text-right">Área: <strong class="font-semibold text-navy/80">${escapeHtml(job.area)}</strong></p></div>
-      <footer class="mt-auto flex items-center justify-between gap-3 border-t border-borderColor pt-5"><strong class="text-sm text-orangeCustom">${escapeHtml(salaryLabel(job))}</strong><a href="/src/pages/signup/signup.html?tipo=candidato" class="rounded-xl bg-blueCustom px-4 py-2.5 text-sm font-bold text-white">Ver vaga</a></footer>
+    <article class="motion-interactive group flex min-h-[300px] flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-soft hover:border-sky-300 hover:shadow-card">
+      <header class="flex items-start gap-4">
+        <img src="${escapeHtml(job.empresa?.foto || '/assets/empresa.png')}" alt="Foto de ${escapeHtml(job.empresa?.nome || 'empresa')}" class="h-12 w-12 shrink-0 rounded-xl border border-slate-200 bg-slate-50 object-cover" onerror="this.onerror=null;this.src='/assets/empresa.png'">
+        <div class="min-w-0 flex-1"><p class="truncate text-xs font-bold text-blueCustom">${escapeHtml(job.empresa?.nome || 'Empresa')}</p><h2 class="mt-1 line-clamp-2 text-lg font-extrabold leading-6 tracking-[-.015em] text-navy">${escapeHtml(job.titulo)}</h2></div>
+        <span class="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">${escapeHtml(modalityLabel(job.modalidade))}</span>
+      </header>
+      <div class="mt-5 flex min-h-7 flex-wrap gap-2">${technologyTags(job.tecnologias) || '<span class="text-xs text-slate-400">Tecnologias não informadas</span>'}</div>
+      <div class="mt-5 grid gap-3 rounded-xl bg-slate-50 p-3 text-xs text-slate-500 sm:grid-cols-2">
+        <p class="flex items-center gap-2"><svg class="h-4 w-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg><strong class="truncate font-semibold text-navy/80">${escapeHtml(job.modalidade === 'REMOTO' ? 'Remoto' : job.cidade)}</strong></p>
+        <p class="flex items-center gap-2 sm:justify-end"><svg class="h-4 w-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg><strong class="truncate font-semibold text-navy/80">${escapeHtml(job.area)}</strong></p>
+      </div>
+      <footer class="mt-auto flex items-end justify-between gap-3 border-t border-slate-200 pt-5"><div><span class="block text-[11px] font-semibold uppercase tracking-[.08em] text-slate-400">Faixa salarial</span><strong class="mt-1 block text-sm text-navy">${escapeHtml(salaryLabel(job))}</strong></div><a href="/src/pages/signup/signup.html?tipo=candidato" class="motion-interactive inline-flex min-h-11 items-center rounded-lg bg-blueCustom px-4 text-sm font-bold text-white shadow-button hover:bg-blueDark">Ver vaga</a></footer>
     </article>`).join('')
   empty.classList.toggle('hidden', jobs.length !== 0)
   grid.classList.toggle('hidden', jobs.length === 0)

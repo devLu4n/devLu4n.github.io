@@ -113,27 +113,12 @@
       backdrop-filter: blur(5px);
     }
 
-    dialog[open] {
-      animation: appear .18s ease-out;
-    }
-
-    @keyframes appear {
-      from {
-        opacity: 0;
-        transform: translateY(8px) scale(.985);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
   </style>
 
   <script type="module" src="/src/main.js"></script>
 </head>
 
-<body class="min-h-screen bg-[linear-gradient(180deg,#F9FBFF_0%,#F4F8FF_100%)] font-sans text-textCustom antialiased">
+<body class="authenticated-app min-h-screen bg-bgCustom font-sans text-textCustom antialiased">
   <div class="relative flex min-h-screen flex-col overflow-hidden">
 
     <div class="blob -left-20 -top-14 h-[380px] w-[380px] bg-orangeCustom/25" aria-hidden="true"></div>
@@ -346,9 +331,9 @@
         class="mx-auto flex max-w-[1080px] flex-col items-center justify-between gap-3 border-t border-white/80 pt-5 text-center text-[12px] text-mutedCustom sm:flex-row sm:text-left">
         <p>© 2026 Aladin. Todos os direitos reservados.</p>
         <nav class="flex items-center gap-5" aria-label="Links do rodapé">
-          <a href="#" class="transition hover:text-navy">Privacidade</a>
-          <a href="#" class="transition hover:text-navy">Termos</a>
-          <a href="#" class="transition hover:text-navy">Contato</a>
+          <a href="/" class="transition hover:text-navy">Início</a>
+          <a href="/src/pages/como-funciona.html" class="transition hover:text-navy">Como funciona</a>
+          <a href="/src/pages/sobre.html" class="transition hover:text-navy">Sobre</a>
         </nav>
       </div>
     </footer>
@@ -399,7 +384,7 @@
         companyModal.showModal();
       });
     });
-    document.getElementById('close-company-modal').addEventListener('click', () => companyModal.close());
+    document.getElementById('close-company-modal').addEventListener('click', () => window.closeDialog(companyModal));
   </script>
 
 </body>

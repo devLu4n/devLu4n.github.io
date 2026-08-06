@@ -1,9 +1,104 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 @config "../tailwind.config.js";
 @import "tailwindcss";
+
+:root {
+  --color-primary: #0f172a;
+  --color-on-primary: #ffffff;
+  --color-accent: #0369a1;
+  --color-accent-hover: #075985;
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-foreground: #020617;
+  --color-muted: #e8ecf1;
+  --color-muted-foreground: #475569;
+  --color-border: #e2e8f0;
+  --color-destructive: #dc2626;
+  --radius-control: 0.75rem;
+  --radius-card: 1rem;
+  --shadow-sm: 0 1px 2px rgb(15 23 42 / 5%);
+  --shadow-md: 0 8px 24px rgb(15 23 42 / 8%);
+  --shadow-lg: 0 20px 48px rgb(15 23 42 / 12%);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --duration-fast: 160ms;
+  --duration-ui: 200ms;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+button,
+a[href],
+select,
+input[type="checkbox"],
+input[type="radio"] {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+button:disabled,
+input:disabled,
+select:disabled {
+  cursor: not-allowed;
+}
 
 :focus-visible {
   outline: 3px solid #ff6a00;
   outline-offset: 3px;
+}
+
+:where(button, a[href]):active:not(:disabled) {
+  scale: 0.97;
+  transition: scale var(--duration-fast) var(--ease-out);
+}
+
+.motion-interactive {
+  transition-property: color, background-color, border-color, box-shadow, opacity, transform, scale;
+  transition-duration: var(--duration-ui);
+  transition-timing-function: var(--ease-out);
+}
+
+.global-feedback {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  z-index: 50;
+  opacity: 0;
+  transform: translate(-50%, 100%);
+  transition: opacity var(--duration-ui) var(--ease-out),
+    transform var(--duration-ui) var(--ease-out);
+}
+
+.global-feedback.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+:where(button, a[href]).motion-interactive:active:not(:disabled) {
+  transition: scale var(--duration-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .motion-hover-lift-sm:hover {
+    transform: translateY(-0.125rem);
+  }
+
+  .motion-hover-lift-px:hover {
+    transform: translateY(-1px);
+  }
+
+  .motion-hover-lift:hover {
+    transform: translateY(-0.25rem);
+  }
 }
 
 dialog[open] {
@@ -15,6 +110,239 @@ dialog[open] {
   max-height: calc(100dvh - 2rem);
   overflow-y: auto;
   translate: -50% -50%;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity var(--duration-ui) var(--ease-out),
+    transform var(--duration-ui) var(--ease-out);
+}
+
+dialog::backdrop {
+  background: rgb(15 23 42 / 52%);
+  backdrop-filter: blur(4px);
+}
+
+.glass-shell,
+.glass-card {
+  border: 1px solid var(--color-border) !important;
+  background: var(--color-surface) !important;
+  backdrop-filter: none !important;
+}
+
+.glass-shell {
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.glass-card {
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.soft-field,
+.field {
+  border: 1px solid var(--color-border) !important;
+  background: var(--color-surface) !important;
+  color: var(--color-foreground) !important;
+  box-shadow: none !important;
+}
+
+.soft-field:focus,
+.field:focus {
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 0 3px rgb(3 105 161 / 14%) !important;
+}
+
+.orange-button {
+  background: var(--color-accent) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 20px rgb(3 105 161 / 18%) !important;
+}
+
+.orange-button:hover {
+  background: var(--color-accent-hover) !important;
+}
+
+.nav-link.active::after {
+  background: var(--color-accent) !important;
+}
+
+.tag {
+  border: 1px solid #bae6fd !important;
+  background: #f0f9ff !important;
+  color: #075985 !important;
+}
+
+/* Authenticated product surface */
+.authenticated-app {
+  background: #f8fafc !important;
+  color: var(--color-foreground);
+}
+
+.authenticated-app .blob,
+.authenticated-app .background-blob,
+.authenticated-app .grain {
+  display: none !important;
+}
+
+.authenticated-app header {
+  position: sticky !important;
+  top: 0;
+  z-index: 40;
+  border-bottom: 1px solid rgb(226 232 240 / 88%);
+  background: rgb(255 255 255 / 90%);
+  backdrop-filter: blur(18px) saturate(140%);
+}
+
+.authenticated-app header > nav {
+  min-height: 4.5rem !important;
+  max-width: 80rem !important;
+  padding-inline: clamp(1.25rem, 3vw, 2rem) !important;
+}
+
+.authenticated-app header img[src*="aladin-logo"] {
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+}
+
+.authenticated-app header a[aria-label*="Aladin"] span {
+  font-size: 1.25rem !important;
+}
+
+.authenticated-app .nav-link {
+  color: #475569 !important;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.authenticated-app .nav-link:hover,
+.authenticated-app .nav-link.active {
+  color: var(--color-primary) !important;
+}
+
+.authenticated-app .nav-link.active::after {
+  bottom: -0.7rem !important;
+  height: 2px !important;
+  background: var(--color-accent) !important;
+}
+
+.authenticated-app main {
+  padding-top: clamp(1.5rem, 4vw, 3rem) !important;
+  padding-bottom: 3.5rem !important;
+}
+
+.authenticated-app .glass-shell {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 1.5rem !important;
+  background: #fff !important;
+  box-shadow: 0 12px 32px rgb(15 23 42 / 7%) !important;
+}
+
+.authenticated-app .glass-card {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 1rem !important;
+  background: #fff !important;
+  box-shadow: 0 4px 16px rgb(15 23 42 / 5%) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .authenticated-app article.glass-card:hover {
+    border-color: #bae6fd !important;
+    box-shadow: 0 12px 28px rgb(15 23 42 / 8%) !important;
+  }
+}
+
+.authenticated-app .soft-field,
+.authenticated-app .field {
+  border-color: #cbd5e1 !important;
+  border-radius: 0.75rem !important;
+  background: #f8fafc !important;
+}
+
+.authenticated-app .soft-field:focus,
+.authenticated-app .field:focus {
+  border-color: var(--color-accent) !important;
+  background: #fff !important;
+}
+
+.authenticated-app .text-orangeCustom,
+.authenticated-app .text-orangeDark {
+  color: var(--color-accent) !important;
+}
+
+.authenticated-app .bg-orangeCustom {
+  background-color: var(--color-accent) !important;
+}
+
+.authenticated-app .bg-orangeLt {
+  background-color: #f0f9ff !important;
+}
+
+.authenticated-app [class*="border-orangeCustom"] {
+  border-color: #bae6fd !important;
+}
+
+.authenticated-app [class*="hover:text-orangeCustom"]:hover,
+.authenticated-app [class*="hover:text-orangeDark"]:hover {
+  color: var(--color-accent-hover) !important;
+}
+
+.authenticated-app [class*="hover:border-orangeCustom"]:hover {
+  border-color: var(--color-accent) !important;
+}
+
+.authenticated-app [class*="from-orangeCustom"],
+.authenticated-app [class*="to-orangeCustom"] {
+  --tw-gradient-from: #0369a1 var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(3 105 161 / 0) var(--tw-gradient-to-position) !important;
+}
+
+.authenticated-app #profile-menu {
+  margin-top: 0.25rem;
+  border: 1px solid #e2e8f0 !important;
+  background: rgb(255 255 255 / 96%) !important;
+  box-shadow: 0 18px 40px rgb(15 23 42 / 12%) !important;
+  backdrop-filter: blur(16px);
+}
+
+.authenticated-app #profile-menu-button {
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.authenticated-app footer {
+  color: #64748b;
+}
+
+@media (max-width: 767px) {
+  .authenticated-app header > nav {
+    min-height: 4.25rem !important;
+  }
+
+  .authenticated-app main {
+    padding-top: 1.25rem !important;
+  }
+
+  .authenticated-app .glass-shell {
+    border-radius: 1rem !important;
+  }
+}
+
+@starting-style {
+  dialog[open] {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+dialog.dialog-is-closing {
+  opacity: 0;
+  transform: scale(0.97);
+  pointer-events: none;
+}
+
+.candidate-card.application-state-changed {
+  opacity: 0.65;
+  transform: scale(0.99);
+  transition: opacity var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -22,9 +350,62 @@ dialog[open] {
   *::before,
   *::after {
     scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+
+  :where(button, a[href]):active:not(:disabled) {
+    scale: none;
+  }
+
+  .motion-hover-lift-sm:hover,
+  .motion-hover-lift-px:hover,
+  .motion-hover-lift:hover {
+    transform: none;
+  }
+
+  .global-feedback {
+    transform: translate(-50%, 0);
+    transition: opacity var(--duration-ui) var(--ease-out);
+  }
+
+  dialog[open] {
+    transform: none;
+    transition: opacity var(--duration-ui) var(--ease-out);
+  }
+
+  @starting-style {
+    dialog[open] {
+      opacity: 0;
+      transform: none;
+    }
+  }
+
+  dialog.dialog-is-closing {
+    transform: none;
+  }
+
+  .candidate-card.application-state-changed {
+    transform: none;
+    transition: opacity var(--duration-fast) var(--ease-out);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass-card,
+  .glass-shell,
+  header[class*="backdrop-blur"],
+  nav[class*="backdrop-blur"] {
+    background: #fff !important;
+    backdrop-filter: none !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .glass-card,
+  .glass-shell {
+    background: #fff !important;
+    border-color: #111426 !important;
   }
 }
 
@@ -40,7 +421,9 @@ dialog[open] {
   color: rgb(17 20 38 / 65%);
   font-size: 0.75rem;
   font-weight: 600;
-  transition: 160ms ease;
+  transition: border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
 }
 
 .filter-chip:hover,
@@ -75,7 +458,7 @@ dialog[open] {
     top: calc(100% - 0.25rem);
     right: 1rem;
     left: 1rem;
-    z-index: 60;
+    z-index: 30;
     display: flex !important;
     flex-direction: column;
     gap: 0.25rem;

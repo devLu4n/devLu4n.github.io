@@ -15,10 +15,10 @@
 </head>
 <body class="bg-bgCustom text-textCustom font-sans antialiased min-h-screen flex flex-col">
 
-  <a href="#main-content" class="absolute -top-full left-4 bg-blueCustom text-white px-4 py-2 rounded-b-lg text-sm z-[9999] no-underline focus:top-0 transition-all">Pular para o conteúdo principal</a>
+  <a href="#main-content" class="absolute -top-full left-4 bg-blueCustom text-white px-4 py-2 rounded-b-lg text-sm z-50 no-underline focus:top-0">Pular para o conteúdo principal</a>
 
   <!-- HEADER -->
-  <header class="sticky top-0 z-[100] bg-bgCustom/94 backdrop-blur-md border-b border-borderColor" role="banner">
+  <header class="sticky top-0 z-40 bg-bgCustom/94 backdrop-blur-md border-b border-borderColor" role="banner">
     <nav class="max-w-[1280px] mx-auto px-8 h-[72px] flex items-center justify-between gap-8" aria-label="Navegação principal">
 
       <a href="/" class="flex items-center gap-2 no-underline shrink-0" aria-label="Aladin — página inicial">
@@ -37,7 +37,7 @@
         <a href="notready.html" class="px-4 py-2 text-[15px] font-medium text-navy bg-transparent border-1.5 border-borderColor rounded-lg no-underline transition-colors hover:border-blueCustom hover:text-blueCustom">
           <span class="hidden sm:block">Entrar</span>
         </a>
-        <a href="notready.html" class="px-5 py-2 text-[15px] font-semibold text-white bg-blueCustom rounded-lg no-underline transition-all hover:bg-[#1a4fd6] hover:-translate-y-px">
+        <a href="notready.html" class="motion-interactive motion-hover-lift-px px-5 py-2 text-[15px] font-semibold text-white bg-blueCustom rounded-lg no-underline hover:bg-[#1a4fd6]">
           <span class="hidden sm:block">Anunciar vaga</span>
         </a>
       </div>
@@ -74,7 +74,7 @@
       <!-- Botão voltar -->
       <a
         href="/"
-        class="inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold text-white bg-blueCustom rounded-xl no-underline transition-all hover:bg-[#1a4fd6] hover:-translate-y-px">
+        class="motion-interactive motion-hover-lift-px inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold text-white bg-blueCustom rounded-xl no-underline hover:bg-[#1a4fd6]">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
           <path d="M19 12H5M12 5l-7 7 7 7"/>
         </svg>

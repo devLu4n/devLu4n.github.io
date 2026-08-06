@@ -6,49 +6,46 @@
   <meta name="description" content="Conheça a história, o propósito e a identidade visual do Aladin.">
   <title>Sobre o Aladin</title>
   <link rel="icon" type="image/svg+xml" href="/assets/white-logo.svg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body class="min-h-screen overflow-x-hidden bg-bgCustom font-sans text-navy antialiased">
-  <a href="#main-content" class="absolute -top-full left-4 z-[9999] rounded-b-lg bg-blueCustom px-4 py-2 text-sm text-white transition-all focus:top-0">Pular para o conteúdo principal</a>
+  <a href="#main-content" class="absolute -top-full left-4 z-50 rounded-b-lg bg-blueCustom px-4 py-2 text-sm text-white focus:top-0">Pular para o conteúdo principal</a>
 
-  <header class="sticky top-0 z-[100] border-b border-white/60 bg-bgCustom/85 backdrop-blur-xl">
-    <nav class="relative mx-auto flex h-[84px] max-w-[1280px] items-center justify-between gap-6 px-5 md:px-8" aria-label="Navegação principal">
-      <a href="/" class="flex shrink-0 items-center gap-2" aria-label="Aladin, página inicial">
-        <img src="/assets/aladin-logo.svg" alt="" class="h-10 w-10 object-contain" aria-hidden="true">
-        <span class="text-[1.6rem] font-extrabold tracking-tight">aladin</span>
+  <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
+    <nav class="relative mx-auto flex h-[72px] max-w-[1280px] items-center justify-between gap-5 px-5 md:px-8" aria-label="Navegação principal">
+      <a href="/" class="flex shrink-0 items-center gap-2.5" aria-label="Aladin, página inicial">
+        <img src="/assets/aladin-logo.svg" alt="" width="40" height="40" class="h-9 w-9 object-contain" aria-hidden="true">
+        <span class="text-xl font-extrabold tracking-tight">aladin</span>
       </a>
       <ul class="hidden items-center gap-1 md:absolute md:left-1/2 md:flex md:-translate-x-1/2" role="list">
-        <li><a href="/#vagas" class="rounded-full px-4 py-2 text-[15px] font-semibold text-navy/70 transition hover:bg-white hover:text-navy">Vagas</a></li>
-        <li><a href="/src/pages/como-funciona.html" class="rounded-full px-4 py-2 text-[15px] font-semibold text-navy/70 transition hover:bg-white hover:text-navy">Como funciona</a></li>
-        <li><a href="/src/pages/sobre.html" aria-current="page" class="rounded-full bg-white px-4 py-2 text-[15px] font-semibold text-navy">Sobre</a></li>
+        <li><a href="/src/pages/todas-vagas.html" class="rounded-lg px-3.5 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-navy">Vagas</a></li>
+        <li><a href="/src/pages/como-funciona.html" class="rounded-lg px-3.5 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-navy">Como funciona</a></li>
+        <li><a href="/src/pages/sobre.html" aria-current="page" class="rounded-lg bg-slate-100 px-3.5 py-2 text-sm font-bold text-navy">Sobre</a></li>
       </ul>
-      <div class="flex shrink-0 items-center gap-2 sm:gap-3">
-        <a href="/src/pages/login/login.html" class="rounded-full border border-navy/15 bg-white px-4 py-2.5 text-sm font-semibold transition hover:border-navy/40">Entrar</a>
-        <a href="/src/pages/signup/signup.html" class="rounded-full bg-orangeCustom px-4 py-2.5 text-sm font-bold text-white shadow-soft transition hover:-translate-y-0.5">Criar conta</a>
+      <div class="flex shrink-0 items-center gap-2">
+        <a href="/src/pages/login/login.html" class="motion-interactive hidden min-h-11 items-center rounded-lg px-4 text-sm font-semibold text-slate-700 hover:bg-slate-100 sm:inline-flex">Entrar</a>
+        <a href="/src/pages/signup/signup.html" class="motion-interactive inline-flex min-h-11 items-center rounded-lg bg-blueCustom px-4 text-sm font-bold text-white shadow-button hover:bg-blueDark">Criar conta</a>
       </div>
     </nav>
   </header>
 
   <main id="main-content">
-    <section class="relative overflow-hidden px-5 py-20 md:px-8 md:py-28" aria-labelledby="about-title">
-      <div class="absolute -left-40 top-10 h-[360px] w-[360px] rounded-full bg-orangeCustom/20 blur-[90px]" aria-hidden="true"></div>
-      <div class="absolute -right-32 bottom-0 h-[420px] w-[420px] rounded-full bg-blueCustom/20 blur-[100px]" aria-hidden="true"></div>
-      <div class="relative mx-auto grid max-w-[1180px] items-center gap-12 lg:grid-cols-[1.1fr_.9fr]">
+    <section class="relative overflow-hidden border-b border-slate-200 bg-white px-5 py-16 md:px-8 md:py-24" aria-labelledby="about-title">
+      <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_25%,rgba(3,105,161,.11),transparent_34%)]" aria-hidden="true"></div>
+      <div class="relative mx-auto grid max-w-[1280px] items-center gap-12 lg:grid-cols-[1.12fr_.88fr]">
         <div>
-          <p class="mb-4 text-xs font-bold uppercase tracking-[.22em] text-orangeCustom">Sobre o Aladin</p>
-          <h1 id="about-title" class="max-w-[760px] text-[clamp(2.8rem,6vw,5rem)] font-extrabold leading-[1.04] tracking-[-.045em]">
+          <div class="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-3 py-1.5 text-xs font-bold uppercase tracking-[.12em] text-blueCustom"><span class="h-1.5 w-1.5 rounded-full bg-blueCustom" aria-hidden="true"></span>Sobre o Aladin</div>
+          <h1 id="about-title" class="mt-5 max-w-[760px] text-[clamp(2.7rem,6vw,4.8rem)] font-extrabold leading-[1.04] tracking-[-.05em]">
             Tecnologia com raízes em <span class="text-blueCustom">Alagoas</span>
           </h1>
-          <p class="mt-7 max-w-[700px] text-[clamp(1rem,1.5vw,1.2rem)] leading-8 text-mutedCustom">
+          <p class="mt-6 max-w-[700px] text-[clamp(1rem,1.5vw,1.15rem)] leading-8 text-slate-600">
             O Aladin é uma plataforma de recrutamento para aproximar profissionais de tecnologia e empresas em uma experiência simples, transparente e conectada à identidade alagoana.
           </p>
           <div class="mt-9 flex flex-col gap-3 sm:flex-row">
-            <a href="/src/pages/signup/signup.html?tipo=candidato" class="rounded-xl bg-blueCustom px-6 py-3.5 text-center text-sm font-bold text-white shadow-card transition hover:-translate-y-0.5">Quero encontrar uma vaga</a>
-            <a href="/src/pages/signup/signup.html?tipo=empresa" class="rounded-xl border border-navy/15 bg-white/70 px-6 py-3.5 text-center text-sm font-bold transition hover:-translate-y-0.5 hover:bg-white">Quero publicar uma vaga</a>
+            <a href="/src/pages/signup/signup.html?tipo=candidato" class="motion-interactive rounded-lg bg-blueCustom px-6 py-3.5 text-center text-sm font-bold text-white shadow-button hover:bg-blueDark">Quero encontrar uma vaga</a>
+            <a href="/src/pages/signup/signup.html?tipo=empresa" class="motion-interactive rounded-lg border border-slate-300 bg-white px-6 py-3.5 text-center text-sm font-bold hover:bg-slate-50">Quero publicar uma vaga</a>
           </div>
         </div>
-        <div class="rounded-[34px] border border-white/90 bg-white/65 p-8 shadow-card backdrop-blur-xl md:p-12">
+        <div class="rounded-3xl border border-slate-200 bg-slate-50 p-8 shadow-soft md:p-12">
           <img src="/assets/aladin-logo.svg" alt="Símbolo do Aladin" class="mx-auto h-44 w-44 object-contain md:h-56 md:w-56">
           <p class="mt-7 text-center text-sm leading-7 text-mutedCustom">Uma marca criada para unir luz, território e oportunidade.</p>
         </div>
@@ -56,21 +53,21 @@
     </section>
 
     <section class="px-5 py-16 md:px-8 md:py-24" aria-labelledby="brand-title">
-      <div class="mx-auto max-w-[1180px]">
+      <div class="mx-auto max-w-[1280px]">
         <div class="max-w-[760px]">
-          <p class="mb-3 text-xs font-bold uppercase tracking-[.2em] text-orangeCustom">Nossa identidade</p>
+          <p class="mb-3 text-xs font-bold uppercase tracking-[.16em] text-blueCustom">Nossa identidade</p>
           <h2 id="brand-title" class="text-[clamp(2rem,4vw,3.3rem)] font-extrabold tracking-[-.035em]">Uma logo que conta de onde viemos</h2>
           <p class="mt-5 text-base leading-8 text-mutedCustom">Cada parte do símbolo foi pensada para representar uma característica marcante de Alagoas.</p>
         </div>
         <div class="mt-10 grid gap-5 md:grid-cols-2">
-          <article class="rounded-[28px] border border-white/80 bg-white/75 p-7 shadow-soft md:p-9">
+          <article class="rounded-2xl border border-slate-200 bg-white p-7 shadow-soft md:p-9">
             <div class="mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-orangeLt text-orangeCustom">
               <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
             </div>
             <h3 class="text-xl font-extrabold">O sol de Alagoas</h3>
             <p class="mt-3 text-sm leading-7 text-mutedCustom">Na parte superior, o sol representa a luz, a energia e o clima de Alagoas. Ele também simboliza o começo de novas jornadas profissionais e a capacidade de uma oportunidade iluminar caminhos.</p>
           </article>
-          <article class="rounded-[28px] border border-white/80 bg-white/75 p-7 shadow-soft md:p-9">
+          <article class="rounded-2xl border border-slate-200 bg-white p-7 shadow-soft md:p-9">
             <div class="mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-blueLt text-blueCustom">
               <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6c3-2 5-2 8 0s5 2 8 0M4 12c3-2 5-2 8 0s5 2 8 0M4 18c3-2 5-2 8 0s5 2 8 0"/></svg>
             </div>
@@ -82,7 +79,7 @@
     </section>
 
     <section class="px-5 py-16 md:px-8 md:py-24" aria-labelledby="origin-title">
-      <div class="mx-auto grid max-w-[1180px] gap-8 rounded-[34px] border border-white/90 bg-[linear-gradient(135deg,rgba(255,255,255,.82),rgba(230,239,255,.72))] p-7 shadow-card backdrop-blur-xl md:p-12 lg:grid-cols-[.8fr_1.2fr]">
+      <div class="mx-auto grid max-w-[1280px] gap-8 rounded-3xl border border-slate-200 bg-white p-7 shadow-card md:p-12 lg:grid-cols-[.8fr_1.2fr]">
         <div>
           <p class="mb-3 text-xs font-bold uppercase tracking-[.2em] text-blueCustom">Como surgiu</p>
           <h2 id="origin-title" class="text-[clamp(2rem,4vw,3rem)] font-extrabold tracking-[-.035em]">Um projeto pessoal que ganhou forma</h2>
@@ -99,7 +96,7 @@
     <section class="px-5 py-16 md:px-8 md:py-24" aria-labelledby="principles-title">
       <div class="mx-auto max-w-[1180px]">
         <div class="text-center">
-          <p class="mb-3 text-xs font-bold uppercase tracking-[.2em] text-orangeCustom">O que nos orienta</p>
+          <p class="mb-3 text-xs font-bold uppercase tracking-[.16em] text-blueCustom">O que nos orienta</p>
           <h2 id="principles-title" class="text-[clamp(2rem,4vw,3.2rem)] font-extrabold tracking-[-.035em]">Princípios do projeto</h2>
         </div>
         <div class="mt-10 grid gap-5 md:grid-cols-3">
@@ -124,12 +121,12 @@
 
     <section class="px-5 pb-24 pt-8 md:px-8">
       <div class="mx-auto max-w-[1100px] rounded-[32px] bg-navy px-7 py-12 text-center text-white shadow-card md:px-14 md:py-16">
-        <p class="text-xs font-bold uppercase tracking-[.2em] text-orangeCustom">Faça parte</p>
+        <p class="text-xs font-bold uppercase tracking-[.16em] text-sky-300">Faça parte</p>
         <h2 class="mx-auto mt-4 max-w-[760px] text-[clamp(2rem,4vw,3.3rem)] font-extrabold tracking-[-.035em]">Toda grande trajetória começa com uma oportunidade</h2>
         <p class="mx-auto mt-5 max-w-[660px] text-sm leading-7 text-white/65">Conheça as vagas disponíveis ou publique uma oportunidade para encontrar profissionais de tecnologia.</p>
         <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <a href="/src/pages/signup/signup.html?tipo=candidato" class="rounded-xl bg-orangeCustom px-6 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5">Explorar vagas</a>
-          <a href="/src/pages/signup/signup.html?tipo=empresa" class="rounded-xl border border-white/20 bg-white/10 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/15">Cadastrar empresa</a>
+          <a href="/src/pages/signup/signup.html?tipo=candidato" class="motion-interactive rounded-lg bg-blueCustom px-6 py-3.5 text-sm font-bold text-white hover:bg-blueDark">Explorar vagas</a>
+          <a href="/src/pages/signup/signup.html?tipo=empresa" class="motion-interactive rounded-lg border border-white/20 bg-white/10 px-6 py-3.5 text-sm font-bold text-white hover:bg-white/15">Cadastrar empresa</a>
         </div>
       </div>
     </section>

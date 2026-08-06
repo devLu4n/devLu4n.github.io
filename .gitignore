@@ -15,3 +15,7 @@ Thumbs.db
 .vscode/
 .idea/
 .aws-sam/
+/.agents/
+design-system/
+plans/
+skills-lock.json

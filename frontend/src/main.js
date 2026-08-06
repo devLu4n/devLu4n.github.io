@@ -2,9 +2,34 @@ import './style.css'
 import { apiRequest } from './api.js'
 import { clearCurrentUser, getCurrentUser, getStoredUserPhoto, initAuth, isEmpresaUser, renderProfileAvatars, setStoredUserPhoto } from './core/auth.js'
 import { initNavigation } from './components/navigation.js'
+import { announce } from './components/feedback.js'
 import { initAuthForms } from './features/auth/forms.js'
 
 window.aladinApi = { request: apiRequest }
+
+export function closeDialog(dialog) {
+  if (!(dialog instanceof HTMLDialogElement) || !dialog.open || dialog.classList.contains('dialog-is-closing')) return
+
+  dialog.classList.add('dialog-is-closing')
+  let closed = false
+  let fallbackId
+  const finish = () => {
+    if (closed) return
+    closed = true
+    window.clearTimeout(fallbackId)
+    dialog.removeEventListener('transitionend', onTransitionEnd)
+    dialog.classList.remove('dialog-is-closing')
+    if (dialog.open) dialog.close()
+  }
+  const onTransitionEnd = (event) => {
+    if (event.target === dialog && event.propertyName === 'opacity') finish()
+  }
+
+  dialog.addEventListener('transitionend', onTransitionEnd)
+  fallbackId = window.setTimeout(finish, 220)
+}
+
+window.closeDialog = closeDialog
 
 initNavigation()
 initAuthForms()
@@ -48,7 +73,7 @@ quickVacancyForm?.addEventListener('submit', async (event) => {
     feedback.className = 'text-center text-sm font-medium text-emerald-700'
     feedback.textContent = 'Vaga publicada com sucesso.'
     quickVacancyForm.reset()
-    window.setTimeout(() => quickVacancyForm.closest('dialog')?.close(), 700)
+    window.setTimeout(() => closeDialog(quickVacancyForm.closest('dialog')), 700)
   } catch (error) {
     feedback.className = 'text-center text-sm font-medium text-red-600'
     feedback.textContent = error.message
@@ -187,7 +212,7 @@ if (profileForm) {
       renderProfile(profile)
       profileStatus.className = 'mt-3 text-sm font-medium text-emerald-700'
       profileStatus.textContent = 'Perfil salvo com sucesso.'
-      document.getElementById('profile-modal')?.close()
+      closeDialog(document.getElementById('profile-modal'))
     } catch (error) {
       const feedback = getFormFeedback(profileForm)
       feedback.className = 'text-center text-sm font-medium text-red-600'
@@ -219,7 +244,7 @@ deleteAccountButton?.addEventListener('click', async () => {
   } catch (error) {
     deleteAccountButton.disabled = false
     deleteAccountButton.textContent = 'Excluir conta'
-    window.alert(error.message)
+    announce(error.message)
   }
 })
 
@@ -233,7 +258,12 @@ document.querySelectorAll('dialog').forEach((dialog) => {
   }
 
   dialog.addEventListener('click', (event) => {
-    if (event.target === dialog) dialog.close()
+    if (event.target === dialog) closeDialog(dialog)
+  })
+
+  dialog.addEventListener('cancel', (event) => {
+    event.preventDefault()
+    closeDialog(dialog)
   })
 })
 
@@ -244,7 +274,7 @@ document.querySelectorAll('.toast, [id$="-toast"]').forEach((toast) => {
 })
 
 document.querySelectorAll('[data-close-dialog]').forEach((button) => {
-  button.addEventListener('click', () => button.closest('dialog')?.close())
+  button.addEventListener('click', () => closeDialog(button.closest('dialog')))
 })
 
 function escapeHtml(value = '') {
@@ -383,6 +413,63 @@ function formatSalary(minimum, maximum) {
   return 'Salário a combinar'
 }
 
+function normalizeSearchValue(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .toLowerCase()
+}
+
+function renderSimilarJobs(currentVacancy, vacancies) {
+  const container = document.getElementById('similar-jobs')
+  if (!container) return
+
+  const currentTechnologies = new Set(
+    String(currentVacancy.tecnologias || '')
+      .split(',')
+      .map(normalizeSearchValue)
+      .filter(Boolean),
+  )
+
+  const recommendations = vacancies
+    .filter((vacancy) => String(vacancy.id) !== String(currentVacancy.id))
+    .map((vacancy) => {
+      const technologies = String(vacancy.tecnologias || '')
+        .split(',')
+        .map(normalizeSearchValue)
+        .filter(Boolean)
+      let score = technologies.filter((technology) => currentTechnologies.has(technology)).length * 2
+
+      if (normalizeSearchValue(vacancy.area) === normalizeSearchValue(currentVacancy.area)) score += 4
+      if (normalizeSearchValue(vacancy.modalidade) === normalizeSearchValue(currentVacancy.modalidade)) score += 2
+      if (normalizeSearchValue(vacancy.cidade) === normalizeSearchValue(currentVacancy.cidade)) score += 1
+
+      return { vacancy, score }
+    })
+    .sort((first, second) => second.score - first.score || new Date(second.vacancy.createdAt || 0) - new Date(first.vacancy.createdAt || 0))
+    .slice(0, 3)
+
+  if (!recommendations.length) {
+    container.innerHTML = '<p class="rounded-xl border border-borderColor bg-slate-50 p-4 text-sm text-mutedCustom">Nenhuma outra vaga aberta no momento.</p>'
+    return
+  }
+
+  container.innerHTML = recommendations.map(({ vacancy }) => {
+    const details = [vacancy.empresa?.nome || 'Empresa confidencial', vacancy.modalidade, vacancy.cidade]
+      .filter(Boolean)
+      .map(escapeHtml)
+      .join(' · ')
+
+    return `
+      <a href="detalhes-vaga.html?id=${encodeURIComponent(vacancy.id)}" class="motion-interactive motion-hover-lift-sm block rounded-2xl border border-white/90 bg-white/52 p-4 hover:border-blueCustom/40">
+        <h3 class="text-sm font-bold">${escapeHtml(vacancy.titulo || 'Oportunidade')}</h3>
+        <p class="mt-1 text-xs text-mutedCustom">${details}</p>
+      </a>
+    `
+  }).join('')
+}
+
 async function loadVacancyDetails() {
   if (!location.pathname.endsWith('/user/detalhes-vaga.html')) return
   const vagaId = new URLSearchParams(location.search).get('id')
@@ -392,9 +479,10 @@ async function loadVacancyDetails() {
     return
   }
   try {
-    const [vaga, currentUser] = await Promise.all([
+    const [vaga, currentUser, vacanciesResponse] = await Promise.all([
       apiRequest(`/vagas/${vagaId}`),
       getCurrentUser(),
+      apiRequest('/vagas?limit=50').catch(() => ({ dados: [] })),
     ])
     const technologies = String(vaga.tecnologias || '').split(',').map((item) => item.trim()).filter(Boolean)
     document.title = `${vaga.titulo} — Aladin`
@@ -421,6 +509,7 @@ async function loadVacancyDetails() {
     document.getElementById('apply-dialog-title').textContent = vaga.titulo
     document.getElementById('apply-dialog-description').textContent = `Confirme o envio do seu perfil para ${vaga.empresa?.nome || 'a empresa responsável'}.`
     document.getElementById('apply-form').dataset.vagaId = vaga.id
+    renderSimilarJobs(vaga, Array.isArray(vacanciesResponse) ? vacanciesResponse : vacanciesResponse.dados || [])
 
     const applyButton = document.getElementById('apply-button')
     if (vaga.status === 'FECHADA') {
@@ -525,7 +614,7 @@ async function loadVacancyCandidates() {
           link.download = resume.nome || 'curriculo'
           link.click()
         } catch (error) {
-          window.alert(error.message || 'Não foi possível baixar o currículo.')
+          announce(error.message || 'Não foi possível baixar o currículo.')
         }
         return
       }
@@ -558,7 +647,7 @@ async function loadVacancyCandidates() {
       const card = grid.querySelector(`[data-application-id="${activeApplication.id}"]`)
       const button = document.getElementById('modal-interview-button')
       if (button.dataset.nextStatus) await updateApplicationStatus(activeApplication, card, button, button.dataset.nextStatus)
-      document.getElementById('candidate-modal').close()
+      closeDialog(document.getElementById('candidate-modal'))
     })
 
     async function updateApplicationStatus(application, card, button, nextStatus) {
@@ -572,6 +661,10 @@ async function loadVacancyCandidates() {
         const badge = card.querySelector('.status-badge')
         badge.textContent = statusLabel
         badge.className = `status-badge rounded-full px-2.5 py-1 text-[11px] font-semibold ${statusClasses}`
+        card.classList.remove('application-state-changed')
+        void card.offsetWidth
+        card.classList.add('application-state-changed')
+        window.setTimeout(() => card.classList.remove('application-state-changed'), 160)
         card.querySelector('.candidate-workflow-actions').innerHTML = candidateWorkflowActions(nextStatus)
         if (nextStatus === 'ENTREVISTA') {
           const closeButton = document.getElementById('close-vacancy-after-interview')
@@ -582,7 +675,7 @@ async function loadVacancyCandidates() {
         }
       } catch (error) {
         if (button) button.disabled = false
-        window.alert(error.message)
+        announce(error.message)
       }
     }
   } catch (error) {
@@ -661,7 +754,7 @@ function initInterviewVacancyClosure() {
       window.location.href = '/src/pages/main/empresa/gerenciar-vagas.html'
     } catch (error) {
       button.disabled = false
-      window.alert(error.message)
+      announce(error.message)
     }
   })
 }

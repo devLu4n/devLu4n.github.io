@@ -139,21 +139,6 @@
       backdrop-filter: blur(6px);
     }
 
-    dialog[open] {
-      animation: dialog-in .18s ease-out;
-    }
-
-    @keyframes dialog-in {
-      from {
-        opacity: 0;
-        transform: translateY(10px) scale(.985);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
     .toast {
       transition:
         opacity .2s ease,
@@ -169,7 +154,7 @@
   <script type="module" src="/src/main.js"></script>
 </head>
 
-<body class="min-h-screen bg-[linear-gradient(180deg,#FBFCFF_0%,#F4F8FF_100%)] font-sans text-navy antialiased">
+<body class="authenticated-app min-h-screen bg-bgCustom font-sans text-navy antialiased">
   <div class="relative flex min-h-screen flex-col overflow-hidden">
 
     <!-- Fundo -->
@@ -733,9 +718,9 @@
         <p>© 2026 Aladin. Todos os direitos reservados.</p>
 
         <nav class="flex items-center gap-5" aria-label="Links do rodapé">
-          <a href="#" class="transition hover:text-navy">Privacidade</a>
-          <a href="#" class="transition hover:text-navy">Termos</a>
-          <a href="#" class="transition hover:text-navy">Contato</a>
+          <a href="/" class="transition hover:text-navy">Início</a>
+          <a href="/src/pages/como-funciona.html" class="transition hover:text-navy">Como funciona</a>
+          <a href="/src/pages/sobre.html" class="transition hover:text-navy">Sobre</a>
         </nav>
       </div>
     </footer>
@@ -818,7 +803,7 @@
     });
 
     function closeEdit() {
-      editDialog.close();
+      window.closeDialog(editDialog);
       activeEditCard = null;
     }
 
@@ -883,7 +868,7 @@
     });
 
     cancelDelete.addEventListener("click", () => {
-      deleteDialog.close();
+      window.closeDialog(deleteDialog);
       activeDeleteCard = null;
     });
 
@@ -893,7 +878,7 @@
         showToast("Vaga excluída.");
       }
 
-      deleteDialog.close();
+      window.closeDialog(deleteDialog);
       activeDeleteCard = null;
 
       filterVacancies();
