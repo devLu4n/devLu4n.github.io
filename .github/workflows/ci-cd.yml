@@ -23,12 +23,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Baixar código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Configurar Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           cache-dependency-path: |
             backend/package-lock.json
@@ -66,12 +66,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Baixar código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Configurar Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
@@ -98,21 +98,35 @@ jobs:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     needs: pages_build
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 25
     concurrency:
       group: github-pages
       cancel-in-progress: false
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment_retry.outputs.page_url || steps.deployment_first.outputs.page_url }}
     steps:
       - name: Publicar artefato
-        id: deployment
+        id: deployment_first
+        continue-on-error: true
         uses: actions/deploy-pages@v4
         with:
-          # O padrão da action é 10 minutos, insuficiente quando o serviço
-          # permanece em deployment_queued. Este valor permite esperar 30 min.
-          timeout: 1800000
+          # A action limita cada tentativa a no máximo 10 minutos.
+          timeout: 600000
+          reporting_interval: 10000
+          error_count: 20
+
+      - name: Aguardar antes de tentar novamente
+        if: steps.deployment_first.outcome == 'failure'
+        shell: bash
+        run: sleep 30
+
+      - name: Tentar publicação novamente
+        id: deployment_retry
+        if: steps.deployment_first.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 600000
           reporting_interval: 10000
           error_count: 20
 
@@ -120,8 +134,7 @@ jobs:
     name: Publicar API serverless na AWS
     if: >-
       github.event_name != 'pull_request' &&
-      github.ref == 'refs/heads/main' &&
-      vars.AWS_DEPLOY_ENABLED == 'true'
+      github.ref == 'refs/heads/main'
     needs: quality
     runs-on: ubuntu-latest
     environment: production
@@ -129,10 +142,30 @@ jobs:
       AWS_REGION: ${{ vars.AWS_REGION }}
     steps:
       - name: Baixar código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
+      - name: Validar configuração do deploy AWS
+        shell: bash
+        env:
+          AWS_ROLE_TO_ASSUME: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          APPLICATION_SECRET_ARN: ${{ vars.APPLICATION_SECRET_ARN }}
+          FRONTEND_ORIGIN: ${{ vars.FRONTEND_ORIGIN }}
+          LAMBDA_SUBNET_IDS: ${{ vars.LAMBDA_SUBNET_IDS }}
+          LAMBDA_SECURITY_GROUP_IDS: ${{ vars.LAMBDA_SECURITY_GROUP_IDS }}
+        run: |
+          missing=0
+          for name in AWS_REGION AWS_ROLE_TO_ASSUME APPLICATION_SECRET_ARN FRONTEND_ORIGIN LAMBDA_SUBNET_IDS LAMBDA_SECURITY_GROUP_IDS; do
+            if [ -z "${!name}" ]; then
+              echo "::error title=Configuração AWS ausente::$name não foi configurada nos secrets/variables do repositório ou environment."
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
 
       - name: Autenticar na AWS por OIDC
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ env.AWS_REGION }}

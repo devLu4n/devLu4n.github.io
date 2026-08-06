@@ -1,13 +1,13 @@
 # syntax=docker/dockerfile:1
 
-FROM node:20-bookworm-slim AS frontend-build
+FROM node:22-bookworm-slim AS frontend-build
 WORKDIR /app/frontend
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
 COPY frontend/ ./
 RUN npm run build
 
-FROM node:20-bookworm-slim AS backend-dependencies
+FROM node:22-bookworm-slim AS backend-dependencies
 WORKDIR /app/backend
 RUN apt-get update && apt-get install -y --no-install-recommends openssl \
   && rm -rf /var/lib/apt/lists/*
@@ -15,7 +15,7 @@ COPY backend/package.json backend/package-lock.json ./
 COPY backend/prisma ./prisma
 RUN npm ci && npx prisma generate && npm prune --omit=dev
 
-FROM node:20-bookworm-slim AS runtime
+FROM node:22-bookworm-slim AS runtime
 ENV NODE_ENV=production
 ENV PORT=3333
 WORKDIR /app
