@@ -318,4 +318,6 @@ O backend deve configurar `CORS_ORIGIN=https://devlu4n.github.io` para aceitar c
 
 ## Licença
 
-Este repositório ainda não possui uma licença definida. Adicione um arquivo `LICENSE` antes de distribuir ou reutilizar o código fora do escopo autorizado pelo projeto.
+Este projeto é distribuído sob a licença MIT. Você pode usar, copiar, modificar e distribuir o código, desde que mantenha o aviso de copyright e a licença junto às cópias ou partes substanciais do software.
+
+Consulte o arquivo [LICENSE](LICENSE) para acessar os termos completos.
