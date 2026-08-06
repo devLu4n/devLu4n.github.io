@@ -13,7 +13,9 @@ permissions:
 
 concurrency:
   group: aladin-${{ github.ref }}
-  cancel-in-progress: true
+  # Não cancele uma publicação que já possa ter sido aceita pelo Pages.
+  # Execuções da mesma branch aguardam a anterior terminar.
+  cancel-in-progress: false
 
 jobs:
   quality:
@@ -96,6 +98,10 @@ jobs:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     needs: pages_build
     runs-on: ubuntu-latest
+    timeout-minutes: 35
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -103,6 +109,12 @@ jobs:
       - name: Publicar artefato
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          # O padrão da action é 10 minutos, insuficiente quando o serviço
+          # permanece em deployment_queued. Este valor permite esperar 30 min.
+          timeout: 1800000
+          reporting_interval: 10000
+          error_count: 20
 
   deploy_api:
     name: Publicar API serverless na AWS
