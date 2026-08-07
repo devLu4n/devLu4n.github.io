@@ -205,4 +205,4 @@ jobs:
             --region "$AWS_REGION" \
             migration-response.json
           cat migration-response.json
-          jq -e '.statusCode == 200' migration-response.json
+          jq -e '.status == "ok"' migration-response.json
