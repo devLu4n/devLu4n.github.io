@@ -2,11 +2,9 @@ const bcrypt = require("bcryptjs");
 const crypto = require("node:crypto");
 const prisma = require("../config/prisma");
 const { clearCookieOptions } = require("../config/session");
-const { enviarRedefinicaoSenha } = require("../services/email.service");
 
 const SALT_ROUNDS = 10;
 const RESET_TOKEN_TTL_MS = 15 * 60 * 1000;
-const RESET_RESPONSE = "Se existir uma conta com esse email, enviaremos as instrucoes.";
 
 function serializeUsuario(usuario) {
   const { senhaHash, ...resto } = usuario;
@@ -178,7 +176,7 @@ async function solicitarRedefinicaoSenha(req, res, next) {
       select: { id: true, nome: true, email: true },
     });
 
-    if (!usuario) return res.json({ mensagem: RESET_RESPONSE });
+    if (!usuario) return res.status(404).json({ erro: "Email nao encontrado." });
 
     const token = crypto.randomBytes(32).toString("hex");
     const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
@@ -194,20 +192,10 @@ async function solicitarRedefinicaoSenha(req, res, next) {
     const baseUrl = (process.env.PASSWORD_RESET_BASE_URL || "http://localhost:5173/src/pages/login/redefinir-senha.html").replace(/\/$/, "");
     const resetUrl = `${baseUrl}?token=${encodeURIComponent(token)}`;
 
-    try {
-      const emailResult = await enviarRedefinicaoSenha({
-        destinatario: usuario.email,
-        nome: usuario.nome,
-        resetUrl,
-      });
-      const response = { mensagem: RESET_RESPONSE };
-      if (process.env.NODE_ENV !== "production" && emailResult?.resetUrl) response.resetUrl = emailResult.resetUrl;
-      return res.json(response);
-    } catch (emailError) {
-      await prisma.redefinicaoSenha.deleteMany({ where: { usuarioId: usuario.id } });
-      console.error("Falha ao enviar email de redefinicao:", emailError.name || emailError.message);
-      return res.json({ mensagem: RESET_RESPONSE });
-    }
+    return res.json({
+      mensagem: "Email confirmado. Crie uma nova senha.",
+      resetUrl,
+    });
   } catch (err) {
     next(err);
   }

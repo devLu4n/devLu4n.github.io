@@ -16,9 +16,6 @@ Parameters:
   LambdaSecurityGroupIds:
     Type: List<AWS::EC2::SecurityGroup::Id>
     Description: Security groups autorizados a acessar o RDS.
-  SenderEmail:
-    Type: String
-    Description: Endereco verificado no Amazon SES usado como remetente.
 
 Globals:
   Function:
@@ -56,11 +53,6 @@ Resources:
       PackageType: Image
       Policies:
         - AWSLambdaVPCAccessExecutionRole
-        - Statement:
-            - Effect: Allow
-              Action:
-                - ses:SendEmail
-              Resource: "*"
       VpcConfig:
         SubnetIds: !Ref LambdaSubnetIds
         SecurityGroupIds: !Ref LambdaSecurityGroupIds
@@ -68,7 +60,6 @@ Resources:
         Variables:
           DATABASE_URL: !Sub "{{resolve:secretsmanager:${ApplicationSecretArn}:SecretString:DATABASE_URL}}"
           SESSION_SECRET: !Sub "{{resolve:secretsmanager:${ApplicationSecretArn}:SecretString:SESSION_SECRET}}"
-          SES_FROM_EMAIL: !Ref SenderEmail
           PASSWORD_RESET_BASE_URL: !Sub "${AllowedOrigin}/src/pages/login/redefinir-senha.html"
       Events:
         ApiRoot:

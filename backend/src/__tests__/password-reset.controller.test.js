@@ -9,14 +9,9 @@ jest.mock("../config/prisma", () => ({
   $transaction: jest.fn(),
 }));
 
-jest.mock("../services/email.service", () => ({
-  enviarRedefinicaoSenha: jest.fn(),
-}));
-
 jest.mock("bcryptjs", () => ({ hash: jest.fn() }));
 
 const prisma = require("../config/prisma");
-const { enviarRedefinicaoSenha } = require("../services/email.service");
 const {
   solicitarRedefinicaoSenha,
   redefinirSenha,
@@ -35,16 +30,14 @@ describe("redefinicao de senha", () => {
     process.env.NODE_ENV = "test";
   });
 
-  it("usa resposta generica quando o email nao existe", async () => {
+  it("retorna 404 quando o email nao existe", async () => {
     prisma.usuario.findUnique.mockResolvedValue(null);
     const res = response();
 
     await solicitarRedefinicaoSenha({ body: { email: "ausente@teste.com" } }, res, jest.fn());
 
-    expect(res.json).toHaveBeenCalledWith({
-      mensagem: "Se existir uma conta com esse email, enviaremos as instrucoes.",
-    });
-    expect(enviarRedefinicaoSenha).not.toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({ erro: "Email nao encontrado." });
   });
 
   it("cria token e envia link quando o email existe", async () => {
@@ -52,7 +45,6 @@ describe("redefinicao de senha", () => {
     prisma.redefinicaoSenha.deleteMany.mockReturnValue({});
     prisma.redefinicaoSenha.create.mockReturnValue({});
     prisma.$transaction.mockResolvedValue([]);
-    enviarRedefinicaoSenha.mockResolvedValue({});
     const res = response();
 
     await solicitarRedefinicaoSenha({ body: { email: " ANA@TESTE.COM " } }, res, jest.fn());
@@ -60,8 +52,7 @@ describe("redefinicao de senha", () => {
     expect(prisma.redefinicaoSenha.create).toHaveBeenCalledWith({
       data: expect.objectContaining({ usuarioId: 4, tokenHash: expect.stringMatching(/^[a-f0-9]{64}$/) }),
     });
-    expect(enviarRedefinicaoSenha).toHaveBeenCalledWith(expect.objectContaining({
-      destinatario: "ana@teste.com",
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
       resetUrl: expect.stringContaining("?token="),
     }));
   });

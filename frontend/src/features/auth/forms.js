@@ -107,7 +107,7 @@ export function initAuthForms() {
       })
       feedback.className = 'text-center text-sm font-medium text-emerald-700'
       feedback.textContent = result.mensagem
-      forgotPasswordForm.reset()
+      window.setTimeout(() => window.location.assign(result.resetUrl), 500)
     } catch (error) {
       feedback.className = 'text-center text-sm font-medium text-red-600'
       feedback.textContent = error.message
