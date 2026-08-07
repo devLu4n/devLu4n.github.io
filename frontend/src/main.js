@@ -7,6 +7,42 @@ import { initAuthForms } from './features/auth/forms.js'
 
 window.aladinApi = { request: apiRequest }
 
+function revealPage() {
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
+      document.body.classList.add('page-ready')
+      document.body.setAttribute('aria-busy', 'false')
+    })
+  })
+}
+
+function showPageLoader() {
+  document.body.classList.remove('page-ready')
+  document.body.setAttribute('aria-busy', 'true')
+}
+
+document.body.setAttribute('aria-busy', 'true')
+if (document.readyState === 'complete') revealPage()
+else window.addEventListener('load', revealPage, { once: true })
+window.addEventListener('pageshow', revealPage)
+window.addEventListener('beforeunload', showPageLoader)
+
+document.addEventListener('click', (event) => {
+  const link = event.target.closest('a[href]')
+  if (!link || event.defaultPrevented || event.button !== 0) return
+  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+  if (link.target && link.target !== '_self') return
+  if (link.hasAttribute('download') || link.dataset.noPageLoader !== undefined) return
+
+  const url = new URL(link.href, window.location.href)
+  if (!['http:', 'https:'].includes(url.protocol) || url.origin !== window.location.origin) return
+  if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return
+
+  event.preventDefault()
+  showPageLoader()
+  window.setTimeout(() => window.location.assign(url.href), 120)
+})
+
 export function closeDialog(dialog) {
   if (!(dialog instanceof HTMLDialogElement) || !dialog.open || dialog.classList.contains('dialog-is-closing')) return
 
@@ -370,7 +406,9 @@ async function loadCompanies() {
         <p class="mt-1 text-sm text-navy/70">⌖ ${escapeHtml(company.cidade || 'Localização não informada')}</p>
         <p class="mt-3 line-clamp-2 text-sm leading-relaxed text-mutedCustom">${escapeHtml(biography)}</p>
         <span class="mt-4 rounded-full px-3 py-1 text-xs font-semibold ${openJobs ? 'bg-orangeCustom text-white' : 'bg-slate-200/80 text-navy/70'}">${openJobs ? `${openJobs} ${openJobs === 1 ? 'vaga aberta' : 'vagas abertas'}` : 'Sem vagas abertas'}</span>
-        <button class="company-details-api orange-button mt-auto w-full rounded-xl py-2.5 text-sm font-semibold text-white">Ver perfil</button>
+        <div class="mt-auto w-full pt-4">
+          <button class="company-details-api orange-button w-full rounded-xl py-2.5 text-sm font-semibold text-white">Ver perfil</button>
+        </div>
       </article>`
     }).join('')
 
@@ -387,16 +425,47 @@ async function loadCompanies() {
     search.addEventListener('input', filterCompanies)
     filterCompanies()
 
-    grid.addEventListener('click', (event) => {
+    grid.addEventListener('click', async (event) => {
       const button = event.target.closest('.company-details-api')
       if (!button) return
       const company = companies.find((item) => String(item.id) === button.closest('.company-card').dataset.id)
       if (!company) return
+      const modal = document.getElementById('company-modal')
+      const jobsContainer = document.getElementById('company-modal-jobs')
+      const count = document.getElementById('company-modal-job-count')
+      const photo = document.getElementById('company-modal-photo')
+
       document.getElementById('company-modal-title').textContent = company.nome
+      document.getElementById('company-modal-city').textContent = company.cidade || 'Localização não informada'
       document.getElementById('company-modal-text').textContent = company.descricao || 'Esta empresa ainda não adicionou uma apresentação ao perfil.'
-      const jobsLink = document.querySelector('#company-modal a[href*="vagas.html"]')
-      if (jobsLink) jobsLink.href = `vagas.html?empresa=${company.id}`
-      document.getElementById('company-modal').showModal()
+      photo.src = company.foto || '/assets/empresa.png'
+      photo.alt = `Foto de perfil de ${company.nome}`
+      count.textContent = 'Carregando...'
+      jobsContainer.innerHTML = '<p class="rounded-xl bg-slate-50 p-4 text-sm text-mutedCustom">Carregando vagas...</p>'
+      modal.showModal()
+
+      button.disabled = true
+      try {
+        const details = await apiRequest(`/empresas/${company.id}`)
+        const openJobs = details.vagas || []
+        document.getElementById('company-modal-title').textContent = details.nome
+        document.getElementById('company-modal-city').textContent = details.cidade || 'Localização não informada'
+        document.getElementById('company-modal-text').textContent = details.descricao || 'Esta empresa ainda não adicionou uma apresentação ao perfil.'
+        photo.src = details.foto || '/assets/empresa.png'
+        photo.alt = `Foto de perfil de ${details.nome}`
+        count.textContent = `${openJobs.length} ${openJobs.length === 1 ? 'vaga' : 'vagas'}`
+        jobsContainer.innerHTML = openJobs.length
+          ? openJobs.map((job) => `<a href="detalhes-vaga.html?id=${encodeURIComponent(job.id)}" class="motion-interactive block rounded-xl border border-slate-200 bg-slate-50 p-4 hover:border-blueCustom hover:bg-white">
+              <strong class="block text-sm text-navy">${escapeHtml(job.titulo)}</strong>
+              <span class="mt-1 block text-xs text-mutedCustom">${escapeHtml(job.modalidade === 'REMOTO' ? 'Remoto' : job.cidade || details.cidade || 'Localização não informada')}</span>
+            </a>`).join('')
+          : '<p class="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center text-sm text-mutedCustom">Esta empresa ainda não possui vagas abertas.</p>'
+      } catch (error) {
+        count.textContent = 'Indisponível'
+        jobsContainer.innerHTML = `<p class="rounded-xl bg-red-50 p-4 text-sm text-red-700">${escapeHtml(error.message)}</p>`
+      } finally {
+        button.disabled = false
+      }
     })
   } catch (error) {
     grid.innerHTML = `<p class="sm:col-span-2 lg:col-span-3 py-8 text-center text-red-600">${escapeHtml(error.message)}</p>`

@@ -18,6 +18,8 @@ export default defineConfig({
         todasVagas: resolve(import.meta.dirname, 'src/pages/todas-vagas.html'),
         notready: resolve(import.meta.dirname, 'src/pages/notready.html'),
         login: resolve(import.meta.dirname, 'src/pages/login/login.html'),
+        esqueciSenha: resolve(import.meta.dirname, 'src/pages/login/esqueci-senha.html'),
+        redefinirSenha: resolve(import.meta.dirname, 'src/pages/login/redefinir-senha.html'),
         signup: resolve(import.meta.dirname, 'src/pages/signup/signup.html'),
         vagas: resolve(import.meta.dirname, 'src/pages/main/user/vagas.html'),
         perfil: resolve(import.meta.dirname, 'src/pages/main/user/perfil.html'),

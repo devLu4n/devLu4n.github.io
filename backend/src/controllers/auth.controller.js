@@ -1,8 +1,12 @@
 const bcrypt = require("bcryptjs");
+const crypto = require("node:crypto");
 const prisma = require("../config/prisma");
 const { clearCookieOptions } = require("../config/session");
+const { enviarRedefinicaoSenha } = require("../services/email.service");
 
 const SALT_ROUNDS = 10;
+const RESET_TOKEN_TTL_MS = 15 * 60 * 1000;
+const RESET_RESPONSE = "Se existir uma conta com esse email, enviaremos as instrucoes.";
 
 function serializeUsuario(usuario) {
   const { senhaHash, ...resto } = usuario;
@@ -162,4 +166,109 @@ async function me(req, res, next) {
   }
 }
 
-module.exports = { registrar, login, logout, excluirConta, me };
+async function solicitarRedefinicaoSenha(req, res, next) {
+  try {
+    const email = typeof req.body.email === "string" ? req.body.email.trim().toLowerCase() : "";
+    if (!email || !email.includes("@")) {
+      return res.status(400).json({ erro: "Informe um email valido." });
+    }
+
+    const usuario = await prisma.usuario.findUnique({
+      where: { email },
+      select: { id: true, nome: true, email: true },
+    });
+
+    if (!usuario) return res.json({ mensagem: RESET_RESPONSE });
+
+    const token = crypto.randomBytes(32).toString("hex");
+    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+    const expiresAt = new Date(Date.now() + RESET_TOKEN_TTL_MS);
+
+    await prisma.$transaction([
+      prisma.redefinicaoSenha.deleteMany({ where: { usuarioId: usuario.id } }),
+      prisma.redefinicaoSenha.create({
+        data: { usuarioId: usuario.id, tokenHash, expiresAt },
+      }),
+    ]);
+
+    const baseUrl = (process.env.PASSWORD_RESET_BASE_URL || "http://localhost:5173/src/pages/login/redefinir-senha.html").replace(/\/$/, "");
+    const resetUrl = `${baseUrl}?token=${encodeURIComponent(token)}`;
+
+    try {
+      const emailResult = await enviarRedefinicaoSenha({
+        destinatario: usuario.email,
+        nome: usuario.nome,
+        resetUrl,
+      });
+      const response = { mensagem: RESET_RESPONSE };
+      if (process.env.NODE_ENV !== "production" && emailResult?.resetUrl) response.resetUrl = emailResult.resetUrl;
+      return res.json(response);
+    } catch (emailError) {
+      await prisma.redefinicaoSenha.deleteMany({ where: { usuarioId: usuario.id } });
+      console.error("Falha ao enviar email de redefinicao:", emailError.name || emailError.message);
+      return res.json({ mensagem: RESET_RESPONSE });
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function redefinirSenha(req, res, next) {
+  try {
+    const { token, novaSenha } = req.body;
+    if (typeof token !== "string" || token.length !== 64) {
+      return res.status(400).json({ erro: "Link de redefinicao invalido ou expirado." });
+    }
+    if (typeof novaSenha !== "string" || novaSenha.length < 8) {
+      return res.status(400).json({ erro: "A nova senha deve ter pelo menos 8 caracteres." });
+    }
+
+    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+    const senhaHash = await bcrypt.hash(novaSenha, SALT_ROUNDS);
+
+    await prisma.$transaction(async (tx) => {
+      const redefinicao = await tx.redefinicaoSenha.findFirst({
+        where: { tokenHash, usedAt: null, expiresAt: { gt: new Date() } },
+        select: { id: true, usuarioId: true },
+      });
+      if (!redefinicao) {
+        const error = new Error("Link de redefinicao invalido ou expirado.");
+        error.status = 400;
+        throw error;
+      }
+
+      const claimed = await tx.redefinicaoSenha.updateMany({
+        where: { id: redefinicao.id, usedAt: null, expiresAt: { gt: new Date() } },
+        data: { usedAt: new Date() },
+      });
+      if (claimed.count !== 1) {
+        const error = new Error("Link de redefinicao invalido ou expirado.");
+        error.status = 400;
+        throw error;
+      }
+
+      await tx.usuario.update({
+        where: { id: redefinicao.usuarioId },
+        data: { senhaHash },
+      });
+      await tx.redefinicaoSenha.deleteMany({
+        where: { usuarioId: redefinicao.usuarioId, id: { not: redefinicao.id } },
+      });
+      await tx.$executeRaw`DELETE FROM "user_sessions" WHERE "sess" ->> 'usuarioId' = ${String(redefinicao.usuarioId)}`;
+    });
+
+    res.json({ mensagem: "Senha redefinida com sucesso. Entre novamente." });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = {
+  registrar,
+  login,
+  logout,
+  excluirConta,
+  me,
+  solicitarRedefinicaoSenha,
+  redefinirSenha,
+};

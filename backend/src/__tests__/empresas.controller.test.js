@@ -81,6 +81,15 @@ describe("empresas.controller", () => {
 
       await buscarPorId(req, res, jest.fn());
 
+      expect(prisma.empresa.findUnique).toHaveBeenCalledWith({
+        where: { id: 1 },
+        include: {
+          vagas: expect.objectContaining({
+            where: { status: "ABERTA" },
+            orderBy: { createdAt: "desc" },
+          }),
+        },
+      });
       expect(res.json).toHaveBeenCalledWith(empresa);
     });
   });

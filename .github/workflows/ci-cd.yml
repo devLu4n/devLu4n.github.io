@@ -152,9 +152,10 @@ jobs:
           FRONTEND_ORIGIN: ${{ vars.FRONTEND_ORIGIN }}
           LAMBDA_SUBNET_IDS: ${{ vars.LAMBDA_SUBNET_IDS }}
           LAMBDA_SECURITY_GROUP_IDS: ${{ vars.LAMBDA_SECURITY_GROUP_IDS }}
+          SES_FROM_EMAIL: ${{ vars.SES_FROM_EMAIL }}
         run: |
           missing=0
-          for name in AWS_REGION AWS_ROLE_TO_ASSUME APPLICATION_SECRET_ARN FRONTEND_ORIGIN LAMBDA_SUBNET_IDS LAMBDA_SECURITY_GROUP_IDS; do
+          for name in AWS_REGION AWS_ROLE_TO_ASSUME APPLICATION_SECRET_ARN FRONTEND_ORIGIN LAMBDA_SUBNET_IDS LAMBDA_SECURITY_GROUP_IDS SES_FROM_EMAIL; do
             if [ -z "${!name}" ]; then
               echo "::error title=Configuração AWS ausente::$name não foi configurada nos secrets/variables do repositório ou environment."
               missing=1
@@ -191,3 +192,19 @@ jobs:
           "ApplicationSecretArn=${{ vars.APPLICATION_SECRET_ARN }}"
           "LambdaSubnetIds=${{ vars.LAMBDA_SUBNET_IDS }}"
           "LambdaSecurityGroupIds=${{ vars.LAMBDA_SECURITY_GROUP_IDS }}"
+          "SenderEmail=${{ vars.SES_FROM_EMAIL }}"
+
+      - name: Aplicar migrations do banco
+        shell: bash
+        run: |
+          migration_function=$(aws cloudformation describe-stacks \
+            --stack-name aladin-api \
+            --region "$AWS_REGION" \
+            --query "Stacks[0].Outputs[?OutputKey=='MigrationFunctionName'].OutputValue" \
+            --output text)
+          aws lambda invoke \
+            --function-name "$migration_function" \
+            --region "$AWS_REGION" \
+            migration-response.json
+          cat migration-response.json
+          jq -e '.statusCode == 200' migration-response.json

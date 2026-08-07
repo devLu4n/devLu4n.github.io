@@ -93,4 +93,64 @@ export function initAuthForms() {
       submitting(registerForm, false)
     }
   })
+
+  const forgotPasswordForm = document.getElementById('forgot-password-form')
+  forgotPasswordForm?.addEventListener('submit', async (event) => {
+    event.preventDefault()
+    const feedback = feedbackFor(forgotPasswordForm)
+    feedback.textContent = ''
+    submitting(forgotPasswordForm, true)
+    try {
+      const result = await apiRequest('/auth/esqueci-senha', {
+        method: 'POST',
+        body: JSON.stringify({ email: forgotPasswordForm.elements.email.value }),
+      })
+      feedback.className = 'text-center text-sm font-medium text-emerald-700'
+      feedback.textContent = result.mensagem
+      forgotPasswordForm.reset()
+    } catch (error) {
+      feedback.className = 'text-center text-sm font-medium text-red-600'
+      feedback.textContent = error.message
+    } finally {
+      submitting(forgotPasswordForm, false)
+    }
+  })
+
+  const resetPasswordForm = document.getElementById('reset-password-form')
+  resetPasswordForm?.addEventListener('submit', async (event) => {
+    event.preventDefault()
+    const feedback = feedbackFor(resetPasswordForm)
+    const token = new URLSearchParams(window.location.search).get('token') || ''
+    const password = resetPasswordForm.elements.nova_senha.value
+    const confirmation = resetPasswordForm.elements.confirmar_senha.value
+
+    if (!token) {
+      feedback.className = 'text-center text-sm font-medium text-red-600'
+      feedback.textContent = 'Este link de redefinição é inválido.'
+      return
+    }
+    if (password !== confirmation) {
+      feedback.className = 'text-center text-sm font-medium text-red-600'
+      feedback.textContent = 'As senhas não coincidem.'
+      return
+    }
+
+    feedback.textContent = ''
+    submitting(resetPasswordForm, true)
+    try {
+      const result = await apiRequest('/auth/redefinir-senha', {
+        method: 'POST',
+        body: JSON.stringify({ token, novaSenha: password }),
+      })
+      feedback.className = 'text-center text-sm font-medium text-emerald-700'
+      feedback.textContent = result.mensagem
+      resetPasswordForm.reset()
+      window.setTimeout(() => window.location.replace('/src/pages/login/login.html'), 1400)
+    } catch (error) {
+      feedback.className = 'text-center text-sm font-medium text-red-600'
+      feedback.textContent = error.message
+    } finally {
+      submitting(resetPasswordForm, false)
+    }
+  })
 }

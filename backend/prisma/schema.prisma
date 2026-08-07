@@ -42,21 +42,36 @@ model Usuario {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  empresa   Empresa?
-  candidato Candidato?
+  empresa           Empresa?
+  candidato         Candidato?
+  redefinicoesSenha RedefinicaoSenha[]
 
   @@map("usuarios")
 }
 
+model RedefinicaoSenha {
+  id        Int       @id @default(autoincrement())
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  usuarioId Int
+  usuario   Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@index([usuarioId, expiresAt])
+  @@map("redefinicoes_senha")
+}
+
 model Empresa {
-  id          Int      @id @default(autoincrement())
-  nome        String
-  cnpj        String?  @unique
-  descricao   String?
-  cidade      String?
-  foto        String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  nome      String
+  cnpj      String?  @unique
+  descricao String?
+  cidade    String?
+  foto      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   usuarioId Int     @unique
   usuario   Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
@@ -67,18 +82,18 @@ model Empresa {
 }
 
 model Vaga {
-  id          Int         @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   titulo      String
   descricao   String
   area        String
   cidade      String
-  modalidade  Modalidade  @default(PRESENCIAL)
+  modalidade  Modalidade @default(PRESENCIAL)
   tecnologias String
   salarioMin  Int?
   salarioMax  Int?
-  status      StatusVaga  @default(ABERTA)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  status      StatusVaga @default(ABERTA)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
   empresaId Int
   empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
@@ -89,20 +104,20 @@ model Vaga {
 }
 
 model Candidato {
-  id         Int      @id @default(autoincrement())
-  foto       String?
-  cargo      String?
-  bio        String?
-  telefone   String?
-  linkedin   String?
-  cidade     String?
-  curriculo  String?
+  id          Int      @id @default(autoincrement())
+  foto        String?
+  cargo       String?
+  bio         String?
+  telefone    String?
+  linkedin    String?
+  cidade      String?
+  curriculo   String?
   tecnologias String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  usuarioId Int      @unique
-  usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuarioId Int     @unique
+  usuario   Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   candidaturas Candidatura[]
 
@@ -110,11 +125,11 @@ model Candidato {
 }
 
 model Candidatura {
-  id        Int                @id @default(autoincrement())
-  status    StatusCandidatura  @default(PENDENTE)
+  id        Int               @id @default(autoincrement())
+  status    StatusCandidatura @default(PENDENTE)
   mensagem  String?
-  createdAt DateTime           @default(now())
-  updatedAt DateTime           @updatedAt
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
 
   candidatoId Int
   candidato   Candidato @relation(fields: [candidatoId], references: [id], onDelete: Cascade)

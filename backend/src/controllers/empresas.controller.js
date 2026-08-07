@@ -69,7 +69,21 @@ async function buscarPorId(req, res, next) {
 
     const empresa = await prisma.empresa.findUnique({
       where: { id },
-      include: { vagas: true },
+      include: {
+        vagas: {
+          where: { status: "ABERTA" },
+          orderBy: { createdAt: "desc" },
+          select: {
+            id: true,
+            titulo: true,
+            cidade: true,
+            modalidade: true,
+            salarioMin: true,
+            salarioMax: true,
+            createdAt: true,
+          },
+        },
+      },
     });
 
     if (!empresa) {

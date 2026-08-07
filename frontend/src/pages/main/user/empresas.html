@@ -308,18 +308,28 @@
       <dialog id="company-modal" class="glass-shell w-[min(92vw,560px)] rounded-[26px] p-0 text-navy">
         <div class="p-6 md:p-8">
           <div class="flex items-start justify-between gap-5">
-            <div>
-              <p class="text-xs font-bold uppercase tracking-[.18em] text-orangeCustom">Perfil da empresa</p>
-              <h2 id="company-modal-title" class="mt-1 text-2xl font-extrabold"></h2>
+            <div class="flex min-w-0 items-center gap-4">
+              <img id="company-modal-photo" src="/assets/empresa.png" alt="" class="h-16 w-16 shrink-0 rounded-2xl border border-slate-200 object-cover shadow-sm">
+              <div class="min-w-0">
+                <p class="text-xs font-bold uppercase tracking-[.18em] text-orangeCustom">Perfil da empresa</p>
+                <h2 id="company-modal-title" class="mt-1 truncate text-2xl font-extrabold"></h2>
+                <p id="company-modal-city" class="mt-1 text-sm text-mutedCustom"></p>
+              </div>
             </div>
-            <button id="close-company-modal"
+            <button id="close-company-modal" type="button"
               class="grid h-10 w-10 place-items-center rounded-full bg-white/60 text-xl hover:bg-white"
               aria-label="Fechar">×</button>
           </div>
-          <p id="company-modal-text" class="mt-5 text-sm leading-relaxed text-mutedCustom"></p>
-          <div class="mt-7 flex justify-end">
-            <a href="vagas.html" class="orange-button rounded-xl px-6 py-3 text-sm font-semibold text-white">Ver
-              vagas</a>
+          <div class="mt-6 border-t border-slate-200 pt-5">
+            <h3 class="text-sm font-bold text-navy">Sobre a empresa</h3>
+            <p id="company-modal-text" class="mt-2 text-sm leading-relaxed text-mutedCustom"></p>
+          </div>
+          <div class="mt-6 border-t border-slate-200 pt-5">
+            <div class="flex items-center justify-between gap-3">
+              <h3 class="text-sm font-bold text-navy">Vagas abertas</h3>
+              <span id="company-modal-job-count" class="rounded-full bg-blueLt px-2.5 py-1 text-xs font-semibold text-blueCustom"></span>
+            </div>
+            <div id="company-modal-jobs" class="mt-3 grid gap-3" aria-live="polite"></div>
           </div>
         </div>
       </dialog>

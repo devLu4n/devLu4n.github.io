@@ -36,6 +36,47 @@ body {
   font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
 }
 
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  z-index: 9999;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 180ms var(--ease-out), visibility 180ms var(--ease-out);
+}
+
+body::before {
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 44%, rgb(224 242 254 / 72%), transparent 22rem),
+    var(--color-background);
+}
+
+body::after {
+  top: 50%;
+  left: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: -1.25rem 0 0 -1.25rem;
+  border: 3px solid rgb(3 105 161 / 18%);
+  border-top-color: var(--color-accent);
+  border-radius: 9999px;
+  animation: page-loader-spin 700ms linear infinite;
+}
+
+body.page-ready::before,
+body.page-ready::after {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@keyframes page-loader-spin {
+  to { transform: rotate(360deg); }
+}
+
 button,
 a[href],
 select,
@@ -422,6 +463,11 @@ dialog.dialog-is-closing {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+
+  body::after {
+    border-color: var(--color-accent);
+    animation: none !important;
   }
 
   :where(button, a[href]):active:not(:disabled) {

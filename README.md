@@ -295,6 +295,9 @@ Variables obrigatórias:
 | `APPLICATION_SECRET_ARN` | ARN do segredo da aplicação no Secrets Manager |
 | `LAMBDA_SUBNET_IDS` | IDs das subnets separados por vírgula |
 | `LAMBDA_SECURITY_GROUP_IDS` | IDs dos security groups separados por vírgula |
+| `SES_FROM_EMAIL` | Endereço remetente verificado no Amazon SES |
+
+Para a redefinição de senha, a função da API precisa alcançar o endpoint do Amazon SES. Como a Lambda está associada à VPC do RDS, configure saída por NAT ou um endpoint de VPC compatível antes de ativar o envio em produção. No SES sandbox, remetente e destinatário precisam estar verificados.
 
 ## GitHub Pages
 
