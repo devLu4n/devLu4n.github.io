@@ -103,13 +103,10 @@ select:disabled {
 
 dialog[open] {
   position: fixed;
-  inset: auto;
-  top: 50%;
-  left: 50%;
-  margin: 0;
+  inset: 0;
+  margin: auto;
   max-height: calc(100dvh - 2rem);
   overflow-y: auto;
-  translate: -50% -50%;
   opacity: 1;
   transform: scale(1);
   transition: opacity var(--duration-ui) var(--ease-out),
@@ -122,12 +119,14 @@ dialog::backdrop {
 }
 
 #apply-dialog[open] {
+  width: min(92vw, 520px);
   max-height: calc(100dvh - 2rem);
   overflow: hidden;
 }
 
 #apply-dialog .apply-dialog-form {
-  max-height: calc(100dvh - 2rem);
+  box-sizing: border-box;
+  max-height: inherit;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
