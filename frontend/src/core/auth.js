@@ -7,6 +7,12 @@ const EMPRESA_ONLY_PATHS = [
   '/src/pages/main/empresa/gerenciar-vagas.html',
 ]
 const CANDIDATO_ONLY_PATHS = ['/src/pages/main/user/minhas-candidaturas.html']
+const PUBLIC_AUTH_PATHS = [
+  '/src/pages/login/login.html',
+  '/src/pages/login/esqueci-senha.html',
+  '/src/pages/login/redefinir-senha.html',
+  '/src/pages/signup/signup.html',
+]
 
 let currentUserCache
 
@@ -107,6 +113,8 @@ function applyAuthenticatedNavigation(user) {
 }
 
 export async function initAuth() {
+  if (PUBLIC_AUTH_PATHS.some((path) => location.pathname.endsWith(path))) return
+
   const user = await getCurrentUser()
   applyAuthenticatedNavigation(user)
 

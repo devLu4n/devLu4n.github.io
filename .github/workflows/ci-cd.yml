@@ -173,6 +173,12 @@ jobs:
       - name: Configurar AWS SAM
         uses: aws-actions/setup-sam@v2
 
+      - name: Versionar imagens da Lambda
+        shell: bash
+        run: |
+          sed -i "s/DockerTag: nodejs22-v1/DockerTag: nodejs22-${GITHUB_SHA}/" template.yaml
+          sed -i "s/DockerTag: migrate-nodejs22-v1/DockerTag: migrate-nodejs22-${GITHUB_SHA}/" template.yaml
+
       - name: Compilar aplicação serverless
         run: sam build
 
