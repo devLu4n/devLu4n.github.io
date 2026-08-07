@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   >
 
@@ -67,26 +67,10 @@
       -webkit-backdrop-filter: blur(18px);
     }
 
-    .orange-button {
-      color: white;
-      background: linear-gradient(180deg, #FF7715 0%, #FF5F04 100%);
-      box-shadow: 0 9px 22px rgba(255, 101, 10, .28);
-      transition:
-        transform .2s ease,
-        filter .2s ease,
-        box-shadow .2s ease;
-    }
-
-    .orange-button:hover {
-      filter: brightness(.98);
-      transform: translateY(-1px);
-      box-shadow: 0 13px 28px rgba(255, 101, 10, .32);
-    }
-
     .nav-link {
       position: relative;
       color: rgba(16, 21, 47, .65);
-      transition: color .2s ease;
+      transition: color var(--duration-ui) var(--ease-out);
     }
 
     .nav-link:hover,
@@ -125,14 +109,21 @@
 
     .toast {
       transition:
-        opacity .2s ease,
-        transform .2s ease;
+        opacity var(--duration-ui) var(--ease-out),
+        transform var(--duration-ui) var(--ease-out);
     }
 
     .toast.toast-hidden {
       opacity: 0;
       transform: translateY(12px);
       pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .toast {
+        transform: none !important;
+        transition: opacity var(--duration-fast) var(--ease-out);
+      }
     }
   </style>
   <script type="module" src="/src/main.js"></script>
@@ -401,7 +392,7 @@
         id="apply-dialog"
         class="glass-shell w-[min(92vw,520px)] rounded-[26px] p-0 text-navy"
       >
-        <form id="apply-form" class="p-6 md:p-8">
+        <form id="apply-form" class="apply-dialog-form p-6 md:p-8">
           <div class="flex items-start justify-between gap-5">
             <div>
               <p class="text-xs font-bold uppercase tracking-[.18em] text-orangeDark">
@@ -429,8 +420,8 @@
 
           <div class="mt-5">
             <label for="resume-file" class="block text-sm font-semibold text-navy">Currículo</label>
-            <label for="resume-file" class="mt-2 flex cursor-pointer items-center gap-3 rounded-2xl border border-dashed border-blueCustom/45 bg-white/55 p-4 transition hover:border-blueCustom hover:bg-white/75">
-              <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-blueCustom/10 text-blueCustom" aria-hidden="true">
+            <label for="resume-file" class="brand-upload-zone mt-2 flex cursor-pointer items-center gap-3 rounded-2xl border border-dashed p-4">
+              <span class="brand-upload-icon grid h-11 w-11 shrink-0 place-items-center rounded-xl" aria-hidden="true">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m0 0L7 9m5-5 5 5M5 15v4h14v-4"/></svg>
               </span>
               <span class="min-w-0">
@@ -467,7 +458,7 @@
             Confirme a autorização para continuar.
           </p>
 
-          <div class="mt-6 flex justify-end gap-3">
+          <div class="apply-dialog-actions mt-6 flex justify-end gap-3">
             <button
               id="cancel-application"
               type="button"
@@ -551,7 +542,7 @@
       applicationTechnologyChips.innerHTML = '';
       applicationTechnologies.forEach((technology, index) => {
         const chip = document.createElement('span');
-        chip.className = 'technology inline-flex items-center gap-1.5';
+        chip.className = 'application-technology-chip technology inline-flex items-center gap-1.5';
         const text = document.createElement('span');
         text.textContent = technology;
         const remove = document.createElement('button');
@@ -597,6 +588,11 @@
     resumeFile.addEventListener('change', () => {
       const file = resumeFile.files[0];
       resumeFileName.textContent = file ? file.name : 'PDF ou DOCX, até 2 MB';
+      resumeFileName.getAnimations().forEach((animation) => animation.cancel());
+      resumeFileName.animate(
+        [{ opacity: 0.35 }, { opacity: 1 }],
+        { duration: 160, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' },
+      );
       applicationError.classList.add('hidden');
     });
 

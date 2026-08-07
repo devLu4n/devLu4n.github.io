@@ -57,12 +57,12 @@ select:disabled {
 }
 
 :where(button, a[href]):active:not(:disabled) {
-  scale: 0.97;
-  transition: scale var(--duration-fast) var(--ease-out);
+  transform: scale(0.97);
+  transition: transform var(--duration-fast) var(--ease-out);
 }
 
 .motion-interactive {
-  transition-property: color, background-color, border-color, box-shadow, opacity, transform, scale;
+  transition-property: color, background-color, border-color, box-shadow, opacity, transform;
   transition-duration: var(--duration-ui);
   transition-timing-function: var(--ease-out);
 }
@@ -84,7 +84,7 @@ select:disabled {
 }
 
 :where(button, a[href]).motion-interactive:active:not(:disabled) {
-  transition: scale var(--duration-fast) var(--ease-out);
+  transition: transform var(--duration-fast) var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -119,6 +119,75 @@ dialog[open] {
 dialog::backdrop {
   background: rgb(15 23 42 / 52%);
   backdrop-filter: blur(4px);
+}
+
+#apply-dialog[open] {
+  max-height: calc(100dvh - 2rem);
+  overflow: hidden;
+}
+
+#apply-dialog .apply-dialog-form {
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+#apply-dialog .apply-dialog-actions {
+  position: sticky;
+  z-index: 1;
+  bottom: -2rem;
+  margin-inline: -2rem;
+  margin-bottom: -2rem;
+  padding: 1rem 2rem 2rem;
+  background: linear-gradient(to bottom, rgb(255 255 255 / 94%), #fff 35%);
+}
+
+.brand-upload-zone {
+  border-color: rgb(3 105 161 / 42%);
+  background: rgb(248 250 252 / 88%);
+  transition: border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.brand-upload-icon {
+  color: var(--color-accent);
+  background: rgb(3 105 161 / 10%);
+}
+
+.application-technology-chip {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+@starting-style {
+  .application-technology-chip {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .brand-upload-zone:hover {
+    border-color: var(--color-accent);
+    background: #fff;
+  }
+}
+
+@media (max-width: 639px) {
+  #apply-dialog[open],
+  #apply-dialog .apply-dialog-form {
+    max-height: calc(100dvh - 1rem);
+  }
+
+  #apply-dialog .apply-dialog-actions {
+    bottom: -1.5rem;
+    margin-inline: -1.5rem;
+    margin-bottom: -1.5rem;
+    padding: 0.875rem 1.5rem 1.5rem;
+  }
 }
 
 .glass-shell,
@@ -156,8 +225,10 @@ dialog::backdrop {
   box-shadow: 0 8px 20px rgb(3 105 161 / 18%) !important;
 }
 
-.orange-button:hover {
-  background: var(--color-accent-hover) !important;
+@media (hover: hover) and (pointer: fine) {
+  .orange-button:hover {
+    background: var(--color-accent-hover) !important;
+  }
 }
 
 .nav-link.active::after {
@@ -355,7 +426,12 @@ dialog.dialog-is-closing {
   }
 
   :where(button, a[href]):active:not(:disabled) {
-    scale: none;
+    transform: none;
+  }
+
+  .application-technology-chip {
+    transform: none;
+    transition: opacity var(--duration-fast) var(--ease-out);
   }
 
   .motion-hover-lift-sm:hover,
