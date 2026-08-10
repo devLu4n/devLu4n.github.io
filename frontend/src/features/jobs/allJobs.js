@@ -1,4 +1,5 @@
 import { apiRequest } from '../../api.js'
+import '../../core/pageLoader.js'
 
 const PAGE_SIZE = 8
 const state = { jobs: [], page: 1, area: '', modality: '', salary: 0, search: '', city: '', sort: 'recent' }
