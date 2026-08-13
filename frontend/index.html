@@ -14,33 +14,33 @@
   <a href="#main-content" class="absolute -top-full left-4 z-50 rounded-b-lg bg-blueCustom px-4 py-2 text-sm font-semibold text-white focus:top-0">Pular para o conteúdo principal</a>
 
   <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
-    <nav class="relative mx-auto flex h-[72px] max-w-[1280px] items-center justify-between gap-5 px-5 md:px-8" aria-label="Navegação principal">
-      <a href="/" class="flex shrink-0 items-center gap-2.5" aria-label="Aladin, página inicial">
-        <img src="/assets/aladin-logo.svg" alt="" width="40" height="40" class="h-9 w-9 object-contain" aria-hidden="true">
-        <span class="text-xl font-extrabold tracking-[-.03em] text-navy">aladin</span>
+    <nav class="relative mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-2 px-4 sm:h-[72px] sm:gap-4 sm:px-5 md:px-8" aria-label="Navegação principal">
+      <a href="/" class="flex min-w-0 shrink items-center gap-2 sm:shrink-0 sm:gap-2.5" aria-label="Aladin, página inicial">
+        <img src="/assets/aladin-logo.svg" alt="" width="40" height="40" class="h-8 w-8 shrink-0 object-contain sm:h-9 sm:w-9" aria-hidden="true">
+        <span class="text-lg font-extrabold tracking-[-.03em] text-navy sm:text-xl">aladin</span>
       </a>
       <ul class="hidden items-center gap-1 md:absolute md:left-1/2 md:flex md:-translate-x-1/2" role="list">
         <li><a href="#vagas" class="rounded-lg px-3.5 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-navy">Vagas</a></li>
         <li><a href="/src/pages/como-funciona.html" class="rounded-lg px-3.5 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-navy">Como funciona</a></li>
         <li><a href="/src/pages/sobre.html" class="rounded-lg px-3.5 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-navy">Sobre</a></li>
       </ul>
-      <div class="flex shrink-0 items-center gap-2">
+      <div class="flex shrink-0 items-center gap-1.5 sm:gap-2">
         <a id="header-login-btn" href="/src/pages/login/login.html" class="motion-interactive hidden min-h-11 items-center rounded-lg px-4 text-sm font-semibold text-slate-700 hover:bg-slate-100 sm:inline-flex">Entrar</a>
-        <a href="/src/pages/signup/signup.html" class="motion-interactive inline-flex min-h-11 items-center rounded-lg bg-blueCustom px-4 text-sm font-bold text-white shadow-button hover:bg-blueDark">Criar conta</a>
+        <a href="/src/pages/signup/signup.html" class="motion-interactive inline-flex min-h-11 items-center rounded-lg bg-blueCustom px-3 text-xs font-bold text-white shadow-button hover:bg-blueDark sm:px-4 sm:text-sm">Criar conta</a>
       </div>
     </nav>
   </header>
 
   <main id="main-content">
-    <section class="relative border-b border-slate-200 bg-white px-5 py-16 md:px-8 md:py-24" aria-labelledby="hero-title">
+    <section class="relative border-b border-slate-200 bg-white px-4 py-12 sm:px-5 sm:py-16 md:px-8 md:py-24" aria-labelledby="hero-title">
       <div class="absolute inset-x-0 top-0 h-64 bg-[radial-gradient(circle_at_20%_0%,rgba(3,105,161,.10),transparent_42%),radial-gradient(circle_at_85%_10%,rgba(217,119,6,.08),transparent_36%)]" aria-hidden="true"></div>
       <div class="relative mx-auto grid max-w-[1280px] items-center gap-12 lg:grid-cols-[.9fr_1.1fr] lg:gap-16">
         <div class="max-w-[640px]">
-          <p class="mb-5 inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-3 py-1.5 text-xs font-bold uppercase tracking-[.12em] text-blueDark">
+          <p class="mb-4 inline-flex max-w-full items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-3 py-1.5 text-[.68rem] font-bold uppercase tracking-[.1em] text-blueDark sm:mb-5 sm:text-xs sm:tracking-[.12em]">
             Recrutamento de tecnologia
           </p>
-          <h1 id="hero-title" class="text-[clamp(2.65rem,5.6vw,4.8rem)] font-extrabold leading-[1.04] tracking-[-.055em] text-navy">Talentos e empresas no mesmo fluxo.</h1>
-          <p class="mt-6 max-w-[590px] text-[clamp(1rem,1.4vw,1.15rem)] leading-8 text-slate-600">Publique vagas, organize candidaturas e acompanhe cada etapa do processo seletivo. Para candidatos, uma experiência clara da descoberta à contratação.</p>
+          <h1 id="hero-title" class="text-[clamp(2.2rem,11vw,4.8rem)] font-extrabold leading-[1.06] tracking-[-.045em] text-navy sm:tracking-[-.055em]">Talentos e empresas no mesmo fluxo.</h1>
+          <p class="mt-5 max-w-[590px] text-[clamp(.95rem,1.4vw,1.15rem)] leading-7 text-slate-600 sm:mt-6 sm:leading-8">Publique vagas, organize candidaturas e acompanhe cada etapa do processo seletivo. Para candidatos, uma experiência clara da descoberta à contratação.</p>
           <div class="mt-8 flex flex-col gap-3 sm:flex-row">
             <a href="/src/pages/signup/signup.html?tipo=candidato" class="motion-interactive inline-flex min-h-12 items-center justify-center rounded-lg bg-blueCustom px-6 text-sm font-bold text-white shadow-button hover:bg-blueDark">Encontrar uma vaga</a>
             <a href="/src/pages/signup/signup.html?tipo=empresa" class="motion-interactive inline-flex min-h-12 items-center justify-center rounded-lg border border-slate-300 bg-white px-6 text-sm font-bold text-navy hover:border-slate-400 hover:bg-slate-50">Publicar uma vaga</a>
@@ -52,9 +52,9 @@
           </div>
         </div>
 
-        <div class="rounded-[24px] border border-slate-200 bg-slate-50 p-3 shadow-glass sm:p-5" aria-label="Prévia do painel de recrutamento">
+        <div class="min-w-0 rounded-[20px] border border-slate-200 bg-slate-50 p-2.5 shadow-glass sm:rounded-[24px] sm:p-5" aria-label="Prévia do painel de recrutamento">
           <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-            <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+            <div class="flex flex-col items-start gap-3 border-b border-slate-200 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
               <div><p class="text-xs font-semibold text-slate-500">Processo seletivo</p><h2 class="mt-1 font-bold text-navy">Desenvolvedor Full Stack</h2></div>
               <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">Vaga ativa</span>
             </div>
@@ -66,8 +66,8 @@
             <div class="border-t border-slate-200 p-4 sm:p-5">
               <div class="mb-3 flex items-center justify-between"><h3 class="text-sm font-bold text-navy">Candidatos recentes</h3><span class="text-xs font-semibold text-blueCustom">Ver processo</span></div>
               <div class="space-y-2">
-                <div class="flex items-center gap-3 rounded-xl border border-slate-200 p-3"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-sky-100 text-xs font-extrabold text-blueDark">AM</span><div class="min-w-0 flex-1"><p class="truncate text-sm font-bold text-navy">Ana Martins</p><p class="truncate text-xs text-slate-500">React · Node.js · PostgreSQL</p></div><span class="rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-bold text-amber-700">Em análise</span></div>
-                <div class="flex items-center gap-3 rounded-xl border border-slate-200 p-3"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100 text-xs font-extrabold text-slate-700">RC</span><div class="min-w-0 flex-1"><p class="truncate text-sm font-bold text-navy">Rafael Costa</p><p class="truncate text-xs text-slate-500">TypeScript · AWS · Docker</p></div><span class="rounded-full bg-violet-50 px-2.5 py-1 text-[11px] font-bold text-violet-700">Entrevista</span></div>
+                <div class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 rounded-xl border border-slate-200 p-3 sm:grid-cols-[auto_minmax(0,1fr)_auto]"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-sky-100 text-xs font-extrabold text-blueDark">AM</span><div class="min-w-0"><p class="truncate text-sm font-bold text-navy">Ana Martins</p><p class="truncate text-xs text-slate-500">React · Node.js · PostgreSQL</p></div><span class="col-start-2 w-fit rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-bold text-amber-700 sm:col-start-auto">Em análise</span></div>
+                <div class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 rounded-xl border border-slate-200 p-3 sm:grid-cols-[auto_minmax(0,1fr)_auto]"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100 text-xs font-extrabold text-slate-700">RC</span><div class="min-w-0"><p class="truncate text-sm font-bold text-navy">Rafael Costa</p><p class="truncate text-xs text-slate-500">TypeScript · AWS · Docker</p></div><span class="col-start-2 w-fit rounded-full bg-violet-50 px-2.5 py-1 text-[11px] font-bold text-violet-700 sm:col-start-auto">Entrevista</span></div>
               </div>
             </div>
           </div>
@@ -106,15 +106,15 @@
       </div>
     </section>
 
-    <section class="px-5 py-16 md:px-8 md:py-24">
-      <div class="mx-auto flex max-w-[1100px] flex-col items-center justify-between gap-8 rounded-[24px] bg-navy px-7 py-10 text-center text-white shadow-card md:flex-row md:px-12 md:py-12 md:text-left">
-        <div><p class="text-xs font-bold uppercase tracking-[.16em] text-sky-300">Comece agora</p><h2 class="mt-3 max-w-[650px] text-[clamp(1.8rem,3.5vw,2.7rem)] font-extrabold tracking-[-.04em]">Seu próximo processo seletivo pode ser mais simples.</h2><p class="mt-3 text-sm leading-7 text-slate-300">Escolha seu perfil e entre no fluxo certo desde o primeiro acesso.</p></div>
+    <section class="px-4 py-12 sm:px-5 sm:py-16 md:px-8 md:py-24">
+      <div class="mx-auto flex max-w-[1100px] flex-col items-center justify-between gap-7 rounded-[20px] bg-navy px-5 py-8 text-center text-white shadow-card sm:rounded-[24px] sm:px-7 sm:py-10 md:flex-row md:px-12 md:py-12 md:text-left">
+        <div class="min-w-0"><p class="text-xs font-bold uppercase tracking-[.16em] text-sky-300">Comece agora</p><h2 class="mt-3 max-w-[650px] text-[clamp(1.65rem,8vw,2.7rem)] font-extrabold leading-tight tracking-[-.035em]">Seu próximo processo seletivo pode ser mais simples.</h2><p class="mt-3 text-sm leading-7 text-slate-300">Escolha seu perfil e entre no fluxo certo desde o primeiro acesso.</p></div>
         <div class="flex w-full shrink-0 flex-col gap-3 sm:w-auto sm:flex-row"><a href="/src/pages/signup/signup.html?tipo=candidato" class="inline-flex min-h-12 items-center justify-center rounded-lg bg-white px-5 text-sm font-bold text-navy">Sou candidato</a><a href="/src/pages/signup/signup.html?tipo=empresa" class="inline-flex min-h-12 items-center justify-center rounded-lg bg-blueCustom px-5 text-sm font-bold text-white">Sou empresa</a></div>
       </div>
     </section>
   </main>
 
-  <footer class="border-t border-slate-800 bg-navy px-5 py-10 text-white md:px-8">
+  <footer class="border-t border-slate-800 bg-navy px-4 py-9 text-white sm:px-5 sm:py-10 md:px-8">
     <div class="mx-auto flex max-w-[1280px] flex-col items-center justify-between gap-6 sm:flex-row"><a href="/" class="flex items-center gap-2.5" aria-label="Aladin, página inicial"><img src="/assets/white-logo.svg" alt="" width="40" height="40" class="h-9 w-9 object-contain" aria-hidden="true"><span class="text-xl font-extrabold">aladin</span></a><nav class="flex flex-wrap justify-center gap-5 text-sm font-medium text-slate-400" aria-label="Links do rodapé"><a href="/#vagas" class="hover:text-white">Vagas</a><a href="/src/pages/como-funciona.html" class="hover:text-white">Como funciona</a><a href="/src/pages/sobre.html" class="hover:text-white">Sobre</a></nav></div>
     <p class="mx-auto mt-7 max-w-[1280px] border-t border-slate-800 pt-7 text-center text-xs text-slate-500 sm:text-left">Projeto independente criado para conectar talentos e empresas de tecnologia.</p>
   </footer>
