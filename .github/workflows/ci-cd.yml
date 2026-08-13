@@ -197,6 +197,7 @@ jobs:
           "ApplicationSecretArn=${{ vars.APPLICATION_SECRET_ARN }}"
           "LambdaSubnetIds=${{ vars.LAMBDA_SUBNET_IDS }}"
           "LambdaSecurityGroupIds=${{ vars.LAMBDA_SECURITY_GROUP_IDS }}"
+          "DeploymentNonce=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
 
       - name: Aplicar migrations do banco
         shell: bash
@@ -211,4 +212,11 @@ jobs:
             --region "$AWS_REGION" \
             migration-response.json
           cat migration-response.json
-          jq -e '.status == "ok"' migration-response.json
+          if ! jq -e '.status == "ok"' migration-response.json; then
+            echo "::error title=Migration Prisma falhou::Consultando os logs da funcao de migration."
+            aws logs tail "/aws/lambda/$migration_function" \
+              --region "$AWS_REGION" \
+              --since 10m \
+              --format short || true
+            exit 1
+          fi
